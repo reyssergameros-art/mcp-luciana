@@ -1,0 +1,1 @@
+"""Domain _init_ for test generation."""

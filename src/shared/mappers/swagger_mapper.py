@@ -1,0 +1,161 @@
+"""Mappers for converting swagger analysis models to JSON-serializable dictionaries."""
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, Any, List, Optional
+from ...tools.swagger_analysis.domain.models import (
+    SwaggerAnalysisResult, EndpointInfo, FieldInfo, ResponseInfo
+)
+
+
+class SwaggerMapper:
+    """Mapper for converting swagger analysis models to dictionaries."""
+    
+    @staticmethod
+    def to_dict(result: SwaggerAnalysisResult) -> Dict[str, Any]:
+        """Convert SwaggerAnalysisResult to dictionary."""
+        return {
+            "title": result.title,
+            "version": result.version,
+            "description": result.description,
+            "contact_info": result.contact_info,
+            "license_info": result.license_info,
+            "base_urls": result.base_urls,
+            "total_endpoints": result.total_endpoints,
+            "endpoints": [SwaggerMapper._map_endpoint(ep) for ep in result.endpoints],
+            "summary": {
+                "title": result.title,
+                "version": result.version,
+                "description": result.description,
+                "base_urls": result.base_urls,
+                "total_endpoints": result.total_endpoints,
+                "endpoints_by_method": SwaggerMapper._count_by_method(result.endpoints),
+                "endpoints_with_request_body": sum(1 for ep in result.endpoints if ep.request_body),
+                "response_codes": SwaggerMapper._get_response_codes(result.endpoints)
+            }
+        }
+    
+    @staticmethod
+    def _map_endpoint(endpoint: EndpointInfo) -> Dict[str, Any]:
+        """Map endpoint to dictionary."""
+        return {
+            "method": endpoint.method,
+            "path": endpoint.path,
+            "summary": endpoint.summary,
+            "description": endpoint.description,
+            "operation_id": endpoint.operation_id,
+            "tags": endpoint.tags,
+            "headers": [SwaggerMapper._map_field(f) for f in endpoint.headers],
+            "path_parameters": [SwaggerMapper._map_field(f) for f in endpoint.path_parameters],
+            "query_parameters": [SwaggerMapper._map_field(f) for f in endpoint.query_parameters],
+            "request_body": {k: SwaggerMapper._map_field(v) for k, v in endpoint.request_body.items()} if endpoint.request_body else None,
+            "request_content_type": endpoint.request_content_type,
+            "responses": [SwaggerMapper._map_response(r) for r in endpoint.responses],
+            "validation_rules": endpoint.validation_rules,
+            "error_scenarios": endpoint.error_scenarios
+        }
+    
+    @staticmethod
+    def _map_field(field: FieldInfo) -> Dict[str, Any]:
+        """Map field to dictionary."""
+        constraints = []
+        if field.constraints:
+            for constraint in field.constraints:
+                # Handle ValidationConstraint domain objects properly
+                constraints.append({
+                    'constraint_type': constraint.constraint_type,
+                    'value': constraint.value,
+                    'error_code': constraint.error_code,
+                    'error_message': constraint.error_message
+                })
+        
+        return {
+            "name": field.name,
+            "data_type": field.data_type,
+            "required": field.required,
+            "format": field.format.value if hasattr(field.format, 'value') else str(field.format),
+            "description": field.description,
+            "example": field.example,
+            "enum_values": field.enum_values,
+            "pattern": field.pattern,
+            "minimum": field.minimum,
+            "maximum": field.maximum,
+            "min_length": field.min_length,
+            "max_length": field.max_length,
+            "constraints": constraints
+        }
+    
+    @staticmethod
+    def _map_response(response: ResponseInfo) -> Dict[str, Any]:
+        """Map response to dictionary."""
+        return {
+            "status_code": response.status_code,
+            "description": response.description,
+            "content_type": response.content_type,
+            "schema": response.schema,
+            "example": response.example,
+            "error_codes": response.error_codes if response.error_codes else [],
+            "validation_errors": response.validation_errors if response.validation_errors else []
+        }
+    
+    @staticmethod
+    def _count_by_method(endpoints: List[EndpointInfo]) -> Dict[str, int]:
+        """Count endpoints by HTTP method."""
+        counts = {}
+        for endpoint in endpoints:
+            method = endpoint.method.upper()
+            counts[method] = counts.get(method, 0) + 1
+        return counts
+    
+    @staticmethod
+    def _get_response_codes(endpoints: List[EndpointInfo]) -> List[str]:
+        """Get all unique response codes."""
+        codes = set()
+        for endpoint in endpoints:
+            for response in endpoint.responses:
+                codes.add(response.status_code)
+        return sorted(list(codes))
+    
+    @staticmethod
+    def save_to_json(result_dict: Dict[str, Any], source_url: str) -> Path:
+        """
+        Save analysis result to JSON file.
+        
+        Args:
+            result_dict: Dictionary with analysis results
+            source_url: Source URL or file path being analyzed
+            
+        Returns:
+            Path to the saved JSON file
+        """
+        # Create output directory
+        output_dir = Path("output") / "swagger"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        # Extract API name from title or use generic name
+        api_name = result_dict.get("title", "swagger_api")
+        # Clean filename (remove special chars, replace spaces with underscores)
+        api_name = "".join(c if c.isalnum() or c in (' ', '') else '' for c in api_name)
+        api_name = api_name.replace(' ', '_').lower()
+        
+        filename = f"{api_name}_{timestamp}.json"
+        file_path = output_dir / filename
+        
+        # Prepare metadata
+        output_data = {
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+                "source_url": source_url,
+                "tool_version": "1.0.0"
+            },
+            "analysis": result_dict
+        }
+        
+        # Write JSON file
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(output_data, f, indent=2, ensure_ascii=False)
+        
+        return file_path

@@ -1,0 +1,13 @@
+{
+	"servers": {
+		"my-mcp-server-luciana": {
+			"type": "stdio",
+			"command": "uv",
+			"args": [
+				"run",
+				"main.py"
+			]
+		}
+	},
+	"inputs": []
+}

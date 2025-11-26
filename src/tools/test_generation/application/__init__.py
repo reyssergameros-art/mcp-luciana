@@ -1,0 +1,1 @@
+"""Application _init_ for test generation."""
