@@ -5,31 +5,43 @@ from typing import Dict, Any, List, Optional
 
 from ..domain.models import TestGenerationResult, PartitionSet, TestCase
 from ..domain.exceptions import InvalidSwaggerAnalysisError, TestGenerationError
-from ..infrastructure.partition_identifier import PartitionIdentifier
-from ..infrastructure.test_case_builder import TestCaseBuilder
+from ..infrastructure.partition_identifier_refactored import PartitionIdentifierRefactored
+from ..infrastructure.test_case_builder_refactored import TestCaseBuilderRefactored
+from ..infrastructure.status_code_resolver import StatusCodeResolver
+from ..infrastructure.error_code_resolver import ErrorCodeResolver
 from src.shared.config import SwaggerConstants
 
 
 class EquivalencePartitionService:
     """
-    Application service for generating test cases using Equivalence Partitioning.
+    Refactored application service following SOLID principles.
+    
+    Improvements:
+    - Dependency Injection: Injects resolvers into builder
+    - Single Responsibility: Orchestrates but delegates specific tasks
+    - Open/Closed: Easy to swap implementations without changing this class
     
     Orchestrates the test generation process:
     1. Load swagger analysis from JSON file
-    2. Identify equivalence partitions for each field
-    3. Build test cases covering all partitions
+    2. Identify equivalence partitions for each field using specialized generators
+    3. Build test cases with dynamic status/error code resolution
     4. Calculate coverage metrics
-    
-    Responsibilities (Single Responsibility Principle):
-    - Coordinate partition identification and test case building
-    - Load and validate swagger analysis input
-    - Calculate coverage metrics
-    - Generate summary reports
     """
     
     def __init__(self):
-        self.partition_identifier = PartitionIdentifier()
-        self.test_case_builder = TestCaseBuilder()
+        """Initialize service with refactored components."""
+        # Use refactored implementations
+        self.partition_identifier = PartitionIdentifierRefactored()
+        
+        # Create resolvers
+        self.status_resolver = StatusCodeResolver()
+        self.error_resolver = ErrorCodeResolver()
+        
+        # Inject resolvers into builder (Dependency Injection)
+        self.test_case_builder = TestCaseBuilderRefactored(
+            status_resolver=self.status_resolver,
+            error_resolver=self.error_resolver
+        )
     
     async def generate_test_cases_from_json(
         self,

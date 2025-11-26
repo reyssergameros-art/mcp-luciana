@@ -1,5 +1,5 @@
-"""Builder service for constructing test cases from equivalence partitions."""
-from typing import Dict, Any, List
+"""Refactored test case builder using SOLID principles and dynamic resolution."""
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 
 from ..domain.models import (
@@ -7,26 +7,44 @@ from ..domain.models import (
     TestCasePriority, PartitionCategory
 )
 from ..domain.exceptions import TestCaseBuildError
+from .status_code_resolver import StatusCodeResolver
+from .error_code_resolver import ErrorCodeResolver
 from src.shared.config import SwaggerConstants
 
 
-class TestCaseBuilder:
+class TestCaseBuilderRefactored:
     """
-    Builds test cases from identified equivalence partitions using Builder pattern.
+    Refactored test case builder following SOLID principles.
     
-    Following ISTQB v4 "Each Choice Coverage" - ensures each partition from each
-    partition set is exercised at least once by the generated test cases.
+    Improvements:
+    - Single Responsibility: Focuses on building test cases
+    - Dependency Injection: Uses resolvers for status codes and error codes
+    - No Hardcoding: All data comes from swagger analysis or resolvers
+    - Open/Closed: Easy to extend with new test generation strategies
     
-    Responsibilities (Single Responsibility Principle):
+    Responsibilities:
     - Build complete test cases from partitions
     - Generate test case IDs
     - Determine test priorities
     - Create test data combining multiple partitions
-    - Generate expected results and status codes
+    - Delegate status code and error code resolution
     """
     
-    def __init__(self):
+    def __init__(
+        self,
+        status_resolver: StatusCodeResolver = None,
+        error_resolver: ErrorCodeResolver = None
+    ):
+        """
+        Initialize test case builder with resolvers.
+        
+        Args:
+            status_resolver: Resolver for HTTP status codes
+            error_resolver: Resolver for error codes
+        """
         self.test_counter = 0
+        self.status_resolver = status_resolver or StatusCodeResolver()
+        self.error_resolver = error_resolver or ErrorCodeResolver()
     
     def build_test_cases_for_endpoint(
         self,
@@ -72,7 +90,9 @@ class TestCaseBuilder:
             return test_cases
             
         except Exception as e:
-            raise TestCaseBuildError(f"Cannot build test cases for {http_method} {endpoint}: {str(e)}")
+            raise TestCaseBuildError(
+                f"Cannot build test cases for {http_method} {endpoint}: {str(e)}"
+            )
     
     def _build_positive_test_cases(
         self,
@@ -93,7 +113,6 @@ class TestCaseBuilder:
         for partition_set in partition_sets:
             valid_from_set = partition_set.get_valid_partitions()
             if valid_from_set:
-                # Take first valid partition as representative
                 valid_partitions.append(valid_from_set[0])
         
         if not valid_partitions:
@@ -103,8 +122,10 @@ class TestCaseBuilder:
         test_case_id = self._generate_test_case_id(endpoint, http_method, "valid_all")
         test_data = self._build_test_data_from_partitions(valid_partitions)
         
-        # Determine expected status code for success
-        expected_status = self._get_success_status_code(http_method, endpoint_data)
+        # Resolve expected status code dynamically
+        expected_status = self.status_resolver.get_success_status_code(
+            http_method, endpoint_data
+        )
         
         test_case = TestCase(
             test_case_id=test_case_id,
@@ -119,7 +140,9 @@ class TestCaseBuilder:
             expected_result=f"Request processed successfully with status {expected_status}",
             expected_status_code=expected_status,
             preconditions=self._generate_preconditions(endpoint_data),
-            steps=self._generate_test_steps(http_method, endpoint, test_data, valid_partitions),
+            steps=self._generate_test_steps(
+                http_method, endpoint, test_data, valid_partitions, endpoint_data
+            ),
             tags=["positive", "equivalence_partition", "valid", http_method.lower()]
         )
         
@@ -141,21 +164,13 @@ class TestCaseBuilder:
         """
         negative_tests = []
         
-        # Get valid partitions as baseline
-        baseline_partitions = []
-        for partition_set in partition_sets:
-            valid_from_set = partition_set.get_valid_partitions()
-            if valid_from_set:
-                baseline_partitions.append(valid_from_set[0])
-        
         # For each invalid partition, create a test case
         for partition_set in partition_sets:
             invalid_partitions = partition_set.get_invalid_partitions()
             
             for invalid_partition in invalid_partitions:
                 # Create test with this invalid partition and valid values for others
-                test_partitions = []
-                test_partitions.append(invalid_partition)
+                test_partitions = [invalid_partition]
                 
                 # Add valid partitions from other sets
                 for other_set in partition_sets:
@@ -173,9 +188,21 @@ class TestCaseBuilder:
                 
                 test_data = self._build_test_data_from_partitions(test_partitions)
                 
-                # Determine expected error status and code
-                expected_status = self._get_error_status_code(invalid_partition)
-                expected_error_code = self._get_expected_error_code(invalid_partition)
+                # Resolve expected error dynamically from swagger ONLY
+                expected_error_code = self._get_expected_error_code(
+                    invalid_partition, partition_set.field_name, endpoint_data
+                )
+                
+                # If no error code found in swagger, use generic description
+                if expected_error_code:
+                    expected_status = self.status_resolver.get_error_status_code(
+                        expected_error_code, endpoint_data
+                    )
+                    expected_result_text = f"Request rejected with error {expected_error_code} and status {expected_status}"
+                else:
+                    # No error code in swagger - use generic validation error
+                    expected_status = 400  # Generic Bad Request
+                    expected_result_text = f"Request rejected with validation error and status {expected_status}"
                 
                 test_case = TestCase(
                     test_case_id=test_case_id,
@@ -187,18 +214,27 @@ class TestCaseBuilder:
                     objective=f"Verify endpoint rejects invalid {partition_set.field_name}: {invalid_partition.description}",
                     partitions_covered=test_partitions,
                     test_data=test_data,
-                    expected_result=f"Request rejected with error {expected_error_code} and status {expected_status}",
+                    expected_result=expected_result_text,
                     expected_status_code=expected_status,
                     preconditions=self._generate_preconditions(endpoint_data),
-                    steps=self._generate_test_steps(http_method, endpoint, test_data, test_partitions, is_negative=True),
-                    tags=["negative", "equivalence_partition", "invalid", invalid_partition.category.value, http_method.lower()]
+                    steps=self._generate_test_steps(
+                        http_method, endpoint, test_data, test_partitions, 
+                        endpoint_data, is_negative=True
+                    ),
+                    tags=[
+                        "negative", "equivalence_partition", "invalid", 
+                        invalid_partition.category.value, http_method.lower()
+                    ]
                 )
                 
                 negative_tests.append(test_case)
         
         return negative_tests
     
-    def _build_test_data_from_partitions(self, partitions: List[EquivalencePartition]) -> Dict[str, Any]:
+    def _build_test_data_from_partitions(
+        self, 
+        partitions: List[EquivalencePartition]
+    ) -> Dict[str, Any]:
         """
         Build test data dictionary from list of partitions.
         
@@ -218,54 +254,36 @@ class TestCaseBuilder:
         
         return test_data
     
-    def _get_success_status_code(self, http_method: str, endpoint_data: Dict[str, Any]) -> int:
-        """Determine expected success status code based on HTTP method."""
-        method_upper = http_method.upper()
+    def _get_expected_error_code(
+        self,
+        partition: EquivalencePartition,
+        field_name: str,
+        endpoint_data: Dict[str, Any]
+    ) -> Optional[str]:
+        """
+        Get expected error code dynamically from swagger metadata ONLY.
         
-        # Check if endpoint_data has response information
-        responses = endpoint_data.get("responses", [])
-        for response in responses:
-            status_code = str(response.get("status_code", ""))
-            if status_code.startswith("2"):  # 2xx success codes
-                return int(status_code)
+        Does NOT use hardcoded fallbacks. If swagger doesn't define error codes,
+        returns None to indicate undefined behavior.
         
-        # Default success codes by method
-        if method_upper == "POST":
-            return 201
-        elif method_upper == "DELETE":
-            return 204
-        elif method_upper in ["GET", "PUT", "PATCH"]:
-            return 200
-        else:
-            return 200
-    
-    def _get_error_status_code(self, partition: EquivalencePartition) -> int:
-        """Determine expected error status code based on partition type."""
-        expected_error = partition.constraint_details.get("expected_error", "")
+        Args:
+            partition: Invalid partition
+            field_name: Field name
+            endpoint_data: Endpoint metadata
+            
+        Returns:
+            Error code from swagger, or None if not defined
+        """
+        # ONLY use swagger metadata - no hardcoded fallbacks
+        resolved_error = self.error_resolver.get_error_code_for_constraint(
+            field_name,
+            partition.category.value,
+            partition.constraint_details,
+            endpoint_data
+        )
         
-        # Map error codes to HTTP status
-        if expected_error.startswith("HDR"):
-            return 400  # Header errors
-        elif expected_error.startswith("RNF"):
-            return 404  # Resource not found
-        elif expected_error.startswith("RBV"):
-            # Request body validation errors
-            if expected_error == "RBV-005":
-                return 409  # Conflict (duplicate)
-            return 400
-        
-        # Default based on partition category
-        if partition.category == PartitionCategory.REQUIRED:
-            return 400
-        elif partition.category in [PartitionCategory.LENGTH, PartitionCategory.RANGE, 
-                                     PartitionCategory.FORMAT, PartitionCategory.TYPE]:
-            return 400
-        
-        return 400  # Default bad request
-    
-    def _get_expected_error_code(self, partition: EquivalencePartition) -> str:
-        """Get expected error code from partition."""
-        return partition.constraint_details.get("expected_error", "TYP-003")
+        # Return None if not found - caller must handle
+        return resolved_error
     
     def _determine_priority(self, partition: EquivalencePartition) -> TestCasePriority:
         """Determine test case priority based on partition characteristics."""
@@ -281,7 +299,15 @@ class TestCaseBuilder:
         return TestCasePriority.LOW
     
     def _generate_preconditions(self, endpoint_data: Dict[str, Any]) -> List[str]:
-        """Generate preconditions for test execution."""
+        """
+        Generate preconditions dynamically from endpoint metadata.
+        
+        Args:
+            endpoint_data: Endpoint metadata from swagger
+            
+        Returns:
+            List of precondition strings
+        """
         preconditions = [
             "API server is running and accessible",
             "Test environment is properly configured"
@@ -289,8 +315,11 @@ class TestCaseBuilder:
         
         # Add authentication if required headers present
         headers = endpoint_data.get("headers", [])
-        if any(h.get("name", "").startswith("x-") for h in headers):
-            preconditions.append("Required headers (x-correlation-id, x-request-id, x-transaction-id) are available")
+        if headers:
+            header_names = [h.get("name", "") for h in headers if h.get("required", False)]
+            if header_names:
+                header_list = ", ".join(header_names)
+                preconditions.append(f"Required headers ({header_list}) are available")
         
         return preconditions
     
@@ -300,17 +329,23 @@ class TestCaseBuilder:
         endpoint: str,
         test_data: Dict[str, Any],
         partitions: List[EquivalencePartition],
+        endpoint_data: Dict[str, Any],
         is_negative: bool = False
     ) -> List[str]:
-        """Generate detailed test execution steps."""
+        """Generate detailed test execution steps dynamically."""
         steps = []
         
         # Step 1: Prepare test data
         data_description = ", ".join([f"{k}={v}" for k, v in test_data.items()])
         steps.append(f"Prepare test data: {data_description}")
         
-        # Step 2: Set headers
-        steps.append("Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs")
+        # Step 2: Set headers (dynamically from swagger)
+        headers = endpoint_data.get("headers", [])
+        if headers:
+            required_headers = [h.get("name") for h in headers if h.get("required", False)]
+            if required_headers:
+                header_list = ", ".join(required_headers)
+                steps.append(f"Set required headers ({header_list}) with valid UUIDs")
         
         # Step 3: Send request
         if http_method.upper() in ["POST", "PUT", "PATCH"]:
@@ -320,11 +355,21 @@ class TestCaseBuilder:
         
         # Step 4: Verify response
         if is_negative:
-            invalid_partition = next((p for p in partitions if p.partition_type == PartitionType.INVALID), None)
+            invalid_partition = next(
+                (p for p in partitions if p.partition_type == PartitionType.INVALID), 
+                None
+            )
             if invalid_partition:
-                expected_error = invalid_partition.constraint_details.get("expected_error", "error code")
-                steps.append(f"Verify response contains error {expected_error}")
-                steps.append(f"Verify response status indicates validation failure")
+                expected_error = self._get_expected_error_code(
+                    invalid_partition, 
+                    invalid_partition.field_name, 
+                    endpoint_data
+                )
+                if expected_error:
+                    steps.append(f"Verify response contains error code {expected_error}")
+                else:
+                    steps.append("Verify response contains validation error code")
+                steps.append("Verify response status indicates validation failure")
         else:
             steps.append("Verify response status indicates success")
             steps.append("Verify response body structure matches specification")
@@ -337,7 +382,6 @@ class TestCaseBuilder:
     def _generate_test_case_id(self, endpoint: str, http_method: str, scenario: str) -> str:
         """Generate unique test case ID."""
         self.test_counter += 1
-        # Sanitize endpoint for ID
-        endpoint_safe = endpoint.replace("/", "").replace("{", "").replace("}", "").strip("")
+        endpoint_safe = endpoint.replace("/", "").replace("{", "").replace("}", "").strip()
         timestamp = datetime.now().strftime("%Y%m%d")
         return f"{SwaggerConstants.TEST_ID_PREFIX_EP}{http_method.upper()}{endpoint_safe}{scenario}{timestamp}_{self.test_counter}"
