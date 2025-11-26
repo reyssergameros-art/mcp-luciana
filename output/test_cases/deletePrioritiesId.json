@@ -1,20 +1,20 @@
 {
   "metadata": {
-    "generated_at": "2025-11-25T20:39:39.569088",
+    "generated_at": "2025-11-26T08:18:47.379528",
     "source_file": "c:\\Users\\reyss\\OneDrive\\Desktop\\mcp\\mcp-luciana\\output\\swagger\\gestión_de_prioridades_api_20251125_194956.json",
     "technique": "Equivalence Partitioning (ISTQB v4)",
-    "endpoint": "/priorities",
-    "http_method": "GET",
+    "endpoint": "/priorities/{id}",
+    "http_method": "DELETE",
     "tool_version": "1.0.0"
   },
   "metrics": {
-    "total_partitions": 27,
+    "total_partitions": 30,
     "valid_partitions": 3,
-    "invalid_partitions": 24,
+    "invalid_partitions": 27,
     "coverage_percentage": 100.0,
-    "total_test_cases": 25,
+    "total_test_cases": 28,
     "success_test_cases": 1,
-    "failure_test_cases": 24
+    "failure_test_cases": 27
   },
   "partition_sets": [
     {
@@ -25,7 +25,7 @@
       "invalid_partitions_count": 8,
       "partitions": [
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "partition_type": "valid",
           "category": "format",
           "field_name": "x-correlation-id",
@@ -37,7 +37,7 @@
           "rationale": "Tests valid partition with correct UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idinvalid_uuid0",
+          "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid0",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-correlation-id",
@@ -49,7 +49,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idinvalid_uuid1",
+          "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid1",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-correlation-id",
@@ -61,7 +61,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idinvalid_uuid2",
+          "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid2",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-correlation-id",
@@ -73,7 +73,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-iduuid_too_short",
+          "partition_id": "EPprioritiesidx-correlation-iduuid_too_short",
           "partition_type": "invalid",
           "category": "length",
           "field_name": "x-correlation-id",
@@ -87,7 +87,7 @@
           "rationale": "Tests invalid partition where UUID length < 36 characters"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-iduuid_too_long",
+          "partition_id": "EPprioritiesidx-correlation-iduuid_too_long",
           "partition_type": "invalid",
           "category": "length",
           "field_name": "x-correlation-id",
@@ -101,7 +101,7 @@
           "rationale": "Tests invalid partition where UUID length > 36 characters"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idmissing_required",
+          "partition_id": "EPprioritiesidx-correlation-idmissing_required",
           "partition_type": "invalid",
           "category": "required",
           "field_name": "x-correlation-id",
@@ -113,7 +113,7 @@
           "rationale": "Tests invalid partition where required field is omitted"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idempty_required",
+          "partition_id": "EPprioritiesidx-correlation-idempty_required",
           "partition_type": "invalid",
           "category": "required",
           "field_name": "x-correlation-id",
@@ -125,7 +125,7 @@
           "rationale": "Tests invalid partition where required field has empty value"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idinvalid_type",
+          "partition_id": "EPprioritiesidx-correlation-idinvalid_type",
           "partition_type": "invalid",
           "category": "type",
           "field_name": "x-correlation-id",
@@ -147,7 +147,7 @@
       "invalid_partitions_count": 8,
       "partitions": [
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "partition_type": "valid",
           "category": "format",
           "field_name": "x-request-id",
@@ -159,7 +159,7 @@
           "rationale": "Tests valid partition with correct UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idinvalid_uuid0",
+          "partition_id": "EPprioritiesidx-request-idinvalid_uuid0",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-request-id",
@@ -171,7 +171,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idinvalid_uuid1",
+          "partition_id": "EPprioritiesidx-request-idinvalid_uuid1",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-request-id",
@@ -183,7 +183,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idinvalid_uuid2",
+          "partition_id": "EPprioritiesidx-request-idinvalid_uuid2",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-request-id",
@@ -195,7 +195,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-request-iduuid_too_short",
+          "partition_id": "EPprioritiesidx-request-iduuid_too_short",
           "partition_type": "invalid",
           "category": "length",
           "field_name": "x-request-id",
@@ -209,7 +209,7 @@
           "rationale": "Tests invalid partition where UUID length < 36 characters"
         },
         {
-          "partition_id": "EPprioritiesx-request-iduuid_too_long",
+          "partition_id": "EPprioritiesidx-request-iduuid_too_long",
           "partition_type": "invalid",
           "category": "length",
           "field_name": "x-request-id",
@@ -223,7 +223,7 @@
           "rationale": "Tests invalid partition where UUID length > 36 characters"
         },
         {
-          "partition_id": "EPprioritiesx-request-idmissing_required",
+          "partition_id": "EPprioritiesidx-request-idmissing_required",
           "partition_type": "invalid",
           "category": "required",
           "field_name": "x-request-id",
@@ -235,7 +235,7 @@
           "rationale": "Tests invalid partition where required field is omitted"
         },
         {
-          "partition_id": "EPprioritiesx-request-idempty_required",
+          "partition_id": "EPprioritiesidx-request-idempty_required",
           "partition_type": "invalid",
           "category": "required",
           "field_name": "x-request-id",
@@ -247,7 +247,7 @@
           "rationale": "Tests invalid partition where required field has empty value"
         },
         {
-          "partition_id": "EPprioritiesx-request-idinvalid_type",
+          "partition_id": "EPprioritiesidx-request-idinvalid_type",
           "partition_type": "invalid",
           "category": "type",
           "field_name": "x-request-id",
@@ -269,7 +269,7 @@
       "invalid_partitions_count": 8,
       "partitions": [
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "partition_type": "valid",
           "category": "format",
           "field_name": "x-transaction-id",
@@ -281,7 +281,7 @@
           "rationale": "Tests valid partition with correct UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idinvalid_uuid0",
+          "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid0",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-transaction-id",
@@ -293,7 +293,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idinvalid_uuid1",
+          "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid1",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-transaction-id",
@@ -305,7 +305,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idinvalid_uuid2",
+          "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid2",
           "partition_type": "invalid",
           "category": "format",
           "field_name": "x-transaction-id",
@@ -317,7 +317,7 @@
           "rationale": "Tests invalid partition with incorrect UUID format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-iduuid_too_short",
+          "partition_id": "EPprioritiesidx-transaction-iduuid_too_short",
           "partition_type": "invalid",
           "category": "length",
           "field_name": "x-transaction-id",
@@ -331,7 +331,7 @@
           "rationale": "Tests invalid partition where UUID length < 36 characters"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-iduuid_too_long",
+          "partition_id": "EPprioritiesidx-transaction-iduuid_too_long",
           "partition_type": "invalid",
           "category": "length",
           "field_name": "x-transaction-id",
@@ -345,7 +345,7 @@
           "rationale": "Tests invalid partition where UUID length > 36 characters"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idmissing_required",
+          "partition_id": "EPprioritiesidx-transaction-idmissing_required",
           "partition_type": "invalid",
           "category": "required",
           "field_name": "x-transaction-id",
@@ -357,7 +357,7 @@
           "rationale": "Tests invalid partition where required field is omitted"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idempty_required",
+          "partition_id": "EPprioritiesidx-transaction-idempty_required",
           "partition_type": "invalid",
           "category": "required",
           "field_name": "x-transaction-id",
@@ -369,10 +369,56 @@
           "rationale": "Tests invalid partition where required field has empty value"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idinvalid_type",
+          "partition_id": "EPprioritiesidx-transaction-idinvalid_type",
           "partition_type": "invalid",
           "category": "type",
           "field_name": "x-transaction-id",
+          "description": "Invalid: wrong data type (expected string)",
+          "test_value": 12345,
+          "constraint_details": {
+            "expected_type": "string",
+            "provided_type": "int"
+          },
+          "rationale": "Tests invalid partition with incorrect data type"
+        }
+      ]
+    },
+    {
+      "field_name": "id",
+      "field_type": "string",
+      "total_partitions": 3,
+      "valid_partitions_count": 0,
+      "invalid_partitions_count": 3,
+      "partitions": [
+        {
+          "partition_id": "EPprioritiesididmissing_required",
+          "partition_type": "invalid",
+          "category": "required",
+          "field_name": "id",
+          "description": "Invalid: required field is missing",
+          "test_value": null,
+          "constraint_details": {
+            "required": true
+          },
+          "rationale": "Tests invalid partition where required field is omitted"
+        },
+        {
+          "partition_id": "EPprioritiesididempty_required",
+          "partition_type": "invalid",
+          "category": "required",
+          "field_name": "id",
+          "description": "Invalid: required field is empty",
+          "test_value": "",
+          "constraint_details": {
+            "required": true
+          },
+          "rationale": "Tests invalid partition where required field has empty value"
+        },
+        {
+          "partition_id": "EPprioritiesididinvalid_type",
+          "partition_type": "invalid",
+          "category": "type",
+          "field_name": "id",
           "description": "Invalid: wrong data type (expected string)",
           "test_value": 12345,
           "constraint_details": {
@@ -386,11 +432,11 @@
   ],
   "success_test_cases": [
     {
-      "test_case_id": "EPGETprioritiesvalid_all20251125_96",
-      "test_name": "GET /priorities - All Valid Inputs",
+      "test_case_id": "EPDELETEprioritiesidvalid_all20251126_68",
+      "test_name": "DELETE /priorities/{id} - All Valid Inputs",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint accepts all valid input values within equivalence partitions",
       "test_data": {
@@ -398,8 +444,8 @@
         "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
         "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
       },
-      "expected_result": "Request processed successfully with status 200",
-      "expected_status_code": 200,
+      "expected_result": "Request processed successfully with status 204",
+      "expected_status_code": 204,
       "preconditions": [
         "API server is running and accessible",
         "Test environment is properly configured",
@@ -408,7 +454,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response status indicates success",
         "Verify response body structure matches specification",
         "Log test result with timestamp and execution details"
@@ -417,23 +463,23 @@
         "positive",
         "equivalence_partition",
         "valid",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -443,11 +489,11 @@
   ],
   "failure_test_cases": [
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_format20251125_97",
-      "test_name": "GET /priorities - Invalid x-correlation-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_format20251126_69",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (invalid-uuid)",
       "test_data": {
@@ -465,7 +511,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=invalid-uuid, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -475,23 +521,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-idinvalid_uuid0",
+          "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid0",
           "field_name": "x-correlation-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -499,11 +545,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_format20251125_98",
-      "test_name": "GET /priorities - Invalid x-correlation-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_format20251126_70",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (123)",
       "test_data": {
@@ -521,7 +567,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=123, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -531,23 +577,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-idinvalid_uuid1",
+          "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid1",
           "field_name": "x-correlation-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -555,11 +601,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_format20251125_99",
-      "test_name": "GET /priorities - Invalid x-correlation-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_format20251126_71",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (empty)",
       "test_data": {
@@ -577,7 +623,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -587,23 +633,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-idinvalid_uuid2",
+          "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid2",
           "field_name": "x-correlation-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -611,11 +657,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_length20251125_100",
-      "test_name": "GET /priorities - Invalid x-correlation-id (length)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_length20251126_72",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (length)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "medium",
       "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: UUID length below 36 chars",
       "test_data": {
@@ -633,7 +679,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -643,23 +689,23 @@
         "equivalence_partition",
         "invalid",
         "length",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-iduuid_too_short",
+          "partition_id": "EPprioritiesidx-correlation-iduuid_too_short",
           "field_name": "x-correlation-id",
           "partition_type": "invalid",
           "category": "length"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -667,11 +713,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_length20251125_101",
-      "test_name": "GET /priorities - Invalid x-correlation-id (length)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_length20251126_73",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (length)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "medium",
       "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: UUID length exceeds 36 chars",
       "test_data": {
@@ -689,7 +735,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000-extra, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -699,23 +745,23 @@
         "equivalence_partition",
         "invalid",
         "length",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-iduuid_too_long",
+          "partition_id": "EPprioritiesidx-correlation-iduuid_too_long",
           "field_name": "x-correlation-id",
           "partition_type": "invalid",
           "category": "length"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -723,11 +769,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_required20251125_102",
-      "test_name": "GET /priorities - Invalid x-correlation-id (required)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_required20251126_74",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (required)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: required field is missing",
       "test_data": {
@@ -744,7 +790,7 @@
       "steps": [
         "Prepare test data: x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -754,23 +800,23 @@
         "equivalence_partition",
         "invalid",
         "required",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-idmissing_required",
+          "partition_id": "EPprioritiesidx-correlation-idmissing_required",
           "field_name": "x-correlation-id",
           "partition_type": "invalid",
           "category": "required"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -778,11 +824,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_required20251125_103",
-      "test_name": "GET /priorities - Invalid x-correlation-id (required)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_required20251126_75",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (required)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: required field is empty",
       "test_data": {
@@ -800,7 +846,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -810,23 +856,23 @@
         "equivalence_partition",
         "invalid",
         "required",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-idempty_required",
+          "partition_id": "EPprioritiesidx-correlation-idempty_required",
           "field_name": "x-correlation-id",
           "partition_type": "invalid",
           "category": "required"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -834,11 +880,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_type20251125_104",
-      "test_name": "GET /priorities - Invalid x-correlation-id (type)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_type20251126_76",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (type)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "low",
       "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: wrong data type (expected string)",
       "test_data": {
@@ -856,7 +902,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=12345, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -866,23 +912,23 @@
         "equivalence_partition",
         "invalid",
         "type",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-correlation-idinvalid_type",
+          "partition_id": "EPprioritiesidx-correlation-idinvalid_type",
           "field_name": "x-correlation-id",
           "partition_type": "invalid",
           "category": "type"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -890,11 +936,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-request-id_format20251125_105",
-      "test_name": "GET /priorities - Invalid x-request-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_format20251126_77",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (invalid-uuid)",
       "test_data": {
@@ -912,7 +958,7 @@
       "steps": [
         "Prepare test data: x-request-id=invalid-uuid, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -922,23 +968,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-request-idinvalid_uuid0",
+          "partition_id": "EPprioritiesidx-request-idinvalid_uuid0",
           "field_name": "x-request-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -946,11 +992,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-request-id_format20251125_106",
-      "test_name": "GET /priorities - Invalid x-request-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_format20251126_78",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (123)",
       "test_data": {
@@ -968,7 +1014,7 @@
       "steps": [
         "Prepare test data: x-request-id=123, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -978,23 +1024,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-request-idinvalid_uuid1",
+          "partition_id": "EPprioritiesidx-request-idinvalid_uuid1",
           "field_name": "x-request-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -1002,11 +1048,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-request-id_format20251125_107",
-      "test_name": "GET /priorities - Invalid x-request-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_format20251126_79",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (empty)",
       "test_data": {
@@ -1024,7 +1070,7 @@
       "steps": [
         "Prepare test data: x-request-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1034,23 +1080,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-request-idinvalid_uuid2",
+          "partition_id": "EPprioritiesidx-request-idinvalid_uuid2",
           "field_name": "x-request-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -1058,11 +1104,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-request-id_length20251125_108",
-      "test_name": "GET /priorities - Invalid x-request-id (length)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_length20251126_80",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (length)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "medium",
       "objective": "Verify endpoint rejects invalid x-request-id: Invalid: UUID length below 36 chars",
       "test_data": {
@@ -1080,7 +1126,7 @@
       "steps": [
         "Prepare test data: x-request-id=550e8400-e29b-41d4-a716, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1090,23 +1136,23 @@
         "equivalence_partition",
         "invalid",
         "length",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-request-iduuid_too_short",
+          "partition_id": "EPprioritiesidx-request-iduuid_too_short",
           "field_name": "x-request-id",
           "partition_type": "invalid",
           "category": "length"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -1114,11 +1160,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-request-id_length20251125_109",
-      "test_name": "GET /priorities - Invalid x-request-id (length)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_length20251126_81",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (length)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "medium",
       "objective": "Verify endpoint rejects invalid x-request-id: Invalid: UUID length exceeds 36 chars",
       "test_data": {
@@ -1136,7 +1182,7 @@
       "steps": [
         "Prepare test data: x-request-id=550e8400-e29b-41d4-a716-446655440000-extra, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1146,23 +1192,23 @@
         "equivalence_partition",
         "invalid",
         "length",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-request-iduuid_too_long",
+          "partition_id": "EPprioritiesidx-request-iduuid_too_long",
           "field_name": "x-request-id",
           "partition_type": "invalid",
           "category": "length"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -1170,11 +1216,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-request-id_required20251125_110",
-      "test_name": "GET /priorities - Invalid x-request-id (required)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_required20251126_82",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (required)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-request-id: Invalid: required field is missing",
       "test_data": {
@@ -1191,7 +1237,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1201,23 +1247,23 @@
         "equivalence_partition",
         "invalid",
         "required",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-request-idmissing_required",
+          "partition_id": "EPprioritiesidx-request-idmissing_required",
           "field_name": "x-request-id",
           "partition_type": "invalid",
           "category": "required"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -1225,11 +1271,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-request-id_required20251125_111",
-      "test_name": "GET /priorities - Invalid x-request-id (required)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_required20251126_83",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (required)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-request-id: Invalid: required field is empty",
       "test_data": {
@@ -1247,7 +1293,7 @@
       "steps": [
         "Prepare test data: x-request-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1257,23 +1303,23 @@
         "equivalence_partition",
         "invalid",
         "required",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-request-idempty_required",
+          "partition_id": "EPprioritiesidx-request-idempty_required",
           "field_name": "x-request-id",
           "partition_type": "invalid",
           "category": "required"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -1281,11 +1327,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-request-id_type20251125_112",
-      "test_name": "GET /priorities - Invalid x-request-id (type)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_type20251126_84",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (type)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "low",
       "objective": "Verify endpoint rejects invalid x-request-id: Invalid: wrong data type (expected string)",
       "test_data": {
@@ -1303,7 +1349,7 @@
       "steps": [
         "Prepare test data: x-request-id=12345, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1313,23 +1359,23 @@
         "equivalence_partition",
         "invalid",
         "type",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-request-idinvalid_type",
+          "partition_id": "EPprioritiesidx-request-idinvalid_type",
           "field_name": "x-request-id",
           "partition_type": "invalid",
           "category": "type"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
           "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
@@ -1337,11 +1383,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_format20251125_113",
-      "test_name": "GET /priorities - Invalid x-transaction-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_format20251126_85",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (invalid-uuid)",
       "test_data": {
@@ -1359,7 +1405,7 @@
       "steps": [
         "Prepare test data: x-transaction-id=invalid-uuid, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1369,23 +1415,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-transaction-idinvalid_uuid0",
+          "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid0",
           "field_name": "x-transaction-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
@@ -1393,11 +1439,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_format20251125_114",
-      "test_name": "GET /priorities - Invalid x-transaction-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_format20251126_86",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (123)",
       "test_data": {
@@ -1415,7 +1461,7 @@
       "steps": [
         "Prepare test data: x-transaction-id=123, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1425,23 +1471,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-transaction-idinvalid_uuid1",
+          "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid1",
           "field_name": "x-transaction-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
@@ -1449,11 +1495,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_format20251125_115",
-      "test_name": "GET /priorities - Invalid x-transaction-id (format)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_format20251126_87",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (format)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (empty)",
       "test_data": {
@@ -1471,7 +1517,7 @@
       "steps": [
         "Prepare test data: x-transaction-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1481,23 +1527,23 @@
         "equivalence_partition",
         "invalid",
         "format",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-transaction-idinvalid_uuid2",
+          "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid2",
           "field_name": "x-transaction-id",
           "partition_type": "invalid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
@@ -1505,11 +1551,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_length20251125_116",
-      "test_name": "GET /priorities - Invalid x-transaction-id (length)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_length20251126_88",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (length)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "medium",
       "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: UUID length below 36 chars",
       "test_data": {
@@ -1527,7 +1573,7 @@
       "steps": [
         "Prepare test data: x-transaction-id=550e8400-e29b-41d4-a716, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1537,23 +1583,23 @@
         "equivalence_partition",
         "invalid",
         "length",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-transaction-iduuid_too_short",
+          "partition_id": "EPprioritiesidx-transaction-iduuid_too_short",
           "field_name": "x-transaction-id",
           "partition_type": "invalid",
           "category": "length"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
@@ -1561,11 +1607,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_length20251125_117",
-      "test_name": "GET /priorities - Invalid x-transaction-id (length)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_length20251126_89",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (length)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "medium",
       "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: UUID length exceeds 36 chars",
       "test_data": {
@@ -1583,7 +1629,7 @@
       "steps": [
         "Prepare test data: x-transaction-id=550e8400-e29b-41d4-a716-446655440000-extra, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1593,23 +1639,23 @@
         "equivalence_partition",
         "invalid",
         "length",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-transaction-iduuid_too_long",
+          "partition_id": "EPprioritiesidx-transaction-iduuid_too_long",
           "field_name": "x-transaction-id",
           "partition_type": "invalid",
           "category": "length"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
@@ -1617,11 +1663,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_required20251125_118",
-      "test_name": "GET /priorities - Invalid x-transaction-id (required)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_required20251126_90",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (required)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: required field is missing",
       "test_data": {
@@ -1638,7 +1684,7 @@
       "steps": [
         "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1648,23 +1694,23 @@
         "equivalence_partition",
         "invalid",
         "required",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-transaction-idmissing_required",
+          "partition_id": "EPprioritiesidx-transaction-idmissing_required",
           "field_name": "x-transaction-id",
           "partition_type": "invalid",
           "category": "required"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
@@ -1672,11 +1718,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_required20251125_119",
-      "test_name": "GET /priorities - Invalid x-transaction-id (required)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_required20251126_91",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (required)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "high",
       "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: required field is empty",
       "test_data": {
@@ -1694,7 +1740,7 @@
       "steps": [
         "Prepare test data: x-transaction-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1704,23 +1750,23 @@
         "equivalence_partition",
         "invalid",
         "required",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-transaction-idempty_required",
+          "partition_id": "EPprioritiesidx-transaction-idempty_required",
           "field_name": "x-transaction-id",
           "partition_type": "invalid",
           "category": "required"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
           "partition_type": "valid",
           "category": "format"
@@ -1728,11 +1774,11 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_type20251125_120",
-      "test_name": "GET /priorities - Invalid x-transaction-id (type)",
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_type20251126_92",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (type)",
       "technique": "Equivalence Partitioning",
-      "endpoint": "/priorities",
-      "http_method": "GET",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
       "priority": "low",
       "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: wrong data type (expected string)",
       "test_data": {
@@ -1750,7 +1796,7 @@
       "steps": [
         "Prepare test data: x-transaction-id=12345, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
         "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
-        "Send GET request to /priorities",
+        "Send DELETE request to /priorities/{id}",
         "Verify response contains validation error code",
         "Verify response status indicates validation failure",
         "Log test result with timestamp and execution details"
@@ -1760,29 +1806,217 @@
         "equivalence_partition",
         "invalid",
         "type",
-        "get"
+        "delete"
       ],
       "partitions_covered": [
         {
-          "partition_id": "EPprioritiesx-transaction-idinvalid_type",
+          "partition_id": "EPprioritiesidx-transaction-idinvalid_type",
           "field_name": "x-transaction-id",
           "partition_type": "invalid",
           "category": "type"
         },
         {
-          "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
           "field_name": "x-correlation-id",
           "partition_type": "valid",
           "category": "format"
         },
         {
-          "partition_id": "EPprioritiesx-request-idvalid_uuid",
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
           "field_name": "x-request-id",
+          "partition_type": "valid",
+          "category": "format"
+        }
+      ]
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_id_required20251126_93",
+      "test_name": "DELETE /priorities/{id} - Invalid id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid id: Invalid: required field is missing",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "partitions_covered": [
+        {
+          "partition_id": "EPprioritiesididmissing_required",
+          "field_name": "id",
+          "partition_type": "invalid",
+          "category": "required"
+        },
+        {
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+          "field_name": "x-correlation-id",
+          "partition_type": "valid",
+          "category": "format"
+        },
+        {
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+          "field_name": "x-request-id",
+          "partition_type": "valid",
+          "category": "format"
+        },
+        {
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+          "field_name": "x-transaction-id",
+          "partition_type": "valid",
+          "category": "format"
+        }
+      ]
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_id_required20251126_94",
+      "test_name": "DELETE /priorities/{id} - Invalid id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid id: Invalid: required field is empty",
+      "test_data": {
+        "id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "partitions_covered": [
+        {
+          "partition_id": "EPprioritiesididempty_required",
+          "field_name": "id",
+          "partition_type": "invalid",
+          "category": "required"
+        },
+        {
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+          "field_name": "x-correlation-id",
+          "partition_type": "valid",
+          "category": "format"
+        },
+        {
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+          "field_name": "x-request-id",
+          "partition_type": "valid",
+          "category": "format"
+        },
+        {
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+          "field_name": "x-transaction-id",
+          "partition_type": "valid",
+          "category": "format"
+        }
+      ]
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_id_type20251126_95",
+      "test_name": "DELETE /priorities/{id} - Invalid id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "id": 12345,
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: id=12345, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "delete"
+      ],
+      "partitions_covered": [
+        {
+          "partition_id": "EPprioritiesididinvalid_type",
+          "field_name": "id",
+          "partition_type": "invalid",
+          "category": "type"
+        },
+        {
+          "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+          "field_name": "x-correlation-id",
+          "partition_type": "valid",
+          "category": "format"
+        },
+        {
+          "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+          "field_name": "x-request-id",
+          "partition_type": "valid",
+          "category": "format"
+        },
+        {
+          "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+          "field_name": "x-transaction-id",
           "partition_type": "valid",
           "category": "format"
         }
       ]
     }
   ],
-  "summary": "Test Generation Summary for GET /priorities\n============================================================\nTechnique: Equivalence Partitioning (ISTQB v4)\n\nPartition Analysis:\n- Total Fields Analyzed: 3\n- Total Partitions Identified: 27\n- Valid Partitions: 3\n- Invalid Partitions: 24\n\nTest Cases Generated: 25\n- Positive Tests: 1\n- Negative Tests: 24\n\nCoverage: 100.0% (ISTQB requires 100%)\n\nTest Case Breakdown:\n  • GET /priorities - All Valid Inputs [high]\n  • GET /priorities - Invalid x-correlation-id (format) [high]\n  • GET /priorities - Invalid x-correlation-id (format) [high]\n  • GET /priorities - Invalid x-correlation-id (format) [high]\n  • GET /priorities - Invalid x-correlation-id (length) [medium]\n  • GET /priorities - Invalid x-correlation-id (length) [medium]\n  • GET /priorities - Invalid x-correlation-id (required) [high]\n  • GET /priorities - Invalid x-correlation-id (required) [high]\n  • GET /priorities - Invalid x-correlation-id (type) [low]\n  • GET /priorities - Invalid x-request-id (format) [high]\n  • GET /priorities - Invalid x-request-id (format) [high]\n  • GET /priorities - Invalid x-request-id (format) [high]\n  • GET /priorities - Invalid x-request-id (length) [medium]\n  • GET /priorities - Invalid x-request-id (length) [medium]\n  • GET /priorities - Invalid x-request-id (required) [high]\n  • GET /priorities - Invalid x-request-id (required) [high]\n  • GET /priorities - Invalid x-request-id (type) [low]\n  • GET /priorities - Invalid x-transaction-id (format) [high]\n  • GET /priorities - Invalid x-transaction-id (format) [high]\n  • GET /priorities - Invalid x-transaction-id (format) [high]\n  • GET /priorities - Invalid x-transaction-id (length) [medium]\n  • GET /priorities - Invalid x-transaction-id (length) [medium]\n  • GET /priorities - Invalid x-transaction-id (required) [high]\n  • GET /priorities - Invalid x-transaction-id (required) [high]\n  • GET /priorities - Invalid x-transaction-id (type) [low]"
+  "summary": "Test Generation Summary for DELETE /priorities/{id}\n============================================================\nTechnique: Equivalence Partitioning (ISTQB v4)\n\nPartition Analysis:\n- Total Fields Analyzed: 4\n- Total Partitions Identified: 30\n- Valid Partitions: 3\n- Invalid Partitions: 27\n\nTest Cases Generated: 28\n- Positive Tests: 1\n- Negative Tests: 27\n\nCoverage: 100.0% (ISTQB requires 100%)\n\nTest Case Breakdown:\n  • DELETE /priorities/{id} - All Valid Inputs [high]\n  • DELETE /priorities/{id} - Invalid x-correlation-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-correlation-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-correlation-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-correlation-id (length) [medium]\n  • DELETE /priorities/{id} - Invalid x-correlation-id (length) [medium]\n  • DELETE /priorities/{id} - Invalid x-correlation-id (required) [high]\n  • DELETE /priorities/{id} - Invalid x-correlation-id (required) [high]\n  • DELETE /priorities/{id} - Invalid x-correlation-id (type) [low]\n  • DELETE /priorities/{id} - Invalid x-request-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-request-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-request-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-request-id (length) [medium]\n  • DELETE /priorities/{id} - Invalid x-request-id (length) [medium]\n  • DELETE /priorities/{id} - Invalid x-request-id (required) [high]\n  • DELETE /priorities/{id} - Invalid x-request-id (required) [high]\n  • DELETE /priorities/{id} - Invalid x-request-id (type) [low]\n  • DELETE /priorities/{id} - Invalid x-transaction-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-transaction-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-transaction-id (format) [high]\n  • DELETE /priorities/{id} - Invalid x-transaction-id (length) [medium]\n  • DELETE /priorities/{id} - Invalid x-transaction-id (length) [medium]\n  • DELETE /priorities/{id} - Invalid x-transaction-id (required) [high]\n  • DELETE /priorities/{id} - Invalid x-transaction-id (required) [high]\n  • DELETE /priorities/{id} - Invalid x-transaction-id (type) [low]\n  • DELETE /priorities/{id} - Invalid id (required) [high]\n  • DELETE /priorities/{id} - Invalid id (required) [high]\n  • DELETE /priorities/{id} - Invalid id (type) [low]"
 }

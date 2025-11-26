@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "2025-11-25T20:39:39.536192",
+    "generated_at": "2025-11-26T08:18:47.371922",
     "source_file": "c:\\Users\\reyss\\OneDrive\\Desktop\\mcp\\mcp-luciana\\output\\swagger\\gestión_de_prioridades_api_20251125_194956.json",
     "technique": "Equivalence Partitioning (ISTQB v4)",
     "endpoint": "/priorities/{id}",
@@ -432,7 +432,7 @@
   ],
   "success_test_cases": [
     {
-      "test_case_id": "EPGETprioritiesidvalid_all20251125_1",
+      "test_case_id": "EPGETprioritiesidvalid_all20251126_1",
       "test_name": "GET /priorities/{id} - All Valid Inputs",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -489,7 +489,7 @@
   ],
   "failure_test_cases": [
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_format20251125_2",
+      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_format20251126_2",
       "test_name": "GET /priorities/{id} - Invalid x-correlation-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -545,7 +545,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_format20251125_3",
+      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_format20251126_3",
       "test_name": "GET /priorities/{id} - Invalid x-correlation-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -601,7 +601,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_format20251125_4",
+      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_format20251126_4",
       "test_name": "GET /priorities/{id} - Invalid x-correlation-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -657,7 +657,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_length20251125_5",
+      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_length20251126_5",
       "test_name": "GET /priorities/{id} - Invalid x-correlation-id (length)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -713,7 +713,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_length20251125_6",
+      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_length20251126_6",
       "test_name": "GET /priorities/{id} - Invalid x-correlation-id (length)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -769,7 +769,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_required20251125_7",
+      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_required20251126_7",
       "test_name": "GET /priorities/{id} - Invalid x-correlation-id (required)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -824,7 +824,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_required20251125_8",
+      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_required20251126_8",
       "test_name": "GET /priorities/{id} - Invalid x-correlation-id (required)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -880,7 +880,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_type20251125_9",
+      "test_case_id": "EPGETprioritiesidinvalid_x-correlation-id_type20251126_9",
       "test_name": "GET /priorities/{id} - Invalid x-correlation-id (type)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -936,7 +936,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_format20251125_10",
+      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_format20251126_10",
       "test_name": "GET /priorities/{id} - Invalid x-request-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -992,7 +992,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_format20251125_11",
+      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_format20251126_11",
       "test_name": "GET /priorities/{id} - Invalid x-request-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1048,7 +1048,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_format20251125_12",
+      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_format20251126_12",
       "test_name": "GET /priorities/{id} - Invalid x-request-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1104,7 +1104,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_length20251125_13",
+      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_length20251126_13",
       "test_name": "GET /priorities/{id} - Invalid x-request-id (length)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1160,7 +1160,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_length20251125_14",
+      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_length20251126_14",
       "test_name": "GET /priorities/{id} - Invalid x-request-id (length)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1216,7 +1216,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_required20251125_15",
+      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_required20251126_15",
       "test_name": "GET /priorities/{id} - Invalid x-request-id (required)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1271,7 +1271,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_required20251125_16",
+      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_required20251126_16",
       "test_name": "GET /priorities/{id} - Invalid x-request-id (required)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1327,7 +1327,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_type20251125_17",
+      "test_case_id": "EPGETprioritiesidinvalid_x-request-id_type20251126_17",
       "test_name": "GET /priorities/{id} - Invalid x-request-id (type)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1383,7 +1383,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_format20251125_18",
+      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_format20251126_18",
       "test_name": "GET /priorities/{id} - Invalid x-transaction-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1439,7 +1439,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_format20251125_19",
+      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_format20251126_19",
       "test_name": "GET /priorities/{id} - Invalid x-transaction-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1495,7 +1495,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_format20251125_20",
+      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_format20251126_20",
       "test_name": "GET /priorities/{id} - Invalid x-transaction-id (format)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1551,7 +1551,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_length20251125_21",
+      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_length20251126_21",
       "test_name": "GET /priorities/{id} - Invalid x-transaction-id (length)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1607,7 +1607,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_length20251125_22",
+      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_length20251126_22",
       "test_name": "GET /priorities/{id} - Invalid x-transaction-id (length)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1663,7 +1663,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_required20251125_23",
+      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_required20251126_23",
       "test_name": "GET /priorities/{id} - Invalid x-transaction-id (required)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1718,7 +1718,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_required20251125_24",
+      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_required20251126_24",
       "test_name": "GET /priorities/{id} - Invalid x-transaction-id (required)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1774,7 +1774,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_type20251125_25",
+      "test_case_id": "EPGETprioritiesidinvalid_x-transaction-id_type20251126_25",
       "test_name": "GET /priorities/{id} - Invalid x-transaction-id (type)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1830,7 +1830,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_id_required20251125_26",
+      "test_case_id": "EPGETprioritiesidinvalid_id_required20251126_26",
       "test_name": "GET /priorities/{id} - Invalid id (required)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1892,7 +1892,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_id_required20251125_27",
+      "test_case_id": "EPGETprioritiesidinvalid_id_required20251126_27",
       "test_name": "GET /priorities/{id} - Invalid id (required)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",
@@ -1955,7 +1955,7 @@
       ]
     },
     {
-      "test_case_id": "EPGETprioritiesidinvalid_id_type20251125_28",
+      "test_case_id": "EPGETprioritiesidinvalid_id_type20251126_28",
       "test_name": "GET /priorities/{id} - Invalid id (type)",
       "technique": "Equivalence Partitioning",
       "endpoint": "/priorities/{id}",

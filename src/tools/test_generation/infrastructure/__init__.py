@@ -27,6 +27,8 @@ from .constraint_partition_generators import (
     TypePartitionGenerator
 )
 
+from .filename_generator import FilenameGenerator
+
 __all__ = [
     # Refactored (recommended)
     "PartitionIdentifierRefactored",
@@ -49,4 +51,5 @@ __all__ = [
     "EnumPartitionGenerator",
     "RequiredPartitionGenerator",
     "TypePartitionGenerator",
+    "FilenameGenerator",
 ]

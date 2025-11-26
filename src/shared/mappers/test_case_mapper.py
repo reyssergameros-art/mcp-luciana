@@ -7,6 +7,8 @@ import json
 from src.tools.test_generation.domain.models import (
     TestGenerationResult, TestCase, EquivalencePartition, PartitionSet
 )
+from src.tools.test_generation.infrastructure.filename_generator import FilenameGenerator
+from src.tools.test_generation.infrastructure.filename_generator import FilenameGenerator
 
 
 class TestCaseMapper:
@@ -120,17 +122,16 @@ class TestCaseMapper:
         output_dir = Path("output") / "test_cases"
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Generate timestamp for all files
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        # Initialize filename generator (follows SOLID: Single Responsibility)
+        filename_gen = FilenameGenerator()
         
         saved_files = []
         
         # Create one file per endpoint
         for result in results:
-            # Generate filename from HTTP method and endpoint
-            method = result.http_method
-            endpoint = result.endpoint.replace("/", "").replace("{", "").replace("}", "").strip("")
-            filename = f"{method}{endpoint}{timestamp}.json"
+            # Generate camelCase filename: postBeneficiarios.json, getBeneficiariosId.json
+            filename_base = filename_gen.generate(result.http_method, result.endpoint)
+            filename = f"{filename_base}.json"
             file_path = output_dir / filename
             
             # Separate test cases into success and failure
