@@ -18,8 +18,9 @@ from .domain.exceptions import (
 )
 from .infrastructure.repositories import FileKarateRepository
 from .application.services import KarateGenerationService
+from .config import PATH_CONFIG, CONFIG_DEFAULTS, FEATURE_CONFIG
 
-_all_ = [
+__all__ = [
     "KarateFeature",
     "KarateScenario",
     "KarateExample",
@@ -33,4 +34,7 @@ _all_ = [
     "ConfigGenerationError",
     "FileKarateRepository",
     "KarateGenerationService",
+    "PATH_CONFIG",
+    "CONFIG_DEFAULTS",
+    "FEATURE_CONFIG",
 ]

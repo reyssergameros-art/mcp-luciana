@@ -9,13 +9,15 @@ from ..domain.models import (
     ScenarioType,
     HttpMethod
 )
+from ..config import FEATURE_CONFIG
 
 
 class KarateFeatureBuilder:
     """Builds Karate feature file content with proper Gherkin syntax."""
     
     def __init__(self):
-        self.indent = "  "  # 2 spaces for Gherkin indentation
+        self.indent = " " * FEATURE_CONFIG.INDENT_SPACES
+        self.config = FEATURE_CONFIG
     
     def build(self, feature: KarateFeature) -> str:
         """
@@ -39,7 +41,7 @@ class KarateFeatureBuilder:
     def _build_header(self, feature: KarateFeature) -> str:
         """Build feature file header with tags."""
         tags = [
-            "@regression",
+            self.config.REGRESSION_TAG,
             f"@{feature.http_method.value.lower()}",
             f"@{feature.get_feature_path()}"
         ]

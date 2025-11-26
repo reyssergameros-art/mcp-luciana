@@ -101,11 +101,14 @@ class KarateConfig:
     """Represents karate-config.js configuration."""
     base_url: str
     headers: Dict[str, str]
-    timeout: int = 30000
-    retry: int = 0
+    timeout: int
+    retry: int
+    environments: Dict[str, str] = field(default_factory=dict)
     
     def generate_config_content(self) -> str:
         """Generate the karate-config.js content."""
+        env_conditions = self._format_environment_conditions()
+        
         return f"""function fn() {{
   var env = karate.env; // get system property 'karate.env'
   karate.log('karate.env system property was:', env);
@@ -141,13 +144,7 @@ class KarateConfig:
   }};
   
   // Environment specific configuration
-  if (env === 'dev') {{
-    config.baseUrl = 'http://localhost:8080';
-  }} else if (env === 'qa') {{
-    config.baseUrl = 'https://qa.example.com';
-  }} else if (env === 'prod') {{
-    config.baseUrl = 'https://api.example.com';
-  }}
+{env_conditions}
   
   karate.configure('connectTimeout', config.timeout);
   karate.configure('readTimeout', config.timeout);
@@ -162,138 +159,18 @@ class KarateConfig:
         for key, value in self.headers.items():
             lines.append(f"    '{key}': '{value}'")
         return ",\n".join(lines)
-
-
-@dataclass
-class TestRunnerTemplate:
-    """Template for TestRunner.java file."""
     
-    @staticmethod
-    def generate_content() -> str:
-        """Generate TestRunner.java content."""
-        return """package karate.runner;
-
-/**
- * TEMPLATE: Uncomment and configure when you set up your Java project with Karate dependencies.
- * 
- * Required Maven dependencies:
- * - com.intuit.karate:karate-junit5
- * - org.junit.jupiter:junit-jupiter-api
- * 
- * Required Gradle dependencies:
- * - testImplementation 'com.intuit.karate:karate-junit5:latest.version'
- * - testImplementation 'org.junit.jupiter:junit-jupiter-api:latest.version'
- */
-
-/*
-import com.intuit.karate.Results;
-import com.intuit.karate.Runner;
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-
-class TestRunner {
-    
-    @Test
-    void testParallel() {
-        Results results = Runner.path("classpath:resources/features")
-                .tags("~@ignore")
-                .parallel(5);
-        assertEquals(0, results.getFailCount(), results.getErrorMessages());
-    }
-}
-*/
-
-public class TestRunner {
-    // Uncomment the code above and remove this placeholder when ready
-}
-"""
-
-
-@dataclass
-class CucumberUtilTemplate:
-    """Template for Cucumber.java utility file."""
-    
-    @staticmethod
-    def generate_content() -> str:
-        """Generate Cucumber.java content."""
-        return """package karate.util;
-
-/**
- * TEMPLATE: Uncomment and configure when you set up your Java project with Karate dependencies.
- * 
- * Required Maven dependencies:
- * - com.intuit.karate:karate-junit5
- * - net.masterthought:cucumber-reporting
- * - commons-io:commons-io
- * 
- * Required Gradle dependencies:
- * - testImplementation 'com.intuit.karate:karate-junit5:latest.version'
- * - testImplementation 'net.masterthought:cucumber-reporting:latest.version'
- * - testImplementation 'commons-io:commons-io:latest.version'
- */
-
-/*
-import com.intuit.karate.Results;
-import com.intuit.karate.Runner;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import net.masterthought.cucumber.Configuration;
-import net.masterthought.cucumber.ReportBuilder;
-import org.apache.commons.io.FileUtils;
-
-public class Cucumber {
-
-    public static void generateReport(String karateOutputPath) {
-        Collection<File> jsonFiles = FileUtils.listFiles(new File(karateOutputPath), new String[]{"json"}, true);
-        List<String> jsonPaths = new ArrayList<>(jsonFiles.size());
-        jsonFiles.forEach(file -> jsonPaths.add(file.getAbsolutePath()));
-        Configuration config = new Configuration(new File("target"), "karate-test");
-        ReportBuilder reportBuilder = new ReportBuilder(jsonPaths, config);
-        reportBuilder.generateReports();
-    }
-}
-*/
-
-public class Cucumber {
-    // Uncomment the code above and remove this placeholder when ready
-}
-"""
-
-
-@dataclass
-class LogbackConfigTemplate:
-    """Template for logback-test.xml file."""
-    
-    @staticmethod
-    def generate_content() -> str:
-        """Generate logback-test.xml content."""
-        return """<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-  
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>target/karate.log</file>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    
-    <logger name="com.intuit" level="DEBUG"/>
-   
-    <root level="info">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </root>
-    
-</configuration>
-"""
+    def _format_environment_conditions(self) -> str:
+        """Format environment-specific URL conditions."""
+        if not self.environments:
+            return ""
+        
+        conditions = []
+        for i, (env_name, env_url) in enumerate(self.environments.items()):
+            condition_type = "if" if i == 0 else "else if"
+            conditions.append(f"  {condition_type} (env === '{env_name}') {{\n    config.baseUrl = '{env_url}';\n  }}")
+        
+        return "\n".join(conditions)
 
 
 @dataclass
@@ -302,9 +179,6 @@ class KarateGenerationResult:
     success: bool
     features_generated: List[str]
     config_file: str
-    runner_file: Optional[str] = None
-    util_file: Optional[str] = None
-    logback_file: Optional[str] = None
     total_scenarios: int = 0
     total_examples: int = 0
     errors: List[str] = field(default_factory=list)
@@ -315,9 +189,6 @@ class KarateGenerationResult:
             "success": self.success,
             "features_generated": self.features_generated,
             "config_file": self.config_file,
-            "runner_file": self.runner_file,
-            "util_file": self.util_file,
-            "logback_file": self.logback_file,
             "total_scenarios": self.total_scenarios,
             "total_examples": self.total_examples,
             "errors": self.errors

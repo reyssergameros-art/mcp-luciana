@@ -15,6 +15,7 @@ from ..domain.models import (
 )
 from ..domain.repositories import KarateGeneratorRepository
 from ..domain.exceptions import KarateGenerationError
+from ..config import PATH_CONFIG, CONFIG_DEFAULTS
 
 
 class KarateGenerationService:
@@ -22,12 +23,14 @@ class KarateGenerationService:
     
     def __init__(self, repository: KarateGeneratorRepository):
         self.repository = repository
+        self.path_config = PATH_CONFIG
+        self.config_defaults = CONFIG_DEFAULTS
     
     def generate_features_from_directory(
         self, 
         test_cases_dir: Path, 
         output_dir: Path,
-        base_url: str = "http://localhost:8080"
+        base_url: Optional[str] = None
     ) -> KarateGenerationResult:
         """
         Generate Karate features from all test case files in directory.
@@ -35,11 +38,14 @@ class KarateGenerationService:
         Args:
             test_cases_dir: Directory containing test case JSON files
             output_dir: Output directory for Karate features
-            base_url: Base URL for API
+            base_url: Base URL for API (defaults to CONFIG_DEFAULTS.BASE_URL)
             
         Returns:
             KarateGenerationResult with generation summary
         """
+        if base_url is None:
+            base_url = self.config_defaults.BASE_URL
+            
         features_generated = []
         total_scenarios = 0
         total_examples = 0
@@ -59,25 +65,12 @@ class KarateGenerationService:
                     errors=["No test case files found"]
                 )
             
-            # Create Maven directory structure: output/src/test/java/
-            maven_output_dir = output_dir / "src" / "test" / "java"
-            maven_output_dir.mkdir(parents=True, exist_ok=True)
+            # Create output directory structure
+            functional_dir = self._create_output_structure(output_dir)
             
-            # Generate karate-config.js at src/test/java/ root
+            # Generate karate-config.js
             config = self._create_karate_config(base_url)
-            config_path = self.repository.save_config(config, maven_output_dir)
-            
-            # Generate TestRunner.java
-            runner_path = self.repository.save_runner_file(maven_output_dir)
-            
-            # Generate Cucumber.java utility
-            util_path = self.repository.save_util_file(maven_output_dir)
-            
-            # Generate logback-test.xml
-            logback_path = self.repository.save_logback_file(maven_output_dir)
-            
-            # Create data and schemas directories
-            self.repository.create_data_schemas_directories(maven_output_dir)
+            config_path = self.repository.save_config(config, functional_dir)
             
             # Generate feature for each test case file
             for test_file in test_case_files:
@@ -88,8 +81,8 @@ class KarateGenerationService:
                     # Convert to KarateFeature
                     feature = self._convert_to_karate_feature(test_data)
                     
-                    # Save feature file to Maven structure
-                    feature_path = self.repository.save_feature(feature, maven_output_dir)
+                    # Save feature file
+                    feature_path = self.repository.save_feature(feature, functional_dir)
                     features_generated.append(str(feature_path))
                     
                     total_scenarios += len(feature.scenarios)
@@ -105,9 +98,6 @@ class KarateGenerationService:
                 success=success,
                 features_generated=features_generated,
                 config_file=str(config_path),
-                runner_file=str(runner_path) if 'runner_path' in locals() else None,
-                util_file=str(util_path) if 'util_path' in locals() else None,
-                logback_file=str(logback_path) if 'logback_path' in locals() else None,
                 total_scenarios=total_scenarios,
                 total_examples=total_examples,
                 errors=errors
@@ -123,37 +113,18 @@ class KarateGenerationService:
                 errors=[str(e)]
             )
     
-    def generate_feature_from_file(
-        self,
-        test_case_file: Path,
-        output_dir: Path,
-        base_url: str = "http://localhost:8080"
-    ) -> Path:
+    def _create_output_structure(self, output_dir: Path) -> Path:
         """
-        Generate Karate feature from single test case file.
+        Create output directory structure for Karate features.
         
         Args:
-            test_case_file: Path to test case JSON file
-            output_dir: Output directory for Karate features
-            base_url: Base URL for API
+            output_dir: Base output directory (e.g., output/functional)
             
         Returns:
-            Path to generated feature file
+            Path to the output directory
         """
-        # Load test cases
-        test_data = self.repository.load_test_cases(test_case_file)
-        
-        # Convert to KarateFeature
-        feature = self._convert_to_karate_feature(test_data)
-        
-        # Generate config if not exists
-        config_path = output_dir / "karate-config.js"
-        if not config_path.exists():
-            config = self._create_karate_config(base_url)
-            self.repository.save_config(config, output_dir)
-        
-        # Save feature file
-        return self.repository.save_feature(feature, output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        return output_dir
     
     def _convert_to_karate_feature(self, test_data: Dict[str, Any]) -> KarateFeature:
         """Convert test case data to KarateFeature model."""
@@ -323,13 +294,11 @@ class KarateGenerationService:
         return f"{http_method.value} {resource_name}"
     
     def _create_karate_config(self, base_url: str) -> KarateConfig:
-        """Create default Karate configuration."""
+        """Create Karate configuration using defaults from config."""
         return KarateConfig(
             base_url=base_url,
-            headers={
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            timeout=30000,
-            retry=0
+            headers=self.config_defaults.DEFAULT_HEADERS.copy(),
+            timeout=self.config_defaults.TIMEOUT_MS,
+            retry=self.config_defaults.RETRY_COUNT,
+            environments=self.config_defaults.ENVIRONMENTS.copy()
         )

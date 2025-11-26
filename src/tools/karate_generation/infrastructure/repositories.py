@@ -7,18 +7,13 @@ from typing import Dict, Any, List
 from datetime import datetime
 
 from ..domain.repositories import KarateGeneratorRepository
-from ..domain.models import (
-    KarateFeature, 
-    KarateConfig,
-    TestRunnerTemplate,
-    CucumberUtilTemplate,
-    LogbackConfigTemplate
-)
+from ..domain.models import KarateFeature, KarateConfig
 from ..domain.exceptions import (
     InvalidTestCaseFileError,
     FeatureGenerationError,
     ConfigGenerationError
 )
+from ..config import PATH_CONFIG
 from .feature_builder import KarateFeatureBuilder
 
 
@@ -27,6 +22,7 @@ class FileKarateRepository(KarateGeneratorRepository):
     
     def __init__(self):
         self.feature_builder = KarateFeatureBuilder()
+        self.path_config = PATH_CONFIG
     
     def load_test_cases(self, file_path: Path) -> Dict[str, Any]:
         """Load test cases from JSON file."""
@@ -76,8 +72,9 @@ class FileKarateRepository(KarateGeneratorRepository):
     def save_feature(self, feature: KarateFeature, output_dir: Path) -> Path:
         """Save Karate feature to file."""
         try:
-            # Create feature subdirectory: resources/features/tags/{resource}/
-            feature_dir = output_dir / "resources" / "features" / "tags"
+            # Create feature directory: output_dir/resources/features/
+            features_path = self.path_config.FEATURES_DIR
+            feature_dir = output_dir / features_path
             feature_dir.mkdir(parents=True, exist_ok=True)
             
             # Generate file path
@@ -100,11 +97,13 @@ class FileKarateRepository(KarateGeneratorRepository):
             raise FeatureGenerationError(f"Error saving feature {feature.feature_name}: {str(e)}")
     
     def save_config(self, config: KarateConfig, output_dir: Path) -> Path:
-        """Save Karate configuration file to src/test/java/ root."""
+        """Save Karate configuration file."""
         try:
-            output_dir.mkdir(parents=True, exist_ok=True)
-            config_path = output_dir / "karate-config.js"
+            # Create resources directory: output_dir/resources/
+            resources_dir = output_dir / "resources"
+            resources_dir.mkdir(parents=True, exist_ok=True)
             
+            config_path = resources_dir / "karate-config.js"
             content = config.generate_config_content()
             
             with open(config_path, "w", encoding="utf-8") as f:
@@ -140,89 +139,6 @@ class FileKarateRepository(KarateGeneratorRepository):
                 continue
         
         return sorted(test_case_files)
-    
-    def save_runner_file(self, output_dir: Path) -> Path:
-        """Save TestRunner.java file."""
-        try:
-            runner_dir = output_dir / "karate" / "runner"
-            runner_dir.mkdir(parents=True, exist_ok=True)
-            runner_path = runner_dir / "TestRunner.java"
-            
-            content = TestRunnerTemplate.generate_content()
-            
-            with open(runner_path, "w", encoding="utf-8") as f:
-                f.write(content)
-            
-            return runner_path
-        
-        except Exception as e:
-            raise ConfigGenerationError(f"Error saving TestRunner.java: {str(e)}")
-    
-    def save_util_file(self, output_dir: Path) -> Path:
-        """Save Cucumber.java utility file."""
-        try:
-            util_dir = output_dir / "karate" / "util"
-            util_dir.mkdir(parents=True, exist_ok=True)
-            util_path = util_dir / "Cucumber.java"
-            
-            content = CucumberUtilTemplate.generate_content()
-            
-            with open(util_path, "w", encoding="utf-8") as f:
-                f.write(content)
-            
-            return util_path
-        
-        except Exception as e:
-            raise ConfigGenerationError(f"Error saving Cucumber.java: {str(e)}")
-    
-    def save_logback_file(self, output_dir: Path) -> Path:
-        """Save logback-test.xml configuration file."""
-        try:
-            output_dir.mkdir(parents=True, exist_ok=True)
-            logback_path = output_dir / "logback-test.xml"
-            
-            content = LogbackConfigTemplate.generate_content()
-            
-            with open(logback_path, "w", encoding="utf-8") as f:
-                f.write(content)
-            
-            return logback_path
-        
-        except Exception as e:
-            raise ConfigGenerationError(f"Error saving logback-test.xml: {str(e)}")
-    
-    def create_data_schemas_directories(self, output_dir: Path) -> None:
-        """Create request/ and schemas/ directories structure."""
-        try:
-            # Create resources/request/ directory
-            request_dir = output_dir / "resources" / "request"
-            request_dir.mkdir(parents=True, exist_ok=True)
-            
-            # Create placeholder Resource.json
-            resource_json = request_dir / "Resource.json"
-            placeholder_data = {
-                "example": "This is a placeholder for test data",
-                "description": "Add your mock data here"
-            }
-            with open(resource_json, "w", encoding="utf-8") as f:
-                json.dump(placeholder_data, f, indent=2)
-            
-            # Create resources/schemas/ directory
-            schemas_dir = output_dir / "resources" / "schemas"
-            schemas_dir.mkdir(parents=True, exist_ok=True)
-            
-            # Create placeholder resourceSchemas.json
-            schemas_json = schemas_dir / "resourceSchemas.json"
-            placeholder_schema = {
-                "$schema": "http://json-schema.org/draft-07/schema#",
-                "type": "object",
-                "description": "Add your JSON schemas here for response validation"
-            }
-            with open(schemas_json, "w", encoding="utf-8") as f:
-                json.dump(placeholder_schema, f, indent=2)
-        
-        except Exception as e:
-            raise ConfigGenerationError(f"Error creating data/schemas directories: {str(e)}")
     
     def _generate_metadata_comment(self, feature: KarateFeature) -> str:
         """Generate metadata comment for feature file."""
