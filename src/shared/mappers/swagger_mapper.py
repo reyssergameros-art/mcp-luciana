@@ -117,6 +117,41 @@ class SwaggerMapper:
         return sorted(list(codes))
     
     @staticmethod
+    def _to_camel_case(text: str) -> str:
+        """
+        Convert text to camelCase.
+        
+        Args:
+            text: Text to convert
+            
+        Returns:
+            Text in camelCase format
+        """
+        # Remove special characters and split by spaces/underscores
+        words = []
+        current_word = []
+        
+        for char in text:
+            if char.isalnum():
+                current_word.append(char)
+            elif current_word:
+                words.append(''.join(current_word))
+                current_word = []
+        
+        if current_word:
+            words.append(''.join(current_word))
+        
+        if not words:
+            return "swaggerApi"
+        
+        # Convert to camelCase: first word lowercase, rest capitalized
+        camel_case = words[0].lower()
+        for word in words[1:]:
+            camel_case += word.capitalize()
+        
+        return camel_case
+    
+    @staticmethod
     def save_to_json(result_dict: Dict[str, Any], source_url: str) -> Path:
         """
         Save analysis result to JSON file.
@@ -132,16 +167,12 @@ class SwaggerMapper:
         output_dir = Path("output") / "swagger"
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Generate filename with timestamp
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
         # Extract API name from title or use generic name
-        api_name = result_dict.get("title", "swagger_api")
-        # Clean filename (remove special chars, replace spaces with underscores)
-        api_name = "".join(c if c.isalnum() or c in (' ', '') else '' for c in api_name)
-        api_name = api_name.replace(' ', '_').lower()
+        api_name = result_dict.get("title", "swaggerApi")
+        # Convert to camelCase
+        api_name = SwaggerMapper._to_camel_case(api_name)
         
-        filename = f"{api_name}_{timestamp}.json"
+        filename = f"{api_name}.json"
         file_path = output_dir / filename
         
         # Prepare metadata

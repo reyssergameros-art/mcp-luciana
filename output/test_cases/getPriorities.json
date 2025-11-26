@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2025-11-26T08:18:47.383992",
-    "source_file": "c:\\Users\\reyss\\OneDrive\\Desktop\\mcp\\mcp-luciana\\output\\swagger\\gestión_de_prioridades_api_20251125_194956.json",
+    "generated_at": "2025-11-26T08:30:30.094684",
+    "source_file": "c:\\Users\\reyss\\OneDrive\\Desktop\\mcp\\mcp-luciana\\output\\swagger\\gestiónDePrioridadesApi.json",
     "technique": "Equivalence Partitioning (ISTQB v4)",
     "endpoint": "/priorities",
     "http_method": "GET",

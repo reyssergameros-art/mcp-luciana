@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "2025-11-25T19:49:56.129912",
+    "generated_at": "2025-11-26T08:29:48.540120",
     "source_url": "http://localhost:8080/v3/api-docs",
     "tool_version": "1.0.0"
   },
@@ -345,6 +345,45 @@
         "request_content_type": "application/json",
         "responses": [
           {
+            "status_code": "409",
+            "description": "Conflicto - Nombre duplicado. Ya existe una prioridad con ese nombre\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
+            "content_type": "application/json",
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "errors": {
+                "timestamp": "2025-11-13T10:30:00.000000000",
+                "status": 409,
+                "error": "Conflict",
+                "message": "Priority with name 'Alta' already exists",
+                "typeCode": "TYP-003",
+                "type": "request_body_validation_error",
+                "subtypeCode": "RBV-005",
+                "subtype": "duplicate_value_detected",
+                "details": {
+                  "problematicField": "name",
+                  "invalidValue": "Alta",
+                  "correctFormat": "Name must be unique"
+                },
+                "path": "/priorities",
+                "documentationUrl": "http://localhost:8080/api/docs#/RBV-005",
+                "_links": {
+                  "self": {
+                    "href": "/priorities",
+                    "method": "POST"
+                  },
+                  "list": {
+                    "href": "/priorities",
+                    "method": "GET"
+                  }
+                }
+              }
+            },
+            "error_codes": [],
+            "validation_errors": []
+          },
+          {
             "status_code": "200",
             "description": "Prioridad actualizada exitosamente",
             "content_type": "*/*",
@@ -399,45 +438,6 @@
                   "self": {
                     "href": "/priorities/999",
                     "method": "GET"
-                  },
-                  "list": {
-                    "href": "/priorities",
-                    "method": "GET"
-                  }
-                }
-              }
-            },
-            "error_codes": [],
-            "validation_errors": []
-          },
-          {
-            "status_code": "409",
-            "description": "Conflicto - Nombre duplicado. Ya existe una prioridad con ese nombre\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
-            "content_type": "application/json",
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "errors": {
-                "timestamp": "2025-11-13T10:30:00.000000000",
-                "status": 409,
-                "error": "Conflict",
-                "message": "Priority with name 'Alta' already exists",
-                "typeCode": "TYP-003",
-                "type": "request_body_validation_error",
-                "subtypeCode": "RBV-005",
-                "subtype": "duplicate_value_detected",
-                "details": {
-                  "problematicField": "name",
-                  "invalidValue": "Alta",
-                  "correctFormat": "Name must be unique"
-                },
-                "path": "/priorities",
-                "documentationUrl": "http://localhost:8080/api/docs#/RBV-005",
-                "_links": {
-                  "self": {
-                    "href": "/priorities",
-                    "method": "POST"
                   },
                   "list": {
                     "href": "/priorities",
@@ -574,15 +574,6 @@
             ]
           },
           {
-            "status_code": "204",
-            "description": "Prioridad eliminada exitosamente",
-            "content_type": null,
-            "schema": null,
-            "example": null,
-            "error_codes": [],
-            "validation_errors": []
-          },
-          {
             "status_code": "404",
             "description": "Prioridad no encontrada - El ID especificado no existe en la base de datos\n**Códigos de Error Posibles:**\n\n**TYP-002** - resource_not_found (HTTP 404)\n  - `RNF-001`: Recurso no encontrado por ID especificado\n  - `RNF-002`: Recurso no encontrado después de una operación\n  - `RNF-003`: Endpoint o ruta no existe en la API\n",
             "content_type": "application/json",
@@ -618,6 +609,15 @@
                 }
               }
             },
+            "error_codes": [],
+            "validation_errors": []
+          },
+          {
+            "status_code": "204",
+            "description": "Prioridad eliminada exitosamente",
+            "content_type": null,
+            "schema": null,
+            "example": null,
             "error_codes": [],
             "validation_errors": []
           }
@@ -890,22 +890,6 @@
             "validation_errors": []
           },
           {
-            "status_code": "400",
-            "description": "Encabezados faltantes o datos de validación incorrectos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
-            "content_type": "application/json",
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": null,
-            "error_codes": [],
-            "validation_errors": [
-              {
-                "type": "pattern",
-                "pattern_found": "(?:pattern|format|must match)"
-              }
-            ]
-          },
-          {
             "status_code": "409",
             "description": "Conflicto - Nombre duplicado. Ya existe una prioridad con ese nombre\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
             "content_type": "application/json",
@@ -943,6 +927,22 @@
             },
             "error_codes": [],
             "validation_errors": []
+          },
+          {
+            "status_code": "400",
+            "description": "Encabezados faltantes o datos de validación incorrectos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
+            "content_type": "application/json",
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": null,
+            "error_codes": [],
+            "validation_errors": [
+              {
+                "type": "pattern",
+                "pattern_found": "(?:pattern|format|must match)"
+              }
+            ]
           }
         ],
         "validation_rules": {},
