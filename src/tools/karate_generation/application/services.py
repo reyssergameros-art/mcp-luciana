@@ -2,7 +2,7 @@
 Application services for Karate feature generation.
 """
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Set
 
 from ..domain.models import (
     KarateFeature,
@@ -15,6 +15,7 @@ from ..domain.models import (
 )
 from ..domain.repositories import KarateGeneratorRepository
 from ..domain.exceptions import KarateGenerationError
+from ..domain.value_objects import EnvironmentGenerator, HeaderExtractor
 from ..config import PATH_CONFIG, CONFIG_DEFAULTS
 
 
@@ -38,14 +39,11 @@ class KarateGenerationService:
         Args:
             test_cases_dir: Directory containing test case JSON files
             output_dir: Output directory for Karate features
-            base_url: Base URL for API (defaults to CONFIG_DEFAULTS.BASE_URL)
+            base_url: Base URL for API (if not provided, will be extracted from test case metadata)
             
         Returns:
             KarateGenerationResult with generation summary
         """
-        if base_url is None:
-            base_url = self.config_defaults.BASE_URL
-            
         features_generated = []
         total_scenarios = 0
         total_examples = 0
@@ -65,11 +63,27 @@ class KarateGenerationService:
                     errors=["No test case files found"]
                 )
             
+            # Extract base_url from swagger analysis if not provided
+            if base_url is None:
+                base_url = self._extract_base_url_from_test_files(test_case_files)
+                if base_url is None:
+                    return KarateGenerationResult(
+                        success=False,
+                        features_generated=[],
+                        config_file="",
+                        total_scenarios=0,
+                        total_examples=0,
+                        errors=["base_url not provided and could not be extracted from test case metadata"]
+                    )
+            
             # Create output directory structure
             functional_dir = self._create_output_structure(output_dir)
             
-            # Generate karate-config.js
-            config = self._create_karate_config(base_url)
+            # Collect all headers from test cases for dynamic config generation
+            all_headers = self._extract_headers_from_test_files(test_case_files)
+            
+            # Generate karate-config.js with dynamic headers
+            config = self._create_karate_config(base_url, all_headers)
             config_path = self.repository.save_config(config, functional_dir)
             
             # Generate feature for each test case file
@@ -293,12 +307,71 @@ class KarateGenerationService:
         resource_name = " ".join(parts)
         return f"{http_method.value} {resource_name}"
     
-    def _create_karate_config(self, base_url: str) -> KarateConfig:
-        """Create Karate configuration using defaults from config."""
-        return KarateConfig(
+    def _create_karate_config(self, base_url: str, dynamic_headers: Set[str]) -> KarateConfig:
+        """Create Karate configuration using defaults and dynamic environment generation."""
+        # Generate environments dynamically based on base_url
+        environments = EnvironmentGenerator.generate_environments(base_url)
+        
+        config = KarateConfig(
             base_url=base_url,
             headers=self.config_defaults.DEFAULT_HEADERS.copy(),
             timeout=self.config_defaults.TIMEOUT_MS,
             retry=self.config_defaults.RETRY_COUNT,
-            environments=self.config_defaults.ENVIRONMENTS.copy()
+            environments=environments
         )
+        
+        # Set dynamic headers for config generation
+        config.dynamic_headers = dynamic_headers
+        
+        return config
+    
+    def _extract_headers_from_test_files(self, test_files: List) -> Set[str]:
+        """Extract all unique header names from test case files."""
+        all_headers = set()
+        
+        for test_file in test_files:
+            try:
+                test_data = self.repository.load_test_cases(test_file)
+                
+                # Extract headers from test cases
+                if "test_cases" in test_data:
+                    for test_case in test_data["test_cases"]:
+                        if "test_data" in test_case:
+                            headers = HeaderExtractor.extract_headers_from_test_data(test_case["test_data"])
+                            all_headers.update(headers)
+            except Exception:
+                # Skip files with errors, will be handled later
+                continue
+        
+        return all_headers
+    
+    def _extract_base_url_from_test_files(self, test_files: List) -> Optional[str]:
+        """
+        Extract base URL from test case metadata.
+        Looks for source swagger file and reads base_urls from it.
+        """
+        import json
+        
+        for test_file in test_files:
+            try:
+                test_data = self.repository.load_test_cases(test_file)
+                
+                # Check if metadata contains source_file reference
+                if "metadata" in test_data and "source_file" in test_data["metadata"]:
+                    swagger_file = Path(test_data["metadata"]["source_file"])
+                    
+                    if swagger_file.exists():
+                        with open(swagger_file, 'r', encoding='utf-8') as f:
+                            swagger_data = json.load(f)
+                            
+                        # Extract base_urls from swagger analysis
+                        if "analysis" in swagger_data and "base_urls" in swagger_data["analysis"]:
+                            base_urls = swagger_data["analysis"]["base_urls"]
+                            if base_urls and len(base_urls) > 0:
+                                return base_urls[0]  # Return first base URL
+                
+            except Exception:
+                # Skip files with errors
+                continue
+        
+        return None

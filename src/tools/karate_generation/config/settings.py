@@ -32,9 +32,6 @@ class KaratePathConfig:
 class KarateConfigDefaults:
     """Default values for Karate configuration."""
     
-    # Default base URL
-    BASE_URL: str = "http://localhost:8080"
-    
     # Default timeout in milliseconds
     TIMEOUT_MS: int = 30000
     
@@ -42,18 +39,14 @@ class KarateConfigDefaults:
     RETRY_COUNT: int = 0
     
     def __post_init__(self):
-        # Initialize DEFAULT_HEADERS
+        # Initialize DEFAULT_HEADERS - dynamic headers
         object.__setattr__(self, 'DEFAULT_HEADERS', {
             "Content-Type": "application/json",
             "Accept": "application/json"
         })
         
-        # Initialize ENVIRONMENTS
-        object.__setattr__(self, 'ENVIRONMENTS', {
-            "dev": "http://localhost:8080",
-            "qa": "https://qa.example.com",
-            "prod": "https://api.example.com"
-        })
+        # Initialize ENVIRONMENTS - will be populated dynamically from base_url
+        object.__setattr__(self, 'ENVIRONMENTS', {})
 
 
 @dataclass(frozen=True)
@@ -74,6 +67,19 @@ class FeatureGenerationConfig:
     
     # File naming
     FILE_EXTENSION: str = ".feature"
+    
+    # Dynamic header names - extracted from test data
+    COMMON_HEADER_PATTERNS: list = None
+    
+    def __post_init__(self):
+        # Headers that are commonly used (will be detected dynamically)
+        object.__setattr__(self, 'COMMON_HEADER_PATTERNS', [
+            'x-correlation-id',
+            'x-request-id', 
+            'x-transaction-id',
+            'authorization',
+            'x-api-key'
+        ])
 
 
 # Singleton instances

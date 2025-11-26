@@ -15,11 +15,14 @@ Background:
   * configure headers = commonHeaders
   # Path parameters will be set in scenarios
 
-@positive @delete @smoke
+@smoke @delete @positive
 Scenario Outline: Successful DELETE requests
   # Tests with valid inputs that should succeed
   Given path '/priorities/{id}'
   And param id = <id>
+  And header x-correlation-id = <xCorrelationId>
+  And header x-request-id = <xRequestId>
+  And header x-transaction-id = <xTransactionId>
   When method DELETE
   Then status <expectedStatus>
   And match response != null
@@ -29,7 +32,7 @@ Scenario Outline: Successful DELETE requests
     | testId                                   | testName                                   | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     |
     | EPDELETEprioritiesidvalid_all20251126_68 | DELETE /priorities/{id} - All Valid Inputs | 204            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 |
 
-@negative @delete @regression @status400
+@regression @delete @status400 @negative
 Scenario Outline: DELETE requests returning 400
   # Tests that should fail with HTTP 400
   Given path '/priorities/{id}'
@@ -74,7 +77,7 @@ Scenario Outline: DELETE requests returning 400
 # ============================================================
 # Feature Generation Metadata
 # ============================================================
-# Generated: 2025-11-26 10:18:43
+# Generated: 2025-11-26 10:35:56
 # Endpoint: /priorities/{id}
 # Method: DELETE
 # Total Scenarios: 2

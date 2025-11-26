@@ -15,11 +15,14 @@ Background:
   * configure headers = commonHeaders
   # Path parameters will be set in scenarios
 
-@positive @get @smoke
+@smoke @get @positive
 Scenario Outline: Successful GET requests
   # Tests with valid inputs that should succeed
   Given path '/priorities/{id}'
   And param id = <id>
+  And header x-correlation-id = <xCorrelationId>
+  And header x-request-id = <xRequestId>
+  And header x-transaction-id = <xTransactionId>
   When method GET
   Then status <expectedStatus>
   And match response != null
@@ -29,7 +32,7 @@ Scenario Outline: Successful GET requests
     | testId                               | testName                                | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     |
     | EPGETprioritiesidvalid_all20251126_1 | GET /priorities/{id} - All Valid Inputs | 200            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 |
 
-@negative @get @regression @status400
+@regression @status400 @negative @get
 Scenario Outline: GET requests returning 400
   # Tests that should fail with HTTP 400
   Given path '/priorities/{id}'
@@ -74,7 +77,7 @@ Scenario Outline: GET requests returning 400
 # ============================================================
 # Feature Generation Metadata
 # ============================================================
-# Generated: 2025-11-26 10:18:43
+# Generated: 2025-11-26 10:35:56
 # Endpoint: /priorities/{id}
 # Method: GET
 # Total Scenarios: 2

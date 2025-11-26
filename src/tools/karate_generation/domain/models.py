@@ -2,7 +2,7 @@
 Domain models for Karate feature generation.
 """
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Set
 from enum import Enum
 
 
@@ -104,6 +104,7 @@ class KarateConfig:
     timeout: int
     retry: int
     environments: Dict[str, str] = field(default_factory=dict)
+    dynamic_headers: set = field(default_factory=set)
     
     def generate_config_content(self) -> str:
         """Generate the karate-config.js content."""
@@ -135,11 +136,7 @@ class KarateConfig:
   
   config.getCommonHeaders = function() {{
     return {{
-      'x-correlation-id': config.generateUUID(),
-      'x-request-id': config.generateUUID(),
-      'x-transaction-id': config.generateUUID(),
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
+{self._format_dynamic_headers()}
     }};
   }};
   
@@ -158,6 +155,23 @@ class KarateConfig:
         lines = []
         for key, value in self.headers.items():
             lines.append(f"    '{key}': '{value}'")
+        return ",\n".join(lines)
+    
+    def _format_dynamic_headers(self) -> str:
+        """Format dynamic headers for getCommonHeaders function."""
+        from .value_objects import HeaderExtractor
+        
+        lines = []
+        
+        # Add UUID-based headers (correlation-id, request-id, etc.)
+        for header in sorted(self.dynamic_headers):
+            if HeaderExtractor.is_uuid_header(header):
+                lines.append(f"      '{header}': config.generateUUID()")
+        
+        # Add standard headers from config
+        for key, value in self.headers.items():
+            lines.append(f"      '{key}': '{value}'")
+        
         return ",\n".join(lines)
     
     def _format_environment_conditions(self) -> str:

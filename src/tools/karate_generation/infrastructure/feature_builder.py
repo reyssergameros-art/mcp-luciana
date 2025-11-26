@@ -1,7 +1,7 @@
 """
 Builder for Karate feature file content using Gherkin syntax.
 """
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Set
 from ..domain.models import (
     KarateFeature, 
     KarateScenario, 
@@ -9,6 +9,7 @@ from ..domain.models import (
     ScenarioType,
     HttpMethod
 )
+from ..domain.value_objects import HeaderExtractor
 from ..config import FEATURE_CONFIG
 
 
@@ -135,11 +136,15 @@ class KarateFeatureBuilder:
             for param in path_params:
                 steps.append(f"{indent}And param {param} = <{param}>")
         
-        # Set headers (override if needed for negative tests)
-        if scenario.scenario_type == ScenarioType.NEGATIVE:
-            steps.append(f"{indent}And header x-correlation-id = <xCorrelationId>")
-            steps.append(f"{indent}And header x-request-id = <xRequestId>")
-            steps.append(f"{indent}And header x-transaction-id = <xTransactionId>")
+        # Extract headers dynamically from test data
+        dynamic_headers = self._extract_dynamic_headers(scenario.examples)
+        
+        # Set headers dynamically
+        if dynamic_headers:
+            for header_name in sorted(dynamic_headers):
+                # Convert to camelCase for variable name
+                var_name = self._to_camel_case(header_name)
+                steps.append(f"{indent}And header {header_name} = <{var_name}>")
         
         # Set request body for POST/PUT/PATCH
         if feature.http_method in [HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH]:
@@ -195,7 +200,24 @@ class KarateFeatureBuilder:
     def _extract_path_params(self, endpoint: str) -> List[str]:
         """Extract path parameter names from endpoint."""
         import re
-        return re.findall(r'\{(\w+)\}', endpoint)
+        return re.findall(r'\{([^}]+)\}', endpoint)
+    
+    def _extract_dynamic_headers(self, examples: List[KarateExample]) -> Set[str]:
+        """Extract header names dynamically from test examples."""
+        if not examples:
+            return set()
+        
+        # Get headers from first example's test data
+        first_example = examples[0]
+        headers = HeaderExtractor.extract_headers_from_test_data(first_example.test_data)
+        return headers
+    
+    def _to_camel_case(self, header_name: str) -> str:
+        """Convert header name to camelCase for variable naming."""
+        # x-correlation-id -> xCorrelationId
+        # x-request-id -> xRequestId
+        parts = header_name.split('-')
+        return parts[0] + ''.join(word.capitalize() for word in parts[1:])
     
     def _group_scenarios_by_status(self, scenarios: List[KarateScenario]) -> Dict[int, List[KarateScenario]]:
         """Group negative scenarios by HTTP status code."""

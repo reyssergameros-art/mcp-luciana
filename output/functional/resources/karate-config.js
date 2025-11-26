@@ -38,10 +38,10 @@ function fn() {
     config.baseUrl = 'http://localhost:8080';
   }
   else if (env === 'qa') {
-    config.baseUrl = 'https://qa.example.com';
+    config.baseUrl = 'http://qa-api.example.com:8080';
   }
   else if (env === 'prod') {
-    config.baseUrl = 'https://api.example.com';
+    config.baseUrl = 'http://api.example.com:8080';
   }
   
   karate.configure('connectTimeout', config.timeout);
