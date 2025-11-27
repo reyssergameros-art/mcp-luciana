@@ -43,8 +43,7 @@ class KarateFeatureBuilder:
         """Build feature file header with tags."""
         tags = [
             self.config.REGRESSION_TAG,
-            f"@{feature.http_method.value.lower()}",
-            f"@{feature.get_feature_path()}"
+            f"@{feature.http_method.value.lower()}"
         ]
         return " ".join(tags)
     

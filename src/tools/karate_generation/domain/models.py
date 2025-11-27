@@ -76,24 +76,23 @@ class KarateFeature:
     endpoint: str
     http_method: HttpMethod
     scenarios: List[KarateScenario]
+    source_filename: Optional[str] = None
     background_headers: List[str] = field(default_factory=list)
     total_test_cases: int = 0
     success_count: int = 0
     failure_count: int = 0
     
     def get_file_name(self) -> str:
-        """Generate the feature file name."""
-        # Convert endpoint to safe filename: /priorities/{id} -> priorities_id
+        """Generate the feature file name from source filename or endpoint."""
+        if self.source_filename:
+            # Use the source filename, just change extension to .feature
+            return self.source_filename.replace('.json', '.feature')
+        
+        # Fallback: generate from endpoint (shouldn't happen with proper mapping)
         safe_endpoint = self.endpoint.replace("/", "_").replace("{", "").replace("}", "")
         if safe_endpoint.startswith("_"):
             safe_endpoint = safe_endpoint[1:]
         return f"{self.http_method.value}_{safe_endpoint}.feature"
-    
-    def get_feature_path(self) -> str:
-        """Get the subdirectory for this feature based on endpoint."""
-        # Extract base resource: /priorities/{id} -> priorities
-        parts = [p for p in self.endpoint.split("/") if p and not p.startswith("{")]
-        return parts[0] if parts else "api"
 
 
 @dataclass

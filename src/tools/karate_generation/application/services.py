@@ -92,8 +92,8 @@ class KarateGenerationService:
                     # Load test cases
                     test_data = self.repository.load_test_cases(test_file)
                     
-                    # Convert to KarateFeature
-                    feature = self._convert_to_karate_feature(test_data)
+                    # Convert to KarateFeature with source filename
+                    feature = self._convert_to_karate_feature(test_data, test_file.name)
                     
                     # Save feature file
                     feature_path = self.repository.save_feature(feature, functional_dir)
@@ -140,7 +140,7 @@ class KarateGenerationService:
         output_dir.mkdir(parents=True, exist_ok=True)
         return output_dir
     
-    def _convert_to_karate_feature(self, test_data: Dict[str, Any]) -> KarateFeature:
+    def _convert_to_karate_feature(self, test_data: Dict[str, Any], source_filename: str) -> KarateFeature:
         """Convert test case data to KarateFeature model."""
         endpoint = test_data["endpoint"]
         http_method = HttpMethod[test_data["http_method"]]
@@ -179,6 +179,7 @@ class KarateGenerationService:
             endpoint=endpoint,
             http_method=http_method,
             scenarios=scenarios,
+            source_filename=source_filename,
             total_test_cases=len(test_cases),
             success_count=len(success_tests),
             failure_count=len(failure_tests)

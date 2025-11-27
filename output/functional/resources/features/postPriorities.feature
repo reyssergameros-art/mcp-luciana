@@ -1,4 +1,4 @@
-@regression @post @priorities
+@regression @post
 
 Feature: POST Priorities
 
@@ -14,7 +14,7 @@ Background:
   * def commonHeaders = getCommonHeaders()
   * configure headers = commonHeaders
 
-@smoke @post @positive
+@post @smoke @positive
 Scenario Outline: Successful POST requests
   # Tests with valid inputs that should succeed
   Given path '/priorities'
@@ -31,7 +31,7 @@ Scenario Outline: Successful POST requests
     | testId                                | testName                            | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     | name                                 | description                          |
     | EPPOSTprioritiesvalid_all20251126_121 | POST /priorities - All Valid Inputs | 201            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
 
-@regression @status400 @post @negative
+@regression @post @negative @status400
 Scenario Outline: POST requests returning 400
   # Tests that should fail with HTTP 400
   Given path '/priorities'
@@ -84,7 +84,7 @@ Scenario Outline: POST requests returning 400
 # ============================================================
 # Feature Generation Metadata
 # ============================================================
-# Generated: 2025-11-26 10:35:56
+# Generated: 2025-11-27 15:25:12
 # Endpoint: /priorities
 # Method: POST
 # Total Scenarios: 2

@@ -1,4 +1,4 @@
-@regression @put @priorities
+@regression @put
 
 Feature: PUT Priorities Id
 
@@ -33,7 +33,7 @@ Scenario Outline: Successful PUT requests
     | testId                                | testName                                | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     | name                                 | description                          |
     | EPPUTprioritiesidvalid_all20251126_29 | PUT /priorities/{id} - All Valid Inputs | 200            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
 
-@put @regression @status400 @negative
+@regression @put @negative @status400
 Scenario Outline: PUT requests returning 400
   # Tests that should fail with HTTP 400
   Given path '/priorities/{id}'
@@ -90,7 +90,7 @@ Scenario Outline: PUT requests returning 400
 # ============================================================
 # Feature Generation Metadata
 # ============================================================
-# Generated: 2025-11-26 10:35:56
+# Generated: 2025-11-27 15:25:12
 # Endpoint: /priorities/{id}
 # Method: PUT
 # Total Scenarios: 2
