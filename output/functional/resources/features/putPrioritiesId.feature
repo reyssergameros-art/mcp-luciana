@@ -1,6 +1,6 @@
 @regression @put
 
-Feature: PUT Priorities Id
+Feature: Actualizar prioridad
 
 Background:
   * url baseUrl
@@ -8,7 +8,7 @@ Background:
   * configure headers = commonHeaders
   # Path parameters will be set in scenarios
 
-@smoke @positive @put
+@positive @put @smoke
 Scenario Outline: Successful PUT requests
   # Tests with valid inputs that should succeed
   Given path '/priorities/{id}'
@@ -26,7 +26,7 @@ Scenario Outline: Successful PUT requests
     | testId                                | testName                                | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     | name                                 | description                          |
     | EPPUTprioritiesidvalid_all20251126_29 | PUT /priorities/{id} - All Valid Inputs | 200            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
 
-@regression @put @negative @status400
+@negative @put @status400 @regression
 Scenario Outline: PUT requests returning 400
   # Tests that should fail with HTTP 400
   Given path '/priorities/{id}'

@@ -1,13 +1,13 @@
 @regression @get
 
-Feature: GET Priorities
+Feature: Listar todas las prioridades
 
 Background:
   * url baseUrl
   * def commonHeaders = getCommonHeaders()
   * configure headers = commonHeaders
 
-@smoke @positive @get
+@positive @get @smoke
 Scenario Outline: Successful GET requests
   # Tests with valid inputs that should succeed
   Given path '/priorities'
@@ -23,7 +23,7 @@ Scenario Outline: Successful GET requests
     | testId                              | testName                           | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     |
     | EPGETprioritiesvalid_all20251126_96 | GET /priorities - All Valid Inputs | 200            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 |
 
-@regression @get @negative @status400
+@negative @get @status400 @regression
 Scenario Outline: GET requests returning 400
   # Tests that should fail with HTTP 400
   Given path '/priorities'

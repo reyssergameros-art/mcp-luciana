@@ -86,14 +86,21 @@ class KarateGenerationService:
             config = self._create_karate_config(base_url, all_headers)
             config_path = self.repository.save_config(config, functional_dir)
             
+            # Extract endpoint summaries from swagger analysis
+            endpoint_summaries = self._extract_endpoint_summaries(test_case_files)
+            
             # Generate feature for each test case file
             for test_file in test_case_files:
                 try:
                     # Load test cases
                     test_data = self.repository.load_test_cases(test_file)
                     
-                    # Convert to KarateFeature with source filename
-                    feature = self._convert_to_karate_feature(test_data, test_file.name)
+                    # Get endpoint summary
+                    endpoint_key = f"{test_data['http_method']}:{test_data['endpoint']}"
+                    endpoint_summary = endpoint_summaries.get(endpoint_key)
+                    
+                    # Convert to KarateFeature with source filename and summary
+                    feature = self._convert_to_karate_feature(test_data, test_file.name, endpoint_summary)
                     
                     # Save feature file
                     feature_path = self.repository.save_feature(feature, functional_dir)
@@ -140,7 +147,7 @@ class KarateGenerationService:
         output_dir.mkdir(parents=True, exist_ok=True)
         return output_dir
     
-    def _convert_to_karate_feature(self, test_data: Dict[str, Any], source_filename: str) -> KarateFeature:
+    def _convert_to_karate_feature(self, test_data: Dict[str, Any], source_filename: str, endpoint_summary: Optional[str] = None) -> KarateFeature:
         """Convert test case data to KarateFeature model."""
         endpoint = test_data["endpoint"]
         http_method = HttpMethod[test_data["http_method"]]
@@ -171,8 +178,8 @@ class KarateGenerationService:
             )
             scenarios.extend(negative_scenarios)
         
-        # Create feature
-        feature_name = self._generate_feature_name(endpoint, http_method)
+        # Use endpoint summary if available, otherwise generate from endpoint
+        feature_name = endpoint_summary if endpoint_summary else self._generate_feature_name(endpoint, http_method)
         
         return KarateFeature(
             feature_name=feature_name,
@@ -376,3 +383,41 @@ class KarateGenerationService:
                 continue
         
         return None
+    
+    def _extract_endpoint_summaries(self, test_files: List) -> Dict[str, str]:
+        """
+        Extract endpoint summaries from swagger analysis.
+        Returns dict with key "METHOD:path" and value "summary".
+        """
+        import json
+        
+        summaries = {}
+        
+        for test_file in test_files:
+            try:
+                test_data = self.repository.load_test_cases(test_file)
+                
+                # Check if metadata contains source_file reference
+                if "metadata" in test_data and "source_file" in test_data["metadata"]:
+                    swagger_file = Path(test_data["metadata"]["source_file"])
+                    
+                    if swagger_file.exists():
+                        with open(swagger_file, 'r', encoding='utf-8') as f:
+                            swagger_data = json.load(f)
+                        
+                        # Extract endpoint summaries
+                        if "analysis" in swagger_data and "endpoints" in swagger_data["analysis"]:
+                            for endpoint in swagger_data["analysis"]["endpoints"]:
+                                method = endpoint.get("method", "")
+                                path = endpoint.get("path", "")
+                                summary = endpoint.get("summary", "")
+                                
+                                if method and path and summary:
+                                    key = f"{method}:{path}"
+                                    summaries[key] = summary
+                
+            except Exception:
+                # Skip files with errors
+                continue
+        
+        return summaries

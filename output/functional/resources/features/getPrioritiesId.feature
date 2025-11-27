@@ -1,6 +1,6 @@
 @regression @get
 
-Feature: GET Priorities Id
+Feature: Obtener prioridad por ID
 
 Background:
   * url baseUrl
@@ -8,7 +8,7 @@ Background:
   * configure headers = commonHeaders
   # Path parameters will be set in scenarios
 
-@smoke @positive @get
+@positive @get @smoke
 Scenario Outline: Successful GET requests
   # Tests with valid inputs that should succeed
   Given path '/priorities/{id}'
@@ -25,7 +25,7 @@ Scenario Outline: Successful GET requests
     | testId                               | testName                                | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     |
     | EPGETprioritiesidvalid_all20251126_1 | GET /priorities/{id} - All Valid Inputs | 200            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 |
 
-@regression @get @negative @status400
+@negative @get @status400 @regression
 Scenario Outline: GET requests returning 400
   # Tests that should fail with HTTP 400
   Given path '/priorities/{id}'
