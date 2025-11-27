@@ -2,20 +2,13 @@
 
 Feature: PUT Priorities Id
 
-  Automated tests for PUT /priorities/{id}
-  Generated from equivalence partitioning test cases
-
-  Total test cases: 39
-  Success scenarios: 1
-  Failure scenarios: 38
-
 Background:
   * url baseUrl
   * def commonHeaders = getCommonHeaders()
   * configure headers = commonHeaders
   # Path parameters will be set in scenarios
 
-@put @smoke @positive
+@smoke @positive @put
 Scenario Outline: Successful PUT requests
   # Tests with valid inputs that should succeed
   Given path '/priorities/{id}'
@@ -86,15 +79,3 @@ Scenario Outline: PUT requests returning 400
     | EPPUTprioritiesidinvalid_description_required20251126_65      | PUT /priorities/{id} - Invalid description (required)      | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |                                                                         |
     | EPPUTprioritiesidinvalid_description_required20251126_66      | PUT /priorities/{id} - Invalid description (required)      | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |                                                                         |
     | EPPUTprioritiesidinvalid_description_type20251126_67          | PUT /priorities/{id} - Invalid description (type)          | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | 12345                                                                   |
-
-# ============================================================
-# Feature Generation Metadata
-# ============================================================
-# Generated: 2025-11-27 15:25:12
-# Endpoint: /priorities/{id}
-# Method: PUT
-# Total Scenarios: 2
-# Total Test Cases: 39
-# Success Cases: 1
-# Failure Cases: 38
-# ============================================================

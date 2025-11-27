@@ -83,10 +83,6 @@ class FileKarateRepository(KarateGeneratorRepository):
             # Build feature content
             content = self.feature_builder.build(feature)
             
-            # Add generation metadata as comment at the end
-            metadata = self._generate_metadata_comment(feature)
-            content = f"{content}\n\n{metadata}"
-            
             # Write to file
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
@@ -140,17 +136,3 @@ class FileKarateRepository(KarateGeneratorRepository):
         
         return sorted(test_case_files)
     
-    def _generate_metadata_comment(self, feature: KarateFeature) -> str:
-        """Generate metadata comment for feature file."""
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return f"""# ============================================================
-# Feature Generation Metadata
-# ============================================================
-# Generated: {timestamp}
-# Endpoint: {feature.endpoint}
-# Method: {feature.http_method.value}
-# Total Scenarios: {len(feature.scenarios)}
-# Total Test Cases: {feature.total_test_cases}
-# Success Cases: {feature.success_count}
-# Failure Cases: {feature.failure_count}
-# ============================================================"""

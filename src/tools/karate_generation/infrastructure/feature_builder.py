@@ -49,17 +49,7 @@ class KarateFeatureBuilder:
     
     def _build_feature_description(self, feature: KarateFeature) -> str:
         """Build feature description section."""
-        lines = [
-            f"Feature: {feature.feature_name}",
-            "",
-            f"{self.indent}Automated tests for {feature.http_method.value} {feature.endpoint}",
-            f"{self.indent}Generated from equivalence partitioning test cases",
-            "",
-            f"{self.indent}Total test cases: {feature.total_test_cases}",
-            f"{self.indent}Success scenarios: {feature.success_count}",
-            f"{self.indent}Failure scenarios: {feature.failure_count}"
-        ]
-        return "\n".join(lines)
+        return f"Feature: {feature.feature_name}"
     
     def _build_background(self, feature: KarateFeature) -> str:
         """Build background section with common setup."""
