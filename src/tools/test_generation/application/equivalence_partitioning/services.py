@@ -1,14 +1,14 @@
-"""Application services for test case generation using ISTQB v4 techniques."""
+"""Application service for Equivalence Partitioning technique (ISTQB v4)."""
 import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-from ..domain.models import TestGenerationResult, PartitionSet, TestCase
-from ..domain.exceptions import InvalidSwaggerAnalysisError, TestGenerationError
-from ..infrastructure.equivalence_partitioning.partition_identifier import PartitionIdentifierRefactored
-from ..infrastructure.equivalence_partitioning.test_case_builder import TestCaseBuilderRefactored
-from ..infrastructure.equivalence_partitioning.status_code_resolver import StatusCodeResolver
-from ..infrastructure.equivalence_partitioning.error_code_resolver import ErrorCodeResolver
+from ...domain.models import TestGenerationResult, PartitionSet, TestCase
+from ...domain.exceptions import InvalidSwaggerAnalysisError, TestGenerationError
+from ...infrastructure.equivalence_partitioning.partition_identifier import PartitionIdentifierRefactored
+from ...infrastructure.equivalence_partitioning.test_case_builder import TestCaseBuilderRefactored
+from ...infrastructure.equivalence_partitioning.status_code_resolver import StatusCodeResolver
+from ...infrastructure.equivalence_partitioning.error_code_resolver import ErrorCodeResolver
 from src.shared.config import SwaggerConstants
 
 

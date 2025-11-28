@@ -57,8 +57,10 @@ class SwaggerAnalysisRequest(BaseModel):
 
 
 class TestGenerationRequest(BaseModel):
-    """Request model for test case generation"""
+    """Request model for test case generation (supports multiple ISTQB v4 techniques)"""
     swagger_analysis_file: str
+    technique: Optional[str] = "equivalence_partitioning"  # "equivalence_partitioning" or "boundary_value_analysis"
+    bva_version: Optional[str] = "2-value"  # Only for BVA: "2-value" or "3-value"
     endpoint_filter: Optional[str] = None
     method_filter: Optional[str] = None
     save_output: Optional[bool] = True
@@ -82,6 +84,22 @@ class TestGenerationRequest(BaseModel):
             raise ValueError(f"File must be JSON format: {v}")
         
         return str(path)
+    
+    @field_validator('technique')
+    @classmethod
+    def validate_technique(cls, v: Optional[str]) -> str:
+        """Validate testing technique."""
+        if v not in ['equivalence_partitioning', 'boundary_value_analysis']:
+            raise ValueError("Technique must be 'equivalence_partitioning' or 'boundary_value_analysis'")
+        return v
+    
+    @field_validator('bva_version')
+    @classmethod
+    def validate_bva_version(cls, v: Optional[str]) -> str:
+        """Validate BVA version."""
+        if v not in ['2-value', '3-value']:
+            raise ValueError("BVA version must be '2-value' or '3-value'")
+        return v
     
     @field_validator('method_filter')
     @classmethod
@@ -176,35 +194,58 @@ class SwaggerAnalysisMCPServer:
                 raise
         
         @self.mcp.tool()
-        async def generate_equivalence_partition_tests(request: TestGenerationRequest) -> str:
+        async def generate_test_cases(request: TestGenerationRequest) -> str:
             """
-            Generate test cases using Equivalence Partitioning technique (ISTQB v4).
+            Generate test cases using ISTQB v4 testing techniques.
             
-            This tool generates comprehensive test cases from swagger analysis results:
+            Supports multiple testing techniques:
+            
+            **Equivalence Partitioning (technique="equivalence_partitioning")**:
             - Identifies valid and invalid equivalence partitions
             - Creates positive tests (all valid inputs)
             - Creates negative tests (one invalid input at a time)
             - Achieves 100% partition coverage (ISTQB requirement)
-            - Includes test data, expected results, and execution steps
-            - Maps to error codes from swagger analysis
+            - Based on ISTQB v4: "Divides data into partitions where all elements 
+              should be processed the same way"
             
-            Based on ISTQB v4 definition: "Equivalence Partitioning divides data into 
-            partitions where all elements should be processed the same way. Testing one 
-            value from each partition is sufficient."
+            **Boundary Value Analysis (technique="boundary_value_analysis")**:
+            - Focuses on testing boundary values of ordered partitions
+            - String length boundaries (minLength, maxLength)
+            - Numeric value boundaries (minimum, maximum)
+            - Array count boundaries (minItems, maxItems)
+            - Supports 2-value BVA (boundary + 1 neighbor) or 3-value BVA (boundary + 2 neighbors)
+            - Coverage: (boundaries tested / total boundaries) * 100%
             
             Args:
-                request: TestGenerationRequest with swagger_analysis_file path
+                request: TestGenerationRequest with:
+                    - swagger_analysis_file: Path to swagger analysis JSON
+                    - technique: "equivalence_partitioning" or "boundary_value_analysis"
+                    - bva_version: "2-value" or "3-value" (only for BVA)
+                    - endpoint_filter: Optional endpoint path filter
+                    - method_filter: Optional HTTP method filter
+                    - save_output: Save results to JSON files
                 
             Returns:
                 Test generation results with all test cases in JSON format
             """
             try:
-                result = await self.orchestrator.generate_equivalence_partition_tests(
-                    swagger_analysis_file=request.swagger_analysis_file,
-                    endpoint_filter=request.endpoint_filter,
-                    method_filter=request.method_filter,
-                    save_output=request.save_output
-                )
+                if request.technique == "equivalence_partitioning":
+                    result = await self.orchestrator.generate_equivalence_partition_tests(
+                        swagger_analysis_file=request.swagger_analysis_file,
+                        endpoint_filter=request.endpoint_filter,
+                        method_filter=request.method_filter,
+                        save_output=request.save_output
+                    )
+                elif request.technique == "boundary_value_analysis":
+                    result = await self.orchestrator.generate_boundary_value_tests(
+                        swagger_analysis_file=request.swagger_analysis_file,
+                        bva_version=request.bva_version,
+                        endpoint_filter=request.endpoint_filter,
+                        method_filter=request.method_filter,
+                        save_output=request.save_output
+                    )
+                else:
+                    raise ValueError(f"Unsupported technique: {request.technique}")
                 
                 import json
                 return json.dumps(result, indent=2)

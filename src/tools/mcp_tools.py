@@ -9,8 +9,10 @@ from src.tools.swagger_analysis.domain.exceptions import SwaggerAnalysisError
 from src.shared.mappers.swagger_mapper import SwaggerMapper
 
 # Import test generation services
-from src.tools.test_generation.application.services import EquivalencePartitionService
+from src.tools.test_generation.application.equivalence_partitioning.services import EquivalencePartitionService
+from src.tools.test_generation.application.boundary_value_analysis.services import BVAService
 from src.tools.test_generation.domain.exceptions import TestGenerationError
+from src.tools.test_generation.domain.boundary_value_analysis.exceptions import BVAError
 from src.shared.mappers.test_case_mapper import TestCaseMapper
 
 # Import karate generation services
@@ -29,6 +31,7 @@ class MCPToolsOrchestrator:
         
         # Initialize test generation
         self.test_generation_service = EquivalencePartitionService()
+        self.bva_service = BVAService()
         
         # Initialize karate generation
         self.karate_repo = FileKarateRepository()
@@ -246,3 +249,160 @@ class MCPToolsOrchestrator:
                 "error_type": "UnexpectedError",
                 "message": f"Unexpected error during Karate feature generation: {str(e)}"
             }
+    
+    async def generate_boundary_value_tests(
+        self,
+        swagger_analysis_file: str,
+        bva_version: str = "2-value",
+        endpoint_filter: str = None,
+        method_filter: str = None,
+        save_output: bool = True
+    ) -> Dict[str, Any]:
+        """
+        Tool: Generate test cases using Boundary Value Analysis (ISTQB v4).
+        
+        Applies BVA to ordered partitions (string length, numeric ranges, array counts).
+        Supports both 2-value BVA (boundary + 1 neighbor) and 3-value BVA (boundary + 2 neighbors).
+        
+        Args:
+            swagger_analysis_file: Path to swagger analysis JSON file
+            bva_version: "2-value" or "3-value" BVA (default: "2-value")
+            endpoint_filter: Optional - filter by specific endpoint
+            method_filter: Optional - filter by HTTP method
+            save_output: Whether to save test cases to JSON file
+            
+        Returns:
+            BVA test generation results with coverage metrics
+        """
+        try:
+            # Generate BVA test cases
+            results = await self.bva_service.generate_bva_tests(
+                swagger_analysis_file=swagger_analysis_file,
+                bva_version=bva_version,
+                endpoint_filter=endpoint_filter,
+                method_filter=method_filter
+            )
+            
+            # Convert to dictionary
+            results_dict = self._bva_results_to_dict(results)
+            
+            # Calculate totals
+            total_test_cases = sum(len(r.test_cases) for r in results)
+            total_boundaries = sum(r.boundaries_identified for r in results)
+            avg_coverage = sum(r.coverage_percentage for r in results) / len(results) if results else 0
+            
+            response = {
+                "success": True,
+                "data": results_dict,
+                "summary": {
+                    "total_endpoints": len(results),
+                    "total_test_cases": total_test_cases,
+                    "total_boundaries": total_boundaries,
+                    "average_coverage": round(avg_coverage, 2),
+                    "technique": f"Boundary Value Analysis ({bva_version}) - ISTQB v4"
+                },
+                "message": f"Successfully generated {total_test_cases} BVA test cases for {len(results)} endpoints"
+            }
+            
+            # Save to files if requested
+            if save_output:
+                file_paths = self._save_bva_results(results, swagger_analysis_file)
+                response["output_files"] = [str(fp) for fp in file_paths]
+                response["message"] += f" | Output saved to {len(file_paths)} files"
+            
+            return response
+            
+        except BVAError as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "error_type": "BVAError",
+                "message": f"BVA generation failed: {str(e)}"
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "error_type": "UnexpectedError",
+                "message": f"Unexpected error during BVA generation: {str(e)}"
+            }
+    
+    def _bva_results_to_dict(self, results: list) -> list:
+        """Convert BVA results to dictionary format."""
+        return [{
+            "endpoint": r.endpoint,
+            "http_method": r.http_method,
+            "bva_version": r.bva_version,
+            "boundaries_identified": r.boundaries_identified,
+            "coverage_percentage": round(r.coverage_percentage, 2),
+            "coverage_items_tested": r.coverage_items_tested,
+            "coverage_items_total": r.coverage_items_total,
+            "metadata": r.metadata,
+            "test_cases": [{
+                "test_case_id": tc.test_case_id,
+                "test_name": tc.test_name,
+                "test_data": tc.test_data,
+                "expected_status_code": tc.expected_status_code,
+                "expected_error": tc.expected_error,
+                "boundary_info": tc.boundary_info,
+                "priority": tc.priority
+            } for tc in r.test_cases]
+        } for r in results]
+    
+    def _save_bva_results(self, results: list, swagger_file: str) -> list:
+        """Save BVA results to JSON files."""
+        import json
+        from datetime import datetime
+        
+        swagger_path = Path(swagger_file)
+        output_dir = swagger_path.parent.parent / "bva_tests"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        file_paths = []
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        for result in results:
+            # Generate filename
+            endpoint_name = result.endpoint.replace("/", "_").replace("{", "").replace("}", "")
+            if endpoint_name.startswith("_"):
+                endpoint_name = endpoint_name[1:]
+            
+            filename = f"{result.http_method.lower()}{endpoint_name}_{result.bva_version}_{timestamp}.json"
+            file_path = output_dir / filename
+            
+            # Prepare output data
+            output_data = {
+                "metadata": {
+                    "generated_at": datetime.now().isoformat(),
+                    "source_file": str(swagger_path),
+                    "technique": f"Boundary Value Analysis ({result.bva_version}) - ISTQB v4",
+                    "endpoint": result.endpoint,
+                    "http_method": result.http_method,
+                    "tool_version": "1.0.0"
+                },
+                "metrics": {
+                    "boundaries_identified": result.boundaries_identified,
+                    "coverage_percentage": round(result.coverage_percentage, 2),
+                    "coverage_items_tested": result.coverage_items_tested,
+                    "coverage_items_total": result.coverage_items_total,
+                    "total_test_cases": len(result.test_cases)
+                },
+                "test_cases": [{
+                    "test_case_id": tc.test_case_id,
+                    "test_name": tc.test_name,
+                    "test_data": tc.test_data,
+                    "expected_status_code": tc.expected_status_code,
+                    "expected_error": tc.expected_error,
+                    "boundary_info": tc.boundary_info,
+                    "bva_version": tc.bva_version,
+                    "priority": tc.priority
+                } for tc in result.test_cases]
+            }
+            
+            # Write to file
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(output_data, f, indent=2, ensure_ascii=False)
+            
+            file_paths.append(file_path)
+        
+        return file_paths

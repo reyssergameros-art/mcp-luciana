@@ -7,8 +7,7 @@ import json
 from src.tools.test_generation.domain.models import (
     TestGenerationResult, TestCase, EquivalencePartition, PartitionSet
 )
-from src.tools.test_generation.infrastructure.filename_generator import FilenameGenerator
-from src.tools.test_generation.infrastructure.filename_generator import FilenameGenerator
+from src.tools.test_generation.infrastructure.equivalence_partitioning.filename_generator import FilenameGenerator
 
 
 class TestCaseMapper:

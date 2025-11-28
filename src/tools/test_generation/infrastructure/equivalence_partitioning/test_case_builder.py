@@ -2,11 +2,11 @@
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 
-from ..domain.models import (
+from ...domain.equivalence_partitioning.models import (
     TestCase, EquivalencePartition, PartitionSet, PartitionType, 
     TestCasePriority, PartitionCategory
 )
-from ..domain.exceptions import TestCaseBuildError
+from ...domain.equivalence_partitioning.exceptions import TestCaseBuildError
 from .status_code_resolver import StatusCodeResolver
 from .error_code_resolver import ErrorCodeResolver
 from src.shared.config import SwaggerConstants

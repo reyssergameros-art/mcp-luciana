@@ -2,7 +2,7 @@
 from typing import List, Dict, Any
 from abc import ABC, abstractmethod
 
-from ..domain.models import EquivalencePartition, PartitionType, PartitionCategory
+from ...domain.equivalence_partitioning.models import EquivalencePartition, PartitionType, PartitionCategory
 from src.shared.config import SwaggerConstants
 
 

@@ -1,55 +1,16 @@
-"""Infrastructure layer for test generation - refactored with SOLID principles."""
+"""Infrastructure layer for test generation (all ISTQB v4 techniques).
 
-# Refactored implementations (recommended)
-from .partition_identifier_refactored import PartitionIdentifierRefactored
-from .test_case_builder_refactored import TestCaseBuilderRefactored
-from .status_code_resolver import StatusCodeResolver
-from .error_code_resolver import ErrorCodeResolver
+This module provides infrastructure components organized by testing technique:
+- equivalence_partitioning/: EP-specific implementations
+- boundary_value_analysis/: BVA-specific implementations
 
-# Specialized generators
-from .format_partition_factory import (
-    FormatPartitionGeneratorFactory,
-    FormatPartitionGenerator,
-    UUIDPartitionGenerator,
-    EmailPartitionGenerator,
-    DatePartitionGenerator,
-    URIPartitionGenerator,
-    IPv4PartitionGenerator,
-    IPv6PartitionGenerator,
-    HostnamePartitionGenerator
-)
+Each subdirectory contains complete infrastructure for its technique following
+Clean Architecture and SOLID principles.
+"""
 
-from .constraint_partition_generators import (
-    LengthPartitionGenerator,
-    RangePartitionGenerator,
-    EnumPartitionGenerator,
-    RequiredPartitionGenerator,
-    TypePartitionGenerator
-)
+# Infrastructure is now organized by technique in subdirectories
+# Import from specific subdirectories as needed:
+# - from .equivalence_partitioning.partition_identifier import PartitionIdentifierRefactored
+# - from .boundary_value_analysis.boundary_identifier import BoundaryIdentifier
 
-from .filename_generator import FilenameGenerator
-
-__all__ = [
-    # Refactored (recommended)
-    "PartitionIdentifierRefactored",
-    "TestCaseBuilderRefactored",
-    "StatusCodeResolver",
-    "ErrorCodeResolver",
-    
-    # Factories and Generators
-    "FormatPartitionGeneratorFactory",
-    "FormatPartitionGenerator",
-    "UUIDPartitionGenerator",
-    "EmailPartitionGenerator",
-    "DatePartitionGenerator",
-    "URIPartitionGenerator",
-    "IPv4PartitionGenerator",
-    "IPv6PartitionGenerator",
-    "HostnamePartitionGenerator",
-    "LengthPartitionGenerator",
-    "RangePartitionGenerator",
-    "EnumPartitionGenerator",
-    "RequiredPartitionGenerator",
-    "TypePartitionGenerator",
-    "FilenameGenerator",
-]
+__all__ = []

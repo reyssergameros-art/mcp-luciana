@@ -1,8 +1,8 @@
 """Refactored partition identifier using SOLID principles and specialized generators."""
 from typing import Dict, Any, List
 
-from ..domain.models import PartitionSet
-from ..domain.exceptions import PartitionIdentificationError
+from ...domain.equivalence_partitioning.models import PartitionSet
+from ...domain.equivalence_partitioning.exceptions import PartitionIdentificationError
 from .format_partition_factory import FormatPartitionGeneratorFactory
 from .constraint_partition_generators import (
     LengthPartitionGenerator,

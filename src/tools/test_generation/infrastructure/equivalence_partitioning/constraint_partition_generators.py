@@ -1,10 +1,8 @@
 """Generators for constraint-specific partitions (length, range, required, etc.)."""
 from typing import List, Dict, Any
 
-from ..domain.models import EquivalencePartition, PartitionType, PartitionCategory
+from ...domain.equivalence_partitioning.models import EquivalencePartition, PartitionType, PartitionCategory
 from src.shared.config import SwaggerConstants
-
-
 class LengthPartitionGenerator:
     """
     Generates partitions for string length constraints.
