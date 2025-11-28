@@ -7,15 +7,24 @@ from fastmcp import FastMCP
 from pydantic import BaseModel, field_validator
 from typing import Optional
 
+from src.shared.config import get_config_manager, ConfigManager
 from src.tools.mcp_tools import MCPToolsOrchestrator
 
 
 class SwaggerAnalysisRequest(BaseModel):
     """Request model for Swagger analysis"""
     swagger_url: str
-    format: Optional[str] = "detailed"  # "detailed" or "summary"
+    format: Optional[str] = None  # "detailed" or "summary" - defaults from config
     save_output: Optional[bool] = True  # Save to JSON file
-    output_format: Optional[str] = "both"  # "console", "file", or "both"
+    output_format: Optional[str] = None  # "console", "file", or "both" - defaults from config
+    
+    def model_post_init(self, __context) -> None:
+        """Set defaults from configuration after initialization."""
+        config = get_config_manager()
+        if self.format is None:
+            self.format = config.swagger_analysis.get_default_format()
+        if self.output_format is None:
+            self.output_format = config.swagger_analysis.get_default_output_format()
     
     @field_validator('swagger_url')
     @classmethod
@@ -43,27 +52,45 @@ class SwaggerAnalysisRequest(BaseModel):
     @classmethod
     def validate_format(cls, v: Optional[str]) -> str:
         """Validate format is either 'detailed' or 'summary'."""
-        if v not in ['detailed', 'summary']:
-            raise ValueError("Format must be 'detailed' or 'summary'")
+        if v is None:
+            return None
+        config = get_config_manager()
+        if not config.swagger_analysis.validate_format(v):
+            valid_formats = ', '.join(config.swagger_analysis.VALID_FORMATS)
+            raise ValueError(f"Format must be one of: {valid_formats}")
         return v
     
     @field_validator('output_format')
     @classmethod
     def validate_output_format(cls, v: Optional[str]) -> str:
         """Validate output_format is 'console', 'file', or 'both'."""
-        if v not in ['console', 'file', 'both']:
-            raise ValueError("output_format must be 'console', 'file', or 'both'")
+        if v is None:
+            return None
+        config = get_config_manager()
+        if not config.swagger_analysis.validate_output_format(v):
+            valid_formats = ', '.join(config.swagger_analysis.VALID_OUTPUT_FORMATS)
+            raise ValueError(f"output_format must be one of: {valid_formats}")
         return v
 
 
 class TestGenerationRequest(BaseModel):
-    """Request model for test case generation (supports multiple ISTQB v4 techniques)"""
+    """
+    Request model for test case generation using ISTQB v4 techniques.
+    
+    Automatically applies both Equivalence Partitioning and Boundary Value Analysis.
+    Generates one unified file per endpoint with all test cases from both techniques.
+    """
     swagger_analysis_file: str
-    technique: Optional[str] = "equivalence_partitioning"  # "equivalence_partitioning" or "boundary_value_analysis"
-    bva_version: Optional[str] = "2-value"  # Only for BVA: "2-value" or "3-value"
+    bva_version: Optional[str] = None  # "2-value", "3-value", or "both" - defaults from config
     endpoint_filter: Optional[str] = None
     method_filter: Optional[str] = None
     save_output: Optional[bool] = True
+    
+    def model_post_init(self, __context) -> None:
+        """Set defaults from configuration after initialization."""
+        config = get_config_manager()
+        if self.bva_version is None:
+            self.bva_version = config.test_generation.get_default_bva_version()
     
     @field_validator('swagger_analysis_file')
     @classmethod
@@ -85,20 +112,16 @@ class TestGenerationRequest(BaseModel):
         
         return str(path)
     
-    @field_validator('technique')
-    @classmethod
-    def validate_technique(cls, v: Optional[str]) -> str:
-        """Validate testing technique."""
-        if v not in ['equivalence_partitioning', 'boundary_value_analysis']:
-            raise ValueError("Technique must be 'equivalence_partitioning' or 'boundary_value_analysis'")
-        return v
-    
     @field_validator('bva_version')
     @classmethod
     def validate_bva_version(cls, v: Optional[str]) -> str:
         """Validate BVA version."""
-        if v not in ['2-value', '3-value']:
-            raise ValueError("BVA version must be '2-value' or '3-value'")
+        if v is None:
+            return None
+        config = get_config_manager()
+        if not config.test_generation.validate_bva_version(v):
+            valid_versions = ', '.join(config.test_generation.VALID_BVA_VERSIONS)
+            raise ValueError(f"BVA version must be one of: {valid_versions}")
         return v
     
     @field_validator('method_filter')
@@ -118,8 +141,14 @@ class TestGenerationRequest(BaseModel):
 class KarateGenerationRequest(BaseModel):
     """Request model for Karate feature generation"""
     test_cases_directory: str
-    base_url: Optional[str] = "http://localhost:8080"
+    base_url: Optional[str] = None  # Defaults from config
     output_directory: Optional[str] = None
+    
+    def model_post_init(self, __context) -> None:
+        """Set defaults from configuration after initialization."""
+        config = get_config_manager()
+        if self.base_url is None:
+            self.base_url = config.api.get_default_base_url()
     
     @field_validator('test_cases_directory')
     @classmethod
@@ -142,11 +171,13 @@ class KarateGenerationRequest(BaseModel):
     @classmethod
     def validate_base_url(cls, v: Optional[str]) -> str:
         """Validate base URL format."""
-        if not v:
-            return "http://localhost:8080"
+        if v is None:
+            return None
         
-        if not (v.startswith('http://') or v.startswith('https://')):
-            raise ValueError("base_url must start with http:// or https://")
+        config = get_config_manager()
+        if not config.api.validate_protocol(v):
+            valid_protocols = ', '.join(config.api.VALID_PROTOCOLS)
+            raise ValueError(f"base_url must start with one of: {valid_protocols}://")
         
         return v
 
@@ -154,9 +185,11 @@ class KarateGenerationRequest(BaseModel):
 class SwaggerAnalysisMCPServer:
     """MCP Server for Swagger Analysis Tool"""
     
-    def __init__(self):
+    def __init__(self, config_manager: ConfigManager = None):
+        """Initialize MCP Server with dependency injection."""
+        self.config = config_manager or get_config_manager()
         self.mcp = FastMCP("MCP-Swagger-Analysis")
-        self.orchestrator = MCPToolsOrchestrator()
+        self.orchestrator = MCPToolsOrchestrator(config_manager=self.config)
         self._setup_tools()
     
     def _setup_tools(self):
@@ -198,54 +231,53 @@ class SwaggerAnalysisMCPServer:
             """
             Generate test cases using ISTQB v4 testing techniques.
             
-            Supports multiple testing techniques:
+            **IMPORTANT**: This tool automatically generates test cases using BOTH techniques 
+            (Equivalence Partitioning + Boundary Value Analysis) in a unified output.
+            Each endpoint gets ONE file containing all test cases from both techniques.
             
-            **Equivalence Partitioning (technique="equivalence_partitioning")**:
-            - Identifies valid and invalid equivalence partitions
-            - Creates positive tests (all valid inputs)
-            - Creates negative tests (one invalid input at a time)
-            - Achieves 100% partition coverage (ISTQB requirement)
-            - Based on ISTQB v4: "Divides data into partitions where all elements 
-              should be processed the same way"
+            **Techniques Applied Automatically**:
             
-            **Boundary Value Analysis (technique="boundary_value_analysis")**:
-            - Focuses on testing boundary values of ordered partitions
-            - String length boundaries (minLength, maxLength)
-            - Numeric value boundaries (minimum, maximum)
-            - Array count boundaries (minItems, maxItems)
-            - Supports 2-value BVA (boundary + 1 neighbor) or 3-value BVA (boundary + 2 neighbors)
-            - Coverage: (boundaries tested / total boundaries) * 100%
+            1. **Equivalence Partitioning**:
+               - Identifies valid and invalid equivalence partitions
+               - Creates positive tests (all valid inputs)
+               - Creates negative tests (one invalid input at a time)
+               - Achieves 100% partition coverage (ISTQB requirement)
+               - Applied to ALL HTTP methods: GET, POST, PUT, DELETE, PATCH
+            
+            2. **Boundary Value Analysis (2-value AND 3-value)**:
+               - Tests boundary values of ordered partitions
+               - String length boundaries (minLength, maxLength)
+               - Numeric value boundaries (minimum, maximum)
+               - Array count boundaries (minItems, maxItems)
+               - 2-value BVA: Tests boundary + 1 neighbor value
+               - 3-value BVA: Tests boundary + 2 neighbor values
+               - Applied to ALL HTTP methods including GET (query params) and DELETE (path params)
+               - Coverage: (boundaries tested / total boundaries) * 100%
+            
+            **Output**: One unified JSON file per endpoint with test cases from ALL techniques.
+            Compatible with karate_generation tool for automation.
             
             Args:
                 request: TestGenerationRequest with:
-                    - swagger_analysis_file: Path to swagger analysis JSON
-                    - technique: "equivalence_partitioning" or "boundary_value_analysis"
-                    - bva_version: "2-value" or "3-value" (only for BVA)
+                    - swagger_analysis_file: Path to swagger analysis JSON (required)
+                    - bva_version: "2-value", "3-value", or "both" (default: "both")
                     - endpoint_filter: Optional endpoint path filter
                     - method_filter: Optional HTTP method filter
-                    - save_output: Save results to JSON files
+                    - save_output: Save results to JSON files (default: true)
                 
             Returns:
-                Test generation results with all test cases in JSON format
+                Test generation results with all test cases from all techniques in JSON format
             """
             try:
-                if request.technique == "equivalence_partitioning":
-                    result = await self.orchestrator.generate_equivalence_partition_tests(
-                        swagger_analysis_file=request.swagger_analysis_file,
-                        endpoint_filter=request.endpoint_filter,
-                        method_filter=request.method_filter,
-                        save_output=request.save_output
-                    )
-                elif request.technique == "boundary_value_analysis":
-                    result = await self.orchestrator.generate_boundary_value_tests(
-                        swagger_analysis_file=request.swagger_analysis_file,
-                        bva_version=request.bva_version,
-                        endpoint_filter=request.endpoint_filter,
-                        method_filter=request.method_filter,
-                        save_output=request.save_output
-                    )
-                else:
-                    raise ValueError(f"Unsupported technique: {request.technique}")
+                # Always use unified mode with both techniques for comprehensive coverage
+                result = await self.orchestrator.generate_test_cases_unified(
+                    swagger_analysis_file=request.swagger_analysis_file,
+                    techniques=["equivalence_partitioning", "boundary_value_analysis"],
+                    bva_version=request.bva_version,
+                    endpoint_filter=request.endpoint_filter,
+                    method_filter=request.method_filter,
+                    save_output=request.save_output
+                )
                 
                 import json
                 return json.dumps(result, indent=2)

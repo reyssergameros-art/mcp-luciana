@@ -14,6 +14,7 @@ class BoundaryType(Enum):
     """Type of boundary value."""
     MINIMUM = "minimum"
     MAXIMUM = "maximum"
+    EXACT = "exact"  # For fixed-length formats like UUID (exactly N characters)
 
 
 @dataclass
@@ -34,6 +35,12 @@ class BoundaryValue:
             values.append(self.lower_neighbor)
         elif self.boundary_type == BoundaryType.MAXIMUM and self.upper_neighbor is not None:
             values.append(self.upper_neighbor)
+        elif self.boundary_type == BoundaryType.EXACT:
+            # For exact length (like UUID), test boundary and both neighbors
+            if self.lower_neighbor is not None:
+                values.append(self.lower_neighbor)
+            if self.upper_neighbor is not None:
+                values.append(self.upper_neighbor)
         return values
     
     def get_test_values_3value(self) -> List[Any]:

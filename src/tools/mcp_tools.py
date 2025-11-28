@@ -2,6 +2,9 @@
 from typing import Dict, Any
 from pathlib import Path
 
+# Import configuration
+from src.shared.config import get_config_manager, ConfigManager
+
 # Import swagger analysis services
 from src.tools.swagger_analysis.application.services import SwaggerAnalysisService
 from src.tools.swagger_analysis.infrastructure.repositories import HttpSwaggerRepository
@@ -11,6 +14,7 @@ from src.shared.mappers.swagger_mapper import SwaggerMapper
 # Import test generation services
 from src.tools.test_generation.application.equivalence_partitioning.services import EquivalencePartitionService
 from src.tools.test_generation.application.boundary_value_analysis.services import BVAService
+from src.tools.test_generation.application.unified_service import UnifiedTestGenerationService
 from src.tools.test_generation.domain.exceptions import TestGenerationError
 from src.tools.test_generation.domain.boundary_value_analysis.exceptions import BVAError
 from src.shared.mappers.test_case_mapper import TestCaseMapper
@@ -24,14 +28,21 @@ from src.tools.karate_generation.domain.exceptions import KarateGenerationError
 class MCPToolsOrchestrator:
     """Orchestrator for Swagger Analysis and Test Generation tools."""
     
-    def __init__(self):
+    def __init__(self, config_manager: ConfigManager = None):
+        # Initialize configuration (Dependency Injection)
+        self.config = config_manager or get_config_manager()
+        
         # Initialize swagger analysis
         self.swagger_repo = HttpSwaggerRepository()
         self.swagger_service = SwaggerAnalysisService(self.swagger_repo)
         
-        # Initialize test generation
+        # Initialize test generation (SOLID: Dependency Injection)
         self.test_generation_service = EquivalencePartitionService()
         self.bva_service = BVAService()
+        self.unified_service = UnifiedTestGenerationService(
+            ep_service=self.test_generation_service,
+            bva_service=self.bva_service
+        )
         
         # Initialize karate generation
         self.karate_repo = FileKarateRepository()
@@ -199,11 +210,11 @@ class MCPToolsOrchestrator:
                     "message": "Test cases directory does not exist"
                 }
             
-            # Default output directory
+            # Default output directory (from configuration)
             if output_directory is None:
-                output_directory = "output/functional"
-            
-            output_dir = Path(output_directory)
+                output_dir = self.config.output.get_functional_output_path()
+            else:
+                output_dir = Path(output_directory)
             
             # Generate features
             result = self.karate_service.generate_features_from_directory(
@@ -250,6 +261,97 @@ class MCPToolsOrchestrator:
                 "message": f"Unexpected error during Karate feature generation: {str(e)}"
             }
     
+    async def generate_test_cases_unified(
+        self,
+        swagger_analysis_file: str,
+        techniques: list[str] = None,
+        bva_version: str = "2-value",
+        endpoint_filter: str = None,
+        method_filter: str = None,
+        save_output: bool = True
+    ) -> Dict[str, Any]:
+        """
+        Tool: Generate test cases using multiple ISTQB v4 techniques (unified output).
+        
+        Generates test cases with one or more techniques and outputs unified files:
+        - Each endpoint gets ONE file with all techniques combined
+        - Supports: Equivalence Partitioning, BVA 2-value, BVA 3-value
+        - Compatible with karate_generation tool
+        
+        Args:
+            swagger_analysis_file: Path to swagger analysis JSON file
+            techniques: List of techniques - ["equivalence_partitioning", "boundary_value_analysis"]
+                       Default: ["equivalence_partitioning", "boundary_value_analysis"]
+            bva_version: "2-value", "3-value", or "both" (default: "2-value")
+            endpoint_filter: Optional - filter by specific endpoint
+            method_filter: Optional - filter by HTTP method
+            save_output: Whether to save test cases to JSON files
+            
+        Returns:
+            Unified test generation results with all techniques applied
+        """
+        try:
+            # Default to both techniques if not specified
+            if techniques is None:
+                techniques = ["equivalence_partitioning", "boundary_value_analysis"]
+            
+            # Generate unified test cases (orchestrates all techniques)
+            results = await self.unified_service.generate_all_techniques(
+                swagger_analysis_file=swagger_analysis_file,
+                techniques=techniques,
+                bva_version=bva_version,
+                endpoint_filter=endpoint_filter,
+                method_filter=method_filter,
+                save_output=save_output
+            )
+            
+            # Convert to dictionary
+            results_dict = [TestCaseMapper.to_unified_dict(r) for r in results]
+            
+            # Calculate totals
+            total_test_cases = sum(len(r.test_cases) for r in results)
+            total_endpoints = len(results)
+            techniques_applied = list(set(t for r in results for t in r.techniques_applied))
+            
+            response = {
+                "success": True,
+                "data": results_dict,
+                "summary": {
+                    "total_endpoints": total_endpoints,
+                    "total_test_cases": total_test_cases,
+                    "techniques_applied": techniques_applied,
+                    "bva_version": bva_version if "boundary_value_analysis" in techniques else None
+                },
+                "message": (
+                    f"Successfully generated {total_test_cases} test cases "
+                    f"for {total_endpoints} endpoints using {len(techniques_applied)} techniques"
+                )
+            }
+            
+            # Add file paths if saved
+            if save_output:
+                # Files already saved by unified service
+                output_dir = self.config.output.get_test_cases_output_path()
+                response["output_directory"] = str(output_dir)
+                response["message"] += f" | Output saved to {output_dir}"
+            
+            return response
+            
+        except TestGenerationError as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "error_type": "TestGenerationError",
+                "message": f"Unified test generation failed: {str(e)}"
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "error_type": "UnexpectedError",
+                "message": f"Unexpected error during unified test generation: {str(e)}"
+            }
+    
     async def generate_boundary_value_tests(
         self,
         swagger_analysis_file: str,
@@ -260,6 +362,9 @@ class MCPToolsOrchestrator:
     ) -> Dict[str, Any]:
         """
         Tool: Generate test cases using Boundary Value Analysis (ISTQB v4).
+        
+        DEPRECATED: Use generate_test_cases_unified() instead for unified output.
+        This method generates separate BVA files (not compatible with karate_generation).
         
         Applies BVA to ordered partitions (string length, numeric ranges, array counts).
         Supports both 2-value BVA (boundary + 1 neighbor) and 3-value BVA (boundary + 2 neighbors).
@@ -355,7 +460,8 @@ class MCPToolsOrchestrator:
         from datetime import datetime
         
         swagger_path = Path(swagger_file)
-        output_dir = swagger_path.parent.parent / "bva_tests"
+        # Use configuration for output directory
+        output_dir = self.config.output.get_bva_output_path()
         output_dir.mkdir(parents=True, exist_ok=True)
         
         file_paths = []
@@ -378,7 +484,7 @@ class MCPToolsOrchestrator:
                     "technique": f"Boundary Value Analysis ({result.bva_version}) - ISTQB v4",
                     "endpoint": result.endpoint,
                     "http_method": result.http_method,
-                    "tool_version": "1.0.0"
+                    "tool_version": self.config.test_generation.TOOL_VERSION
                 },
                 "metrics": {
                     "boundaries_identified": result.boundaries_identified,
@@ -401,7 +507,12 @@ class MCPToolsOrchestrator:
             
             # Write to file
             with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(output_data, f, indent=2, ensure_ascii=False)
+                json.dump(
+                    output_data, 
+                    f, 
+                    indent=self.config.output.JSON_INDENT,
+                    ensure_ascii=self.config.output.JSON_ENSURE_ASCII
+                )
             
             file_paths.append(file_path)
         

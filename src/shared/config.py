@@ -144,6 +144,202 @@ class SwaggerConstants:
     MIN_PARTITION_COVERAGE = 100.0  # ISTQB requires 100% partition coverage
 
 
+from pathlib import Path
+from dataclasses import dataclass
+
+
+@dataclass
+class OutputConfig:
+    """Configuration for output directories and file formats."""
+    
+    # Base output directory
+    BASE_OUTPUT_DIR: Path = Path("output")
+    
+    # Subdirectories
+    SWAGGER_OUTPUT_DIR: str = "swagger"
+    TEST_CASES_OUTPUT_DIR: str = "test_cases"
+    BVA_OUTPUT_DIR: str = "bva_tests"
+    FUNCTIONAL_OUTPUT_DIR: str = "functional"
+    FEATURES_OUTPUT_DIR: str = "resources/features"
+    
+    # File formats
+    JSON_INDENT: int = 2
+    JSON_ENSURE_ASCII: bool = False
+    
+    def get_swagger_output_path(self) -> Path:
+        """Get the full path for swagger output directory."""
+        return self.BASE_OUTPUT_DIR / self.SWAGGER_OUTPUT_DIR
+    
+    def get_test_cases_output_path(self) -> Path:
+        """Get the full path for test cases output directory."""
+        return self.BASE_OUTPUT_DIR / self.TEST_CASES_OUTPUT_DIR
+    
+    def get_bva_output_path(self) -> Path:
+        """Get the full path for BVA output directory."""
+        return self.BASE_OUTPUT_DIR / self.BVA_OUTPUT_DIR
+    
+    def get_functional_output_path(self) -> Path:
+        """Get the full path for functional tests output directory."""
+        return self.BASE_OUTPUT_DIR / self.FUNCTIONAL_OUTPUT_DIR
+    
+    def get_features_output_path(self) -> Path:
+        """Get the full path for Karate features output directory."""
+        return self.get_functional_output_path() / self.FEATURES_OUTPUT_DIR
+
+
+@dataclass
+class APIConfig:
+    """Configuration for API defaults."""
+    
+    DEFAULT_BASE_URL: str = "http://localhost:8080"
+    DEFAULT_PROTOCOL: str = "http"
+    DEFAULT_HOST: str = "localhost"
+    DEFAULT_PORT: int = 8080
+    
+    VALID_PROTOCOLS: tuple = ("http", "https")
+    
+    def get_default_base_url(self) -> str:
+        """Get the default base URL."""
+        return self.DEFAULT_BASE_URL
+    
+    def validate_protocol(self, url: str) -> bool:
+        """Validate if URL has valid protocol."""
+        return any(url.startswith(f"{proto}://") for proto in self.VALID_PROTOCOLS)
+
+
+@dataclass
+class TestGenerationConfig:
+    """Configuration for test generation."""
+    
+    # Default techniques
+    DEFAULT_TECHNIQUES: list = None
+    DEFAULT_BVA_VERSION: str = "both"
+    
+    # Valid values
+    VALID_BVA_VERSIONS: tuple = ("2-value", "3-value", "both")
+    VALID_TECHNIQUES: tuple = ("equivalence_partitioning", "boundary_value_analysis")
+    
+    # Tool version
+    TOOL_VERSION: str = "1.0.0"
+    
+    def __post_init__(self):
+        """Initialize default techniques after instance creation."""
+        if self.DEFAULT_TECHNIQUES is None:
+            self.DEFAULT_TECHNIQUES = [
+                "equivalence_partitioning",
+                "boundary_value_analysis"
+            ]
+    
+    def get_default_techniques(self) -> list:
+        """Get the default techniques list."""
+        if self.DEFAULT_TECHNIQUES is None:
+            return list(self.VALID_TECHNIQUES)
+        return self.DEFAULT_TECHNIQUES
+    
+    def get_default_bva_version(self) -> str:
+        """Get the default BVA version."""
+        return self.DEFAULT_BVA_VERSION
+    
+    def validate_bva_version(self, version: str) -> bool:
+        """Validate BVA version."""
+        return version in self.VALID_BVA_VERSIONS
+    
+    def validate_technique(self, technique: str) -> bool:
+        """Validate technique name."""
+        return technique in self.VALID_TECHNIQUES
+
+
+@dataclass
+class SwaggerAnalysisConfig:
+    """Configuration for Swagger analysis."""
+    
+    # Default formats
+    DEFAULT_FORMAT: str = "detailed"
+    DEFAULT_OUTPUT_FORMAT: str = "both"
+    
+    # Valid values
+    VALID_FORMATS: tuple = ("detailed", "summary")
+    VALID_OUTPUT_FORMATS: tuple = ("console", "file", "both")
+    
+    def get_default_format(self) -> str:
+        """Get the default analysis format."""
+        return self.DEFAULT_FORMAT
+    
+    def get_default_output_format(self) -> str:
+        """Get the default output format."""
+        return self.DEFAULT_OUTPUT_FORMAT
+    
+    def validate_format(self, format: str) -> bool:
+        """Validate analysis format."""
+        return format in self.VALID_FORMATS
+    
+    def validate_output_format(self, output_format: str) -> bool:
+        """Validate output format."""
+        return output_format in self.VALID_OUTPUT_FORMATS
+
+
+class ConfigManager:
+    """
+    Central configuration manager following SOLID principles.
+    Single Responsibility: Manages all configuration settings.
+    """
+    
+    def __init__(
+        self,
+        output_config: Optional[OutputConfig] = None,
+        api_config: Optional[APIConfig] = None,
+        test_generation_config: Optional[TestGenerationConfig] = None,
+        swagger_analysis_config: Optional[SwaggerAnalysisConfig] = None
+    ):
+        """
+        Initialize configuration manager.
+        Dependency Injection: Allows custom configurations to be injected.
+        """
+        self.output = output_config or OutputConfig()
+        self.api = api_config or APIConfig()
+        self.test_generation = test_generation_config or TestGenerationConfig()
+        self.swagger_analysis = swagger_analysis_config or SwaggerAnalysisConfig()
+    
+    def get_output_config(self) -> OutputConfig:
+        """Get output configuration."""
+        return self.output
+    
+    def get_api_config(self) -> APIConfig:
+        """Get API configuration."""
+        return self.api
+    
+    def get_test_generation_config(self) -> TestGenerationConfig:
+        """Get test generation configuration."""
+        return self.test_generation
+    
+    def get_swagger_analysis_config(self) -> SwaggerAnalysisConfig:
+        """Get swagger analysis configuration."""
+        return self.swagger_analysis
+
+
+# Global configuration instance (can be overridden for testing)
+_config_manager: Optional[ConfigManager] = None
+
+
+def get_config_manager() -> ConfigManager:
+    """
+    Get the global configuration manager instance.
+    Singleton pattern for configuration management.
+    """
+    global _config_manager
+    if _config_manager is None:
+        _config_manager = ConfigManager()
+    return _config_manager
+
+
+def set_config_manager(config_manager: ConfigManager) -> None:
+    """
+    Set a custom configuration manager (useful for testing).
+    """
+    global _config_manager
+    _config_manager = config_manager
+
+
 class Settings(BaseSettings):
     """Application settings following SOLID principles (Single Responsibility)."""
     

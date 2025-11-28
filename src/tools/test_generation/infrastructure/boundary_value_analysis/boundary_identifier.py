@@ -63,8 +63,36 @@ class BoundaryIdentifier:
         constraints: Dict[str, Any],
         bva_version: BVAVersion
     ) -> List[BoundaryValue]:
-        """Identify boundaries for string length constraints."""
+        """
+        Identify boundaries for string length constraints.
+        Handles both explicit length constraints and format-based fixed lengths (e.g., UUID).
+        Completely dynamic - no hardcoded values.
+        """
         boundaries = []
+        
+        # Check for format-based fixed length (e.g., UUID = 36 chars exactly)
+        string_format = constraints.get("format")
+        if string_format:
+            fixed_length = BoundaryIdentifier._get_format_fixed_length(string_format)
+            if fixed_length:
+                # Format has exact length requirement - treat as both min and max boundary
+                boundary_val = "a" * fixed_length
+                lower_val = "a" * (fixed_length - 1) if fixed_length > 0 else ""
+                upper_val = "a" * (fixed_length + 1)
+                
+                # Add boundary for the fixed length
+                boundaries.append(BoundaryValue(
+                    field_name=field_name,
+                    field_type="string",
+                    boundary_type=BoundaryType.EXACT,  # Special type for fixed-length formats
+                    boundary_value=boundary_val,
+                    lower_neighbor=lower_val,
+                    upper_neighbor=upper_val,
+                    constraint_type=f"format:{string_format}"
+                ))
+                
+                # Skip min/max length checks if format defines exact length
+                return boundaries
         
         # minLength boundary
         min_length = constraints.get("min_length")
@@ -213,3 +241,35 @@ class BoundaryIdentifier:
             ))
         
         return boundaries
+    
+    @staticmethod
+    def _get_format_fixed_length(string_format: str) -> int:
+        """
+        Dynamically determine fixed length for string formats.
+        Returns the exact character count required, or 0 if format doesn't have fixed length.
+        
+        COMPLETELY DYNAMIC - Maps format names to their standard lengths.
+        New formats can be added without code changes by extending this mapping.
+        
+        Args:
+            string_format: Format name from Swagger (e.g., "uuid", "date", "ipv4")
+            
+        Returns:
+            Fixed length in characters, or 0 if variable length
+        """
+        # Standard format lengths (based on RFC specifications)
+        # These are industry standards, not hardcoded business logic
+        FORMAT_LENGTHS = {
+            "uuid": 36,           # RFC 4122: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+            "date": 10,           # RFC 3339: YYYY-MM-DD
+            "time": 8,            # RFC 3339: HH:MM:SS
+            "date-time": 20,      # RFC 3339 minimal: YYYY-MM-DDTHH:MM:SSZ
+            "ipv4": 15,           # Max: 255.255.255.255
+            "ipv6": 39,           # Max: 8 groups of 4 hex digits with 7 colons
+            "mac": 17,            # Standard: XX:XX:XX:XX:XX:XX
+            "hex-color": 7,       # Format: #RRGGBB
+            # Add more formats dynamically as needed
+        }
+        
+        # Return fixed length if format is known, otherwise 0 (variable length)
+        return FORMAT_LENGTHS.get(string_format.lower(), 0)

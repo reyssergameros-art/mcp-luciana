@@ -113,19 +113,30 @@ class BVATestCaseBuilder:
             if value == boundary.lower_neighbor:
                 return False
             return True
-        else:  # MAXIMUM
+        elif boundary.boundary_type == BoundaryType.MAXIMUM:
             # Boundary value is valid, upper neighbor is invalid
             if value == boundary.upper_neighbor:
                 return False
             return True
+        elif boundary.boundary_type == BoundaryType.EXACT:
+            # For exact length (like UUID), only boundary value is valid
+            # Both neighbors are invalid
+            return value == boundary.boundary_value
+        return True
     
     @staticmethod
     def _get_value_type(value: Any, boundary: BoundaryValue) -> str:
         """Get descriptive type of the test value."""
         if value == boundary.boundary_value:
+            if boundary.boundary_type == BoundaryType.EXACT:
+                return "exactLength"
             return f"boundary{boundary.boundary_type.value.capitalize()}"
         elif value == boundary.lower_neighbor:
+            if boundary.boundary_type == BoundaryType.EXACT:
+                return "belowExact"
             return "belowMin" if boundary.boundary_type == BoundaryType.MINIMUM else "belowMax"
         elif value == boundary.upper_neighbor:
+            if boundary.boundary_type == BoundaryType.EXACT:
+                return "aboveExact"
             return "aboveMin" if boundary.boundary_type == BoundaryType.MINIMUM else "aboveMax"
         return "unknown"
