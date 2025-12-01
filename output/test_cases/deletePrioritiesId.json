@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "2025-11-28T16:30:34.538953",
+    "generated_at": "2025-11-28T17:02:26.854930",
     "endpoint": "/priorities/{id}",
     "http_method": "DELETE",
     "techniques": [

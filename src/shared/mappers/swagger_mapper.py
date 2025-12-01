@@ -1,11 +1,10 @@
 """Mappers for converting swagger analysis models to JSON-serializable dictionaries."""
-import json
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from ...tools.swagger_analysis.domain.models import (
     SwaggerAnalysisResult, EndpointInfo, FieldInfo, ResponseInfo
 )
+from ..utils.file_operations import FileOperations
 
 
 class SwaggerMapper:
@@ -165,7 +164,6 @@ class SwaggerMapper:
         """
         # Create output directory
         output_dir = Path("output") / "swagger"
-        output_dir.mkdir(parents=True, exist_ok=True)
         
         # Extract API name from title or use generic name
         api_name = result_dict.get("title", "swaggerApi")
@@ -175,18 +173,16 @@ class SwaggerMapper:
         filename = f"{api_name}.json"
         file_path = output_dir / filename
         
-        # Prepare metadata
+        # Prepare metadata using FileOperations
+        metadata = FileOperations.create_metadata(
+            source=source_url,
+            technique="Swagger Analysis"
+        )
+        
         output_data = {
-            "metadata": {
-                "generated_at": datetime.now().isoformat(),
-                "source_url": source_url,
-                "tool_version": "1.0.0"
-            },
+            "metadata": metadata,
             "analysis": result_dict
         }
         
-        # Write JSON file
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(output_data, f, indent=2, ensure_ascii=False)
-        
-        return file_path
+        # Use FileOperations to save JSON
+        return FileOperations.save_json(output_data, file_path)

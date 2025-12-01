@@ -4,9 +4,7 @@ Supports both single-technique and unified multi-technique test results.
 Respects Open/Closed Principle: extensible for new techniques without modification.
 """
 from typing import Dict, Any, List, Union
-from datetime import datetime
 from pathlib import Path
-import json
 
 from src.tools.test_generation.domain.models import (
     TestGenerationResult, TestCase, EquivalencePartition, PartitionSet,
@@ -14,6 +12,8 @@ from src.tools.test_generation.domain.models import (
     UnifiedTestCase, UnifiedTestResult
 )
 from src.tools.test_generation.infrastructure.equivalence_partitioning.filename_generator import FilenameGenerator
+from src.shared.utils.file_operations import FileOperations
+from src.shared.constants import HTTPStatus, TestingTechniques
 
 
 class TestCaseMapper:
@@ -132,7 +132,6 @@ class TestCaseMapper:
         """
         # Create output directory
         output_dir = Path("output") / "test_cases"
-        output_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize filename generator (follows SOLID: Single Responsibility)
         filename_gen = FilenameGenerator()
@@ -146,26 +145,29 @@ class TestCaseMapper:
             filename = f"{filename_base}.json"
             file_path = output_dir / filename
             
-            # Separate test cases into success and failure
+            # Separate test cases into success and failure using constants
             success_cases = [
                 tc for tc in result.test_cases 
-                if tc.expected_status_code in [200, 201, 204]
+                if tc.expected_status_code in HTTPStatus.SUCCESS_CODES
             ]
             failure_cases = [
                 tc for tc in result.test_cases 
-                if tc.expected_status_code not in [200, 201, 204]
+                if tc.expected_status_code not in HTTPStatus.SUCCESS_CODES
             ]
+            
+            # Create metadata using FileOperations
+            metadata = FileOperations.create_metadata(
+                source=source_file,
+                technique="Equivalence Partitioning (ISTQB v4)",
+                additional_fields={
+                    "endpoint": result.endpoint,
+                    "http_method": result.http_method
+                }
+            )
             
             # Prepare endpoint data with grouped test cases
             output_data = {
-                "metadata": {
-                    "generated_at": datetime.now().isoformat(),
-                    "source_file": source_file,
-                    "technique": "Equivalence Partitioning (ISTQB v4)",
-                    "endpoint": result.endpoint,
-                    "http_method": result.http_method,
-                    "tool_version": "1.0.0"
-                },
+                "metadata": metadata,
                 "metrics": {
                     "total_partitions": result.total_partitions,
                     "valid_partitions": result.valid_partitions,
@@ -187,10 +189,8 @@ class TestCaseMapper:
                 "summary": result.summary
             }
             
-            # Write JSON file for this endpoint
-            with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(output_data, f, indent=2, ensure_ascii=False)
-            
+            # Use FileOperations to save JSON
+            FileOperations.save_json(output_data, file_path)
             saved_files.append(file_path)
         
         return saved_files
@@ -211,14 +211,14 @@ class TestCaseMapper:
         Returns:
             Dictionary for JSON serialization
         """
-        # Separate by expected status code
+        # Separate by expected status code using constants
         success_cases = [
             tc for tc in result.test_cases
-            if tc.expected_status_code in [200, 201, 204]
+            if tc.expected_status_code in HTTPStatus.SUCCESS_CODES
         ]
         failure_cases = [
             tc for tc in result.test_cases
-            if tc.expected_status_code not in [200, 201, 204]
+            if tc.expected_status_code not in HTTPStatus.SUCCESS_CODES
         ]
         
         return {
@@ -336,7 +336,6 @@ class TestCaseMapper:
             List of paths to saved JSON files
         """
         output_dir = Path("output") / "test_cases"
-        output_dir.mkdir(parents=True, exist_ok=True)
         
         filename_gen = FilenameGenerator()
         saved_files = []
@@ -351,10 +350,8 @@ class TestCaseMapper:
             output_data = TestCaseMapper.to_unified_dict(result)
             output_data["metadata"]["source_file"] = source_file
             
-            # Write JSON
-            with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(output_data, f, indent=2, ensure_ascii=False)
-            
+            # Use FileOperations to save JSON
+            FileOperations.save_json(output_data, file_path)
             saved_files.append(file_path)
         
         return saved_files

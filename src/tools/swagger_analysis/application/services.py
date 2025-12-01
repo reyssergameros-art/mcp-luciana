@@ -1,6 +1,9 @@
 """Application services for swagger analysis."""
+import logging
 from typing import Dict, Any
 from ..domain.repositories import SwaggerRepository
+
+logger = logging.getLogger(__name__)
 from ..domain.models import SwaggerAnalysisResult
 from ..domain.exceptions import SwaggerAnalysisError
 

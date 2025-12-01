@@ -1,10 +1,13 @@
 """Application service for Equivalence Partitioning technique (ISTQB v4)."""
-import json
+import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
+logger = logging.getLogger(__name__)
+
 from ...domain.models import TestGenerationResult, PartitionSet, TestCase
 from ...domain.exceptions import InvalidSwaggerAnalysisError, TestGenerationError
+from src.shared.utils.file_operations import FileOperations
 from ...infrastructure.equivalence_partitioning.partition_identifier import PartitionIdentifierRefactored
 from ...infrastructure.equivalence_partitioning.test_case_builder import TestCaseBuilderRefactored
 from ...infrastructure.equivalence_partitioning.status_code_resolver import StatusCodeResolver
@@ -118,9 +121,11 @@ class EquivalencePartitionService:
                 # Log error but continue with other endpoints
                 endpoint = endpoint_data.get("path", "unknown")
                 method = endpoint_data.get("method", "unknown")
-                print(f"Warning: Failed to generate tests for {method} {endpoint}: {str(e)}")
-                import traceback
-                traceback.print_exc()
+                logger.warning(
+                    f"Failed to generate tests for {method} {endpoint}",
+                    exc_info=True,
+                    extra={"endpoint": endpoint, "method": method}
+                )
                 continue
         
         return results
@@ -293,12 +298,7 @@ Test Case Breakdown:
         """
         try:
             path = Path(file_path)
-            
-            if not path.exists():
-                raise InvalidSwaggerAnalysisError(f"File not found: {file_path}")
-            
-            with open(path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            data = FileOperations.load_json(path)
             
             # Validate basic structure
             if "analysis" not in data and "endpoints" not in data:

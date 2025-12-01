@@ -8,7 +8,7 @@ Background:
   * configure headers = commonHeaders
   # Path parameters will be set in scenarios
 
-@delete @smoke @positive
+@positive @smoke @delete
 Scenario Outline: Successful DELETE requests
   # Tests with valid inputs that should succeed
   Given path '/priorities/{id}'
@@ -25,7 +25,7 @@ Scenario Outline: Successful DELETE requests
     | testId                                   | testName                                   | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     |
     | EPDELETEprioritiesidvalid_all20251128_68 | DELETE /priorities/{id} - All Valid Inputs | 204            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 |
 
-@status400 @delete @negative @regression
+@negative @delete @status400 @regression
 Scenario Outline: DELETE requests returning 400
   # Tests that should fail with HTTP 400
   Given path '/priorities/{id}'

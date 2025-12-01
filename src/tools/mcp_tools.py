@@ -1,9 +1,14 @@
 """MCP tools orchestrator for Swagger Analysis and Test Generation."""
+import logging
 from typing import Dict, Any
 from pathlib import Path
 
 # Import configuration
 from src.shared.config import get_config_manager, ConfigManager
+from src.shared.utils.file_operations import FileOperations
+from src.shared.utils.result_aggregator import ResultAggregator
+
+logger = logging.getLogger(__name__)
 
 # Import swagger analysis services
 from src.tools.swagger_analysis.application.services import SwaggerAnalysisService
@@ -31,6 +36,9 @@ class MCPToolsOrchestrator:
     def __init__(self, config_manager: ConfigManager = None):
         # Initialize configuration (Dependency Injection)
         self.config = config_manager or get_config_manager()
+        
+        # Initialize utilities
+        self.aggregator = ResultAggregator()
         
         # Initialize swagger analysis
         self.swagger_repo = HttpSwaggerRepository()
@@ -134,22 +142,15 @@ class MCPToolsOrchestrator:
             # Convert to dictionary
             results_dict = TestCaseMapper.to_dict_list(results)
             
-            # Calculate totals
-            total_test_cases = sum(len(r.test_cases) for r in results)
-            total_partitions = sum(r.total_partitions for r in results)
-            avg_coverage = sum(r.coverage_percentage for r in results) / len(results) if results else 0
+            # Use ResultAggregator for metrics
+            metrics = self.aggregator.aggregate_test_generation_metrics(results)
+            metrics["technique"] = "Equivalence Partitioning (ISTQB v4)"
             
             response = {
                 "success": True,
                 "data": results_dict,
-                "summary": {
-                    "total_endpoints": len(results),
-                    "total_test_cases": total_test_cases,
-                    "total_partitions": total_partitions,
-                    "average_coverage": round(avg_coverage, 2),
-                    "technique": "Equivalence Partitioning (ISTQB v4)"
-                },
-                "message": f"Successfully generated {total_test_cases} test cases for {len(results)} endpoints"
+                "summary": metrics,
+                "message": f"Successfully generated {metrics['total_test_cases']} test cases for {metrics['total_endpoints']} endpoints"
             }
             
             # Save to files if requested (one per endpoint)
@@ -308,23 +309,17 @@ class MCPToolsOrchestrator:
             # Convert to dictionary
             results_dict = [TestCaseMapper.to_unified_dict(r) for r in results]
             
-            # Calculate totals
-            total_test_cases = sum(len(r.test_cases) for r in results)
-            total_endpoints = len(results)
-            techniques_applied = list(set(t for r in results for t in r.techniques_applied))
+            # Use ResultAggregator for metrics
+            metrics = self.aggregator.aggregate_unified_metrics(results)
+            metrics["bva_version"] = bva_version if "boundary_value_analysis" in techniques else None
             
             response = {
                 "success": True,
                 "data": results_dict,
-                "summary": {
-                    "total_endpoints": total_endpoints,
-                    "total_test_cases": total_test_cases,
-                    "techniques_applied": techniques_applied,
-                    "bva_version": bva_version if "boundary_value_analysis" in techniques else None
-                },
+                "summary": metrics,
                 "message": (
-                    f"Successfully generated {total_test_cases} test cases "
-                    f"for {total_endpoints} endpoints using {len(techniques_applied)} techniques"
+                    f"Successfully generated {metrics['total_test_cases']} test cases "
+                    f"for {metrics['total_endpoints']} endpoints using {len(metrics['techniques_applied'])} techniques"
                 )
             }
             
@@ -391,22 +386,15 @@ class MCPToolsOrchestrator:
             # Convert to dictionary
             results_dict = self._bva_results_to_dict(results)
             
-            # Calculate totals
-            total_test_cases = sum(len(r.test_cases) for r in results)
-            total_boundaries = sum(r.boundaries_identified for r in results)
-            avg_coverage = sum(r.coverage_percentage for r in results) / len(results) if results else 0
+            # Use ResultAggregator for metrics
+            metrics = self.aggregator.aggregate_bva_metrics(results)
+            metrics["technique"] = f"Boundary Value Analysis ({bva_version}) - ISTQB v4"
             
             response = {
                 "success": True,
                 "data": results_dict,
-                "summary": {
-                    "total_endpoints": len(results),
-                    "total_test_cases": total_test_cases,
-                    "total_boundaries": total_boundaries,
-                    "average_coverage": round(avg_coverage, 2),
-                    "technique": f"Boundary Value Analysis ({bva_version}) - ISTQB v4"
-                },
-                "message": f"Successfully generated {total_test_cases} BVA test cases for {len(results)} endpoints"
+                "summary": metrics,
+                "message": f"Successfully generated {metrics['total_test_cases']} BVA test cases for {metrics['total_endpoints']} endpoints"
             }
             
             # Save to files if requested
@@ -456,13 +444,11 @@ class MCPToolsOrchestrator:
     
     def _save_bva_results(self, results: list, swagger_file: str) -> list:
         """Save BVA results to JSON files."""
-        import json
         from datetime import datetime
         
         swagger_path = Path(swagger_file)
         # Use configuration for output directory
         output_dir = self.config.output.get_bva_output_path()
-        output_dir.mkdir(parents=True, exist_ok=True)
         
         file_paths = []
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -476,16 +462,20 @@ class MCPToolsOrchestrator:
             filename = f"{result.http_method.lower()}{endpoint_name}_{result.bva_version}_{timestamp}.json"
             file_path = output_dir / filename
             
+            # Prepare metadata using FileOperations
+            metadata = FileOperations.create_metadata(
+                source=str(swagger_path),
+                technique=f"Boundary Value Analysis ({result.bva_version}) - ISTQB v4",
+                tool_version=self.config.test_generation.TOOL_VERSION,
+                additional_fields={
+                    "endpoint": result.endpoint,
+                    "http_method": result.http_method
+                }
+            )
+            
             # Prepare output data
             output_data = {
-                "metadata": {
-                    "generated_at": datetime.now().isoformat(),
-                    "source_file": str(swagger_path),
-                    "technique": f"Boundary Value Analysis ({result.bva_version}) - ISTQB v4",
-                    "endpoint": result.endpoint,
-                    "http_method": result.http_method,
-                    "tool_version": self.config.test_generation.TOOL_VERSION
-                },
+                "metadata": metadata,
                 "metrics": {
                     "boundaries_identified": result.boundaries_identified,
                     "coverage_percentage": round(result.coverage_percentage, 2),
@@ -505,15 +495,8 @@ class MCPToolsOrchestrator:
                 } for tc in result.test_cases]
             }
             
-            # Write to file
-            with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(
-                    output_data, 
-                    f, 
-                    indent=self.config.output.JSON_INDENT,
-                    ensure_ascii=self.config.output.JSON_ENSURE_ASCII
-                )
-            
+            # Use FileOperations to save JSON
+            FileOperations.save_json(output_data, file_path)
             file_paths.append(file_path)
         
         return file_paths

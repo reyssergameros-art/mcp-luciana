@@ -1,8 +1,12 @@
 """
 Application services for Karate feature generation.
 """
+import json
+import logging
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Set
+
+logger = logging.getLogger(__name__)
 
 from ..domain.models import (
     KarateFeature,
@@ -358,8 +362,6 @@ class KarateGenerationService:
         Extract base URL from test case metadata.
         Looks for source swagger file and reads base_urls from it.
         """
-        import json
-        
         for test_file in test_files:
             try:
                 test_data = self.repository.load_test_cases(test_file)
@@ -389,8 +391,6 @@ class KarateGenerationService:
         Extract endpoint summaries from swagger analysis.
         Returns dict with key "METHOD:path" and value "summary".
         """
-        import json
-        
         summaries = {}
         
         for test_file in test_files:

@@ -1,7 +1,6 @@
-"""
-MCP Server for Swagger Analysis Tool using FastMCP.
-"""
+"""MCP Server for Swagger Analysis Tool using FastMCP."""
 
+import json
 from pathlib import Path
 from fastmcp import FastMCP
 from pydantic import BaseModel, field_validator
@@ -221,7 +220,6 @@ class SwaggerAnalysisMCPServer:
                     output_format=request.output_format
                 )
                 
-                import json
                 return json.dumps(result, indent=2)
             except Exception as e:
                 raise
@@ -279,7 +277,6 @@ class SwaggerAnalysisMCPServer:
                     save_output=request.save_output
                 )
                 
-                import json
                 return json.dumps(result, indent=2)
             except Exception as e:
                 raise
@@ -318,7 +315,6 @@ class SwaggerAnalysisMCPServer:
                     output_directory=request.output_directory
                 )
                 
-                import json
                 return json.dumps(result, indent=2)
             except Exception as e:
                 raise
