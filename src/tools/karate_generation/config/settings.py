@@ -68,18 +68,32 @@ class FeatureGenerationConfig:
     # File naming
     FILE_EXTENSION: str = ".feature"
     
-    # Dynamic header names - extracted from test data
-    COMMON_HEADER_PATTERNS: list = None
+    # Header validation actions
+    HEADER_VALIDATION_ACTIONS: dict = None
+    
+    # Validation condition mappings
+    VALIDATION_CONDITIONS: dict = None
     
     def __post_init__(self):
-        # Headers that are commonly used (will be detected dynamically)
-        object.__setattr__(self, 'COMMON_HEADER_PATTERNS', [
-            'x-correlation-id',
-            'x-request-id', 
-            'x-transaction-id',
-            'authorization',
-            'x-api-key'
-        ])
+        # Actions for different validation types
+        object.__setattr__(self, 'HEADER_VALIDATION_ACTIONS', {
+            'required_null': {'action': 'null', 'keywords': ['null', 'nulo']},
+            'required_missing': {'action': 'remove', 'keywords': []},
+            'format': {'action': 'null', 'condition_suffix': 'formato'},
+            'type': {'action': 'null', 'condition_suffix': 'tipo'},
+            'length': {'action': 'null', 'condition_suffix': 'longitud'},
+            'default': {'action': 'remove', 'condition': 'es inválido'}
+        })
+        
+        # Condition templates for validation scenarios
+        object.__setattr__(self, 'VALIDATION_CONDITIONS', {
+            'required_null': 'tiene valor nulo',
+            'required_missing': 'no está presente',
+            'format': 'tiene valor inválido (formato)',
+            'type': 'tiene valor inválido (tipo)',
+            'length': 'tiene valor inválido (longitud)',
+            'default': 'es inválido'
+        })
 
 
 # Singleton instances

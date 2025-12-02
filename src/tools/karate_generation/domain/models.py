@@ -32,17 +32,64 @@ class KarateExample:
     priority: str
     tags: List[str]
     partition_category: str
+    # Header validation metadata (for negative tests)
+    header_validation: Optional[Dict[str, str]] = None  # {"condition": "no está presente", "action": "remove", "headerName": "Authorization"}
+    
+    @staticmethod
+    def get_http_status_description(status_code: int) -> str:
+        """Convert HTTP status code to human-readable description."""
+        status_map = {
+            200: "Success",
+            201: "Created",
+            204: "No Content",
+            400: "Bad Request",
+            401: "Access Denied",
+            403: "Forbidden",
+            404: "Not Found",
+            500: "Internal Server Error"
+        }
+        return status_map.get(status_code, str(status_code))
+    
+    def get_short_test_id(self) -> str:
+        """Generate a shorter, more readable test ID."""
+        # Extract meaningful parts: method + endpoint + category
+        import re
+        # EPGETprioritiesvalid_all20251128_96 -> GET-PRI-001
+        parts = self.test_case_id.split('_')
+        if len(parts) > 0:
+            base = parts[0][:15]  # Limit to 15 chars
+            # Add sequence number if exists
+            if len(parts) > 1 and parts[-1].isdigit():
+                return f"{base}-{parts[-1]}"
+            return base
+        return self.test_case_id[:20]  # Fallback: first 20 chars
     
     def to_table_row(self) -> Dict[str, Any]:
         """Convert to table row format."""
-        return {
-            "testId": self.test_case_id,
+        # If this is a header validation test, only include minimal metadata
+        if self.header_validation:
+            # Order matters: condition, action, headerName (alphabetically in table)
+            return {
+                "condition": self.header_validation.get("condition", ""),
+                "action": self.header_validation.get("action", ""),
+                "headerName": self.header_validation.get("headerName", "")
+            }
+        
+        # For non-header tests, include test data (excluding headers)
+        # Use shorter test ID
+        row = {
             "testName": self.test_name,
             "expectedStatus": self.expected_status,
-            "expectedError": self.expected_error or "N/A",
-            "priority": self.priority,
-            **self.test_data
+            "priority": self.priority
         }
+        
+        # Add only non-header fields from test_data
+        for key, value in self.test_data.items():
+            # Exclude headers (they start with 'x-' or are common header names)
+            if not (key.startswith('x-') or key.lower() in ['authorization', 'content-type', 'accept']):
+                row[key] = value
+        
+        return row
 
 
 @dataclass
@@ -123,16 +170,17 @@ class KarateConfig:
     retry: {self.retry}
   }};
   
-  // Common headers
-  config.headers = {{
-{self._format_headers()}
-  }};
-  
-  // Helper functions
+  // Helper function to generate UUIDs
   config.generateUUID = function() {{
     return java.util.UUID.randomUUID() + '';
   }};
   
+  // Default headers configuration for all endpoints
+  config.headersDefaultEndpoint = {{
+{self._format_default_endpoint_headers()}
+  }};
+  
+  // Legacy common headers function (for backward compatibility)
   config.getCommonHeaders = function() {{
     return {{
 {self._format_dynamic_headers()}
@@ -154,6 +202,28 @@ class KarateConfig:
         lines = []
         for key, value in self.headers.items():
             lines.append(f"    '{key}': '{value}'")
+        return ",\n".join(lines)
+    
+    def _format_default_endpoint_headers(self) -> str:
+        """Format default endpoint headers with dynamic UUID generation."""
+        from .value_objects import HeaderExtractor
+        
+        lines = []
+        
+        # Add standard headers from config first
+        for key, value in self.headers.items():
+            lines.append(f"    '{key}': '{value}'")
+        
+        # Add UUID-based headers (correlation-id, request-id, transaction-id, etc.)
+        uuid_headers = sorted([h for h in self.dynamic_headers if HeaderExtractor.is_uuid_header(h)])
+        for header in uuid_headers:
+            lines.append(f"    '{header}': ''")
+        
+        # Add Authorization placeholder
+        if 'authorization' in [h.lower() for h in self.dynamic_headers] or 'Authorization' in self.dynamic_headers:
+            lines.append(f"    'Authorization': ''")
+        
+        # Join with commas between all items
         return ",\n".join(lines)
     
     def _format_dynamic_headers(self) -> str:

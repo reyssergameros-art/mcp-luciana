@@ -54,8 +54,31 @@ class EnvironmentGenerator:
         return environments
 
 
+class ValidationCategory:
+    """Constants for validation categories."""
+    REQUIRED = "required"
+    FORMAT = "format"
+    TYPE = "type"
+    LENGTH = "length"
+    VALIDATION = "validation"
+    
+    @classmethod
+    def get_all_categories(cls) -> Set[str]:
+        """Get all validation categories."""
+        return {cls.REQUIRED, cls.FORMAT, cls.TYPE, cls.LENGTH, cls.VALIDATION}
+    
+    @classmethod
+    def is_header_validation_category(cls, category: str) -> bool:
+        """Check if category is related to header validation."""
+        return category in {cls.REQUIRED, cls.FORMAT, cls.TYPE, cls.LENGTH}
+
+
 class HeaderExtractor:
     """Extracts and identifies headers dynamically from test data."""
+    
+    # Common header patterns to identify
+    COMMON_HEADER_PREFIXES = ["x-", "authorization", "content-", "accept"]
+    UUID_HEADER_PATTERNS = ["correlation-id", "request-id", "transaction-id", "trace-id"]
     
     @staticmethod
     def extract_headers_from_test_data(test_data: Dict) -> Set[str]:
@@ -70,12 +93,26 @@ class HeaderExtractor:
         """
         headers = set()
         
-        # Check if test_data has header keys (lowercase with dashes)
+        # Check if test_data has header keys using dynamic patterns
         for key in test_data.keys():
-            if key.startswith("x-") or key in ["authorization", "content-type", "accept"]:
+            if HeaderExtractor.is_header_field(key):
                 headers.add(key)
         
         return headers
+    
+    @staticmethod
+    def is_header_field(field_name: str) -> bool:
+        """
+        Determine if a field name represents a header.
+        
+        Args:
+            field_name: Name of the field to check
+            
+        Returns:
+            True if field represents a header
+        """
+        field_lower = field_name.lower()
+        return any(field_lower.startswith(prefix) for prefix in HeaderExtractor.COMMON_HEADER_PREFIXES)
     
     @staticmethod
     def is_uuid_header(header_name: str) -> bool:
@@ -88,5 +125,46 @@ class HeaderExtractor:
         Returns:
             True if header typically contains UUIDs
         """
-        uuid_patterns = ["correlation-id", "request-id", "transaction-id", "trace-id"]
-        return any(pattern in header_name.lower() for pattern in uuid_patterns)
+        return any(pattern in header_name.lower() for pattern in HeaderExtractor.UUID_HEADER_PATTERNS)
+    
+    @staticmethod
+    def extract_header_name_from_field(field_name: str) -> str:
+        """
+        Extract clean header name from field.
+        
+        Args:
+            field_name: Field name potentially containing header
+            
+        Returns:
+            Normalized header name
+        """
+        return field_name.lower().strip()
+    
+    @staticmethod
+    def detect_header_hints_in_text(text: str) -> Set[str]:
+        """
+        Detect header names mentioned in text (e.g., test names).
+        
+        Args:
+            text: Text to search for header mentions
+            
+        Returns:
+            Set of detected header names
+        """
+        import re
+        text_lower = text.lower()
+        detected = set()
+        
+        # Pattern for headers with dashes (x-correlation-id, x-request-id, etc.)
+        dash_headers = re.findall(r'\b(x-[a-z]+-[a-z]+(?:-[a-z]+)*)\b', text_lower)
+        detected.update(dash_headers)
+        
+        # Check for authorization
+        if 'authorization' in text_lower:
+            detected.add('authorization')
+        
+        # Check for content-type
+        if 'content-type' in text_lower or 'content type' in text_lower:
+            detected.add('content-type')
+        
+        return detected

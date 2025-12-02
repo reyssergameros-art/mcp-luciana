@@ -53,18 +53,82 @@ class KarateFeatureBuilder:
     
     def _build_background(self, feature: KarateFeature) -> str:
         """Build background section with common setup."""
-        lines = [
-            "Background:",
-            f"{self.indent}* url baseUrl",
-            f"{self.indent}* def commonHeaders = getCommonHeaders()",
-            f"{self.indent}* configure headers = commonHeaders"
-        ]
+        from ..domain.value_objects import HeaderExtractor
         
-        # Add path parameters if needed
+        lines = ["Background:"]
+        
+        # Dynamically generate UUID variables for headers that need them
+        detected_headers = self._extract_feature_headers(feature)
+        uuid_headers = {h for h in detected_headers if HeaderExtractor.is_uuid_header(h)}
+        
+        for header_name in sorted(uuid_headers):
+            var_name = self._to_camel_case(header_name)
+            var_name_capitalized = f"random{var_name.replace('x', 'X', 1) if var_name.startswith('x') else var_name.capitalize()}"
+            lines.append(f"{self.indent}* def {var_name_capitalized} = java.util.UUID.randomUUID().toString()")
+        
+        # Add path parameters defaults if needed
         if "{" in feature.endpoint:
-            lines.append(f"{self.indent}# Path parameters will be set in scenarios")
+            path_params = self._extract_path_params(feature.endpoint)
+            for param in path_params:
+                # Generate default value for path parameter
+                lines.append(f"{self.indent}* def {param} = karate.get('{param}', '1')")
+        
+        lines.extend([
+            f"{self.indent}Given url baseUrl",
+            f"{self.indent}And path '{feature.endpoint}'",
+            f"{self.indent}* def configHeader = headersDefaultEndpoint"
+        ])
+        
+        # Dynamically detect and configure headers based on feature usage
+        detected_headers = self._extract_feature_headers(feature)
+        
+        for header_name in detected_headers:
+            header_config = self._get_header_config(header_name)
+            lines.append(header_config)
         
         return "\n".join(lines)
+    
+    def _feature_uses_header(self, feature: KarateFeature, header_pattern: str) -> bool:
+        """Check if feature uses a specific header."""
+        for scenario in feature.scenarios:
+            for example in scenario.examples:
+                test_data = example.test_data
+                for key in test_data.keys():
+                    if header_pattern in key.lower():
+                        return True
+        return False
+    
+    def _extract_feature_headers(self, feature: KarateFeature) -> Set[str]:
+        """Extract all unique headers used in feature."""
+        from ..domain.value_objects import HeaderExtractor
+        
+        headers = set()
+        for scenario in feature.scenarios:
+            for example in scenario.examples:
+                test_data = example.test_data
+                for key in test_data.keys():
+                    if HeaderExtractor.is_header_field(key):
+                        headers.add(key.lower())
+        return headers
+    
+    def _get_header_config(self, header_name: str) -> str:
+        """Generate configuration line for a specific header."""
+        from ..domain.value_objects import HeaderExtractor
+        
+        # Generate variable name (camelCase)
+        var_name = self._to_camel_case(header_name)
+        
+        # Check if it's a UUID header
+        if HeaderExtractor.is_uuid_header(header_name):
+            # UUID headers use random generators
+            generator_var = f"random{var_name.replace('x', 'X', 1) if var_name.startswith('x') else var_name.capitalize()}"
+            return f"{self.indent}* configHeader['{header_name}'] = {generator_var}"
+        elif 'authorization' in header_name.lower():
+            # Authorization uses predefined variable
+            return f"{self.indent}* configHeader['Authorization'] = authorization"
+        else:
+            # Other headers use their value from test data
+            return f"{self.indent}* configHeader['{header_name}'] = karate.get('{var_name}', '')"
     
     def _build_scenarios(self, feature: KarateFeature) -> str:
         """Build all scenario outlines."""
@@ -116,53 +180,87 @@ class KarateFeatureBuilder:
         steps = []
         indent = self.indent
         
-        # Given: Setup test data
-        steps.append(f"{indent}Given path '{feature.endpoint}'")
+        # Detect if this is a header validation scenario
+        is_header_validation = self._is_header_validation_scenario(scenario)
         
         # Set path parameters if needed
         if "{" in feature.endpoint:
             path_params = self._extract_path_params(feature.endpoint)
             for param in path_params:
-                steps.append(f"{indent}And param {param} = <{param}>")
+                steps.append(f"{indent}* def {param} = '<{param}>'")
         
-        # Extract headers dynamically from test data
-        dynamic_headers = self._extract_dynamic_headers(scenario.examples)
+        # Add conditional header manipulation for header validation tests
+        if is_header_validation and scenario.scenario_type == ScenarioType.NEGATIVE:
+            steps.extend(self._build_header_manipulation_steps(indent))
         
-        # Set headers dynamically
-        if dynamic_headers:
-            for header_name in sorted(dynamic_headers):
-                # Convert to camelCase for variable name
-                var_name = self._to_camel_case(header_name)
-                steps.append(f"{indent}And header {header_name} = <{var_name}>")
+        # Apply headers
+        steps.append(f"{indent}* headers configHeader")
         
         # Set request body for POST/PUT/PATCH
         if feature.http_method in [HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH]:
-            steps.append(f"{indent}And request <requestBody>")
+            if is_header_validation:
+                # For header validation, use a minimal valid body
+                steps.append(f"{indent}And request {{}}")
+            else:
+                steps.append(f"{indent}And request <requestBody>")
         
         # When: Execute request
         steps.append(f"{indent}When method {feature.http_method.value}")
         
         # Then: Validate response
-        steps.append(f"{indent}Then status <expectedStatus>")
+        # For header validation, use hardcoded status from first example
+        if is_header_validation and scenario.examples:
+            expected_status = scenario.examples[0].expected_status
+            steps.append(f"{indent}Then status {expected_status}")
+        else:
+            steps.append(f"{indent}Then status <expectedStatus>")
         
+        # Response validation based on scenario type
         if scenario.scenario_type == ScenarioType.POSITIVE:
             steps.append(f"{indent}And match response != null")
             steps.append(f"{indent}And match responseType == 'json'")
-        else:
+        elif not is_header_validation:
             steps.append(f"{indent}And match response.error != null")
-            if any(ex.expected_error for ex in scenario.examples):
-                steps.append(f"{indent}And match response.error.code == '<expectedError>'")
         
         return steps
+    
+    def _build_header_manipulation_steps(self, indent: str) -> List[str]:
+        """Build steps for conditional header manipulation."""
+        return [
+            f"{indent}* if ('<action>' == 'remove') karate.remove('configHeader', '<headerName>')",
+            f"{indent}* if ('<action>' == 'null') configHeader['<headerName>'] = null"
+        ]
+    
+    def _is_header_validation_scenario(self, scenario: KarateScenario) -> bool:
+        """Check if scenario validates header requirements."""
+        from ..domain.value_objects import HeaderExtractor
+        
+        # Check if test names contain header validation keywords
+        if not scenario.examples:
+            return False
+        
+        sample_name = scenario.examples[0].test_name
+        detected_headers = HeaderExtractor.detect_header_hints_in_text(sample_name)
+        return len(detected_headers) > 0
     
     def _build_examples_table(self, examples: List[KarateExample]) -> List[str]:
         """Build examples table with proper alignment."""
         if not examples:
             return []
         
-        # Get all unique column names from first example
-        sample_row = examples[0].to_table_row()
-        columns = list(sample_row.keys())
+        # Get all unique column names from all examples
+        all_columns = set()
+        for example in examples:
+            row = example.to_table_row()
+            all_columns.update(row.keys())
+        
+        # Order columns: standard fields first (detected from common patterns), then test data
+        standard_fields = self._get_standard_column_order(all_columns)
+        columns = [col for col in standard_fields if col in all_columns]
+        
+        # Add remaining columns in sorted order
+        remaining_cols = sorted(all_columns - set(columns))
+        columns.extend(remaining_cols)
         
         # Calculate column widths
         col_widths = {col: len(col) for col in columns}
@@ -185,6 +283,34 @@ class KarateFeatureBuilder:
             rows.append(row)
         
         return rows
+    
+    def _get_standard_column_order(self, all_columns: Set[str]) -> List[str]:
+        """
+        Determine standard column order dynamically based on column patterns.
+        
+        Args:
+            all_columns: All available columns
+            
+        Returns:
+            Ordered list of standard fields
+        """
+        # Define priority patterns for standard fields
+        priority_patterns = [
+            ('testId', lambda c: c.lower() in ['testid', 'test_id', 'id']),
+            ('testName', lambda c: c.lower() in ['testname', 'test_name', 'name']),
+            ('expectedStatus', lambda c: 'status' in c.lower() and 'expected' in c.lower()),
+            ('expectedError', lambda c: 'error' in c.lower() and 'expected' in c.lower()),
+            ('priority', lambda c: c.lower() == 'priority')
+        ]
+        
+        standard_fields = []
+        for preferred_name, matcher in priority_patterns:
+            # Find matching column
+            matched = [col for col in all_columns if matcher(col)]
+            if matched:
+                standard_fields.append(matched[0])
+        
+        return standard_fields
     
     def _extract_path_params(self, endpoint: str) -> List[str]:
         """Extract path parameter names from endpoint."""

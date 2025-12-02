@@ -17,6 +17,8 @@ from ..domain.models import (
     ScenarioType,
     HttpMethod
 )
+# Import at module level for status description mapping
+_get_http_status_description = KarateExample.get_http_status_description
 from ..domain.repositories import KarateGeneratorRepository
 from ..domain.exceptions import KarateGenerationError
 from ..domain.value_objects import EnvironmentGenerator, HeaderExtractor
@@ -219,13 +221,13 @@ class KarateGenerationService:
             examples.append(example)
         
         return KarateScenario(
-            name=f"Successful {http_method.value} requests",
-            tags=["@smoke", "@positive", f"@{http_method.value.lower()}"],
+            name=f"Verificar éxito en {http_method.value} con datos válidos",
+            tags=["@happyPath", f"@{http_method.value.lower()}"],
             scenario_type=ScenarioType.POSITIVE,
             http_method=http_method,
             endpoint=endpoint,
             examples=examples,
-            description="Tests with valid inputs that should succeed"
+            description="Tests con datos válidos que deben ser exitosos"
         )
     
     def _create_negative_scenarios(
@@ -234,8 +236,8 @@ class KarateGenerationService:
         http_method: HttpMethod,
         endpoint: str
     ) -> List[KarateScenario]:
-        """Create negative test scenarios grouped by HTTP status."""
-        # Group by status code
+        """Create negative test scenarios grouped by HTTP status and header validation type."""
+        # Group by status code first
         by_status: Dict[int, List[Dict[str, Any]]] = {}
         
         for tc in test_cases:
@@ -247,10 +249,98 @@ class KarateGenerationService:
         scenarios = []
         
         for status, tests in sorted(by_status.items()):
+            # Further group by header validation type
+            header_tests, other_tests = self._separate_header_tests(tests)
+            
+            # Create scenarios for header validation tests (grouped by header name)
+            if header_tests:
+                header_scenarios = self._create_header_validation_scenarios(
+                    header_tests, http_method, endpoint, status
+                )
+                scenarios.extend(header_scenarios)
+            
+            # Create scenario for other tests
+            if other_tests:
+                examples = []
+                
+                for tc in other_tests:
+                    expected_error = self._extract_expected_error(tc)
+                    
+                    example = KarateExample(
+                        test_case_id=tc.get("test_case_id", ""),
+                        test_name=tc.get("test_name", ""),
+                        test_data=tc.get("test_data", {}),
+                        expected_status=status,
+                        expected_error=expected_error,
+                        priority=tc.get("priority", "medium"),
+                        tags=tc.get("tags", []),
+                        partition_category=self._extract_category(tc)
+                    )
+                    examples.append(example)
+                
+                # Convert status code to description
+                status_desc = _get_http_status_description(status)
+                
+                scenario = KarateScenario(
+                    name=f"Verificar que el servicio responda {status_desc} con datos inválidos",
+                    tags=["@negativeTest", f"@{http_method.value.lower()}"],
+                    scenario_type=ScenarioType.NEGATIVE,
+                    http_method=http_method,
+                    endpoint=endpoint,
+                    examples=examples,
+                    description=f"Tests con datos inválidos que deben retornar {status_desc}"
+                )
+                scenarios.append(scenario)
+        
+        return scenarios
+    
+    def _separate_header_tests(self, test_cases: List[Dict[str, Any]]) -> tuple:
+        """Separate header validation tests from other tests."""
+        from ..domain.value_objects import ValidationCategory, HeaderExtractor
+        
+        header_tests = []
+        other_tests = []
+        
+        for tc in test_cases:
+            test_name = tc.get("test_name", "")
+            category = self._extract_category(tc)
+            
+            # Check if it's a header validation test using dynamic detection
+            is_header_category = ValidationCategory.is_header_validation_category(category)
+            has_header_hints = len(HeaderExtractor.detect_header_hints_in_text(test_name)) > 0
+            
+            if is_header_category and has_header_hints:
+                header_tests.append(tc)
+            else:
+                other_tests.append(tc)
+        
+        return header_tests, other_tests
+    
+    def _create_header_validation_scenarios(
+        self,
+        test_cases: List[Dict[str, Any]],
+        http_method: HttpMethod,
+        endpoint: str,
+        status: int
+    ) -> List[KarateScenario]:
+        """Create scenarios for header validation tests, grouped by header name."""
+        # Group by header name
+        by_header: Dict[str, List[Dict[str, Any]]] = {}
+        
+        for tc in test_cases:
+            header_name = self._extract_header_name_from_test(tc)
+            if header_name not in by_header:
+                by_header[header_name] = []
+            by_header[header_name].append(tc)
+        
+        scenarios = []
+        
+        for header_name, tests in by_header.items():
             examples = []
             
             for tc in tests:
-                # Extract expected error from test data
+                # Detect validation type and create metadata
+                header_validation = self._create_header_validation_metadata(tc, header_name)
                 expected_error = self._extract_expected_error(tc)
                 
                 example = KarateExample(
@@ -261,22 +351,83 @@ class KarateGenerationService:
                     expected_error=expected_error,
                     priority=tc.get("priority", "medium"),
                     tags=tc.get("tags", []),
-                    partition_category=self._extract_category(tc)
+                    partition_category=self._extract_category(tc),
+                    header_validation=header_validation
                 )
                 examples.append(example)
             
+            # Convert status code to description
+            status_desc = _get_http_status_description(status)
+            
             scenario = KarateScenario(
-                name=f"{http_method.value} requests returning {status}",
-                tags=["@negative", f"@status{status}", f"@{http_method.value.lower()}"],
+                name=f"Verificar que el servicio responda {status_desc} cuando <headerName> <condition>",
+                tags=["@negativeTest", f"@{http_method.value.lower()}"],
                 scenario_type=ScenarioType.NEGATIVE,
                 http_method=http_method,
                 endpoint=endpoint,
                 examples=examples,
-                description=f"Tests that should fail with HTTP {status}"
+                description=f"Tests para validar {header_name}"
             )
             scenarios.append(scenario)
         
         return scenarios
+    
+    def _extract_header_name_from_test(self, test_case: Dict[str, Any]) -> str:
+        """Extract header name being tested from test case."""
+        from ..domain.value_objects import HeaderExtractor
+        
+        test_name = test_case.get("test_name", "")
+        
+        # Try to extract from test_name using dynamic detection
+        detected_headers = HeaderExtractor.detect_header_hints_in_text(test_name)
+        if detected_headers:
+            return list(detected_headers)[0]
+        
+        # Check partitions_covered
+        partitions = test_case.get("partitions_covered", [])
+        for partition in partitions:
+            field_name = partition.get("field_name", "")
+            if HeaderExtractor.is_header_field(field_name):
+                return HeaderExtractor.extract_header_name_from_field(field_name)
+        
+        return "unknown-header"
+    
+    def _create_header_validation_metadata(self, test_case: Dict[str, Any], header_name: str) -> Dict[str, str]:
+        """Create header validation metadata for scenario outline."""
+        from ..config import FEATURE_CONFIG
+        from ..domain.value_objects import ValidationCategory
+        
+        category = self._extract_category(test_case)
+        test_name = test_case.get("test_name", "").lower()
+        
+        # Use dynamic configuration for actions and conditions
+        action_config = FEATURE_CONFIG.HEADER_VALIDATION_ACTIONS
+        condition_config = FEATURE_CONFIG.VALIDATION_CONDITIONS
+        
+        # Determine action and condition based on category
+        if category == ValidationCategory.REQUIRED:
+            # Check for null keywords
+            has_null_keyword = any(keyword in test_name for keyword in action_config['required_null']['keywords'])
+            if has_null_keyword:
+                action = action_config['required_null']['action']
+                condition = condition_config['required_null']
+            else:
+                action = action_config['required_missing']['action']
+                condition = condition_config['required_missing']
+        elif category in [ValidationCategory.FORMAT, ValidationCategory.TYPE, ValidationCategory.LENGTH]:
+            # For format/type/length errors
+            action = action_config.get(category, action_config['default'])['action']
+            condition = condition_config.get(category, condition_config['default'])
+        else:
+            # Default case
+            action = action_config['default']['action']
+            condition = action_config['default'].get('condition', condition_config['default'])
+        
+        return {
+            "headerName": header_name,
+            "condition": condition,
+            "action": action
+        }
     
     def _extract_expected_error(self, test_case: Dict[str, Any]) -> Optional[str]:
         """Extract expected error code from test case."""
@@ -301,16 +452,22 @@ class KarateGenerationService:
     
     def _extract_category(self, test_case: Dict[str, Any]) -> str:
         """Extract partition category from test case."""
+        from ..domain.value_objects import ValidationCategory
+        
+        # Try from partitions_covered first
         partitions = test_case.get("partitions_covered", [])
         if partitions:
-            return partitions[0].get("category", "validation")
+            category = partitions[0].get("category", ValidationCategory.VALIDATION)
+            return category
         
+        # Try from tags
         tags = test_case.get("tags", [])
+        all_categories = ValidationCategory.get_all_categories()
         for tag in tags:
-            if tag in ["format", "length", "required", "type"]:
+            if tag in all_categories:
                 return tag
         
-        return "validation"
+        return ValidationCategory.VALIDATION
     
     def _generate_feature_name(self, endpoint: str, http_method: HttpMethod) -> str:
         """Generate human-readable feature name."""

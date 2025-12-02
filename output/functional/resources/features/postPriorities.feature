@@ -3,17 +3,20 @@
 Feature: Crear nueva prioridad
 
 Background:
-  * url baseUrl
-  * def commonHeaders = getCommonHeaders()
-  * configure headers = commonHeaders
+  * def randomXCorrelationId = java.util.UUID.randomUUID().toString()
+  * def randomXRequestId = java.util.UUID.randomUUID().toString()
+  * def randomXTransactionId = java.util.UUID.randomUUID().toString()
+  Given url baseUrl
+  And path '/priorities'
+  * def configHeader = headersDefaultEndpoint
+  * configHeader['x-transaction-id'] = randomXTransactionId
+  * configHeader['x-correlation-id'] = randomXCorrelationId
+  * configHeader['x-request-id'] = randomXRequestId
 
-@positive @smoke @post
-Scenario Outline: Successful POST requests
-  # Tests with valid inputs that should succeed
-  Given path '/priorities'
-  And header x-correlation-id = <xCorrelationId>
-  And header x-request-id = <xRequestId>
-  And header x-transaction-id = <xTransactionId>
+@happyPath @post @smoke
+Scenario Outline: Verificar éxito en POST con datos válidos
+  # Tests con datos válidos que deben ser exitosos
+  * headers configHeader
   And request <requestBody>
   When method POST
   Then status <expectedStatus>
@@ -21,75 +24,111 @@ Scenario Outline: Successful POST requests
   And match responseType == 'json'
 
   Examples:
-    | testId                                                        | testName                                         | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     | name                                                                   | description                                                            |
-    | EPPOSTprioritiesvalid_all20251128_121                         | POST /priorities - All Valid Inputs              | 201            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                   |
-    | BVAPOSTprioritiesnameboundaryMinimum20251128_170226_1         | POST /priorities - name = boundaryMinimum        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaa                                                                    | aaaaaaaa                                                               |
-    | BVAPOSTprioritiesnameboundaryMaximum20251128_170226_3         | POST /priorities - name = boundaryMaximum        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaa                                                               |
-    | BVAPOSTprioritiesdescriptionboundaryMinimum20251128_170226_5  | POST /priorities - description = boundaryMinimum | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaa                                                                    |
-    | BVAPOSTprioritiesdescriptionboundaryMaximum20251128_170226_7  | POST /priorities - description = boundaryMaximum | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
-    | BVAPOSTprioritiesnameboundaryMinimum20251128_170226_2         | POST /priorities - name = boundaryMinimum        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaa                                                                    | aaaaaaaa                                                               |
-    | BVAPOSTprioritiesnameaboveMin20251128_170226_3                | POST /priorities - name = aboveMin               | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaa                                                                   | aaaaaaaa                                                               |
-    | BVAPOSTprioritiesnamebelowMax20251128_170226_4                | POST /priorities - name = belowMax               | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  | aaaaaaaa                                                               |
-    | BVAPOSTprioritiesnameboundaryMaximum20251128_170226_5         | POST /priorities - name = boundaryMaximum        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaa                                                               |
-    | BVAPOSTprioritiesdescriptionboundaryMinimum20251128_170226_8  | POST /priorities - description = boundaryMinimum | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaa                                                                    |
-    | BVAPOSTprioritiesdescriptionaboveMin20251128_170226_9         | POST /priorities - description = aboveMin        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaaa                                                                   |
-    | BVAPOSTprioritiesdescriptionbelowMax20251128_170226_10        | POST /priorities - description = belowMax        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  |
-    | BVAPOSTprioritiesdescriptionboundaryMaximum20251128_170226_11 | POST /priorities - description = boundaryMaximum | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | testName                                         | expectedStatus | priority | description                                                            | idPriority | name                                                                   |
+    | POST /priorities - All Valid Inputs              | 201            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                   |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                   |
+    | POST /priorities - name = boundaryMinimum        | 201            | medium   | aaaaaaaa                                                               | 50         | aaa                                                                    |
+    | POST /priorities - name = boundaryMaximum        | 201            | medium   | aaaaaaaa                                                               | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | POST /priorities - description = boundaryMinimum | 201            | medium   | aaa                                                                    | 50         | aaaaaaaa                                                               |
+    | POST /priorities - description = boundaryMaximum | 201            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | 50         | aaaaaaaa                                                               |
+    | POST /priorities - name = boundaryMinimum        | 201            | medium   | aaaaaaaa                                                               | 50         | aaa                                                                    |
+    | POST /priorities - name = aboveMin               | 201            | medium   | aaaaaaaa                                                               | 50         | aaaa                                                                   |
+    | POST /priorities - name = belowMax               | 201            | medium   | aaaaaaaa                                                               | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  |
+    | POST /priorities - name = boundaryMaximum        | 201            | medium   | aaaaaaaa                                                               | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | POST /priorities - description = boundaryMinimum | 201            | medium   | aaa                                                                    | 50         | aaaaaaaa                                                               |
+    | POST /priorities - description = aboveMin        | 201            | medium   | aaaa                                                                   | 50         | aaaaaaaa                                                               |
+    | POST /priorities - description = belowMax        | 201            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  | 50         | aaaaaaaa                                                               |
+    | POST /priorities - description = boundaryMaximum | 201            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | 50         | aaaaaaaa                                                               |
 
-@negative @status400 @post @regression
-Scenario Outline: POST requests returning 400
-  # Tests that should fail with HTTP 400
-  Given path '/priorities'
-  And header x-correlation-id = <xCorrelationId>
-  And header x-request-id = <xRequestId>
-  And header x-transaction-id = <xTransactionId>
+@regression @post @negativeTest
+Scenario Outline: Verificar que el servicio responda Bad Request cuando <headerName> <condition>
+  # Tests para validar x-correlation-id
+  * if ('<action>' == 'remove') karate.remove('configHeader', '<headerName>')
+  * if ('<action>' == 'null') configHeader['<headerName>'] = null
+  * headers configHeader
+  And request {}
+  When method POST
+  Then status 400
+
+  Examples:
+    | action | condition                       | headerName       |
+    | null   | tiene valor inválido (formato)  | x-correlation-id |
+    | null   | tiene valor inválido (formato)  | x-correlation-id |
+    | null   | tiene valor inválido (formato)  | x-correlation-id |
+    | null   | tiene valor inválido (longitud) | x-correlation-id |
+    | null   | tiene valor inválido (longitud) | x-correlation-id |
+    | remove | no está presente                | x-correlation-id |
+    | remove | no está presente                | x-correlation-id |
+    | null   | tiene valor inválido (tipo)     | x-correlation-id |
+
+@regression @post @negativeTest
+Scenario Outline: Verificar que el servicio responda Bad Request cuando <headerName> <condition>
+  # Tests para validar x-request-id
+  * if ('<action>' == 'remove') karate.remove('configHeader', '<headerName>')
+  * if ('<action>' == 'null') configHeader['<headerName>'] = null
+  * headers configHeader
+  And request {}
+  When method POST
+  Then status 400
+
+  Examples:
+    | action | condition                       | headerName   |
+    | null   | tiene valor inválido (formato)  | x-request-id |
+    | null   | tiene valor inválido (formato)  | x-request-id |
+    | null   | tiene valor inválido (formato)  | x-request-id |
+    | null   | tiene valor inválido (longitud) | x-request-id |
+    | null   | tiene valor inválido (longitud) | x-request-id |
+    | remove | no está presente                | x-request-id |
+    | remove | no está presente                | x-request-id |
+    | null   | tiene valor inválido (tipo)     | x-request-id |
+
+@regression @post @negativeTest
+Scenario Outline: Verificar que el servicio responda Bad Request cuando <headerName> <condition>
+  # Tests para validar x-transaction-id
+  * if ('<action>' == 'remove') karate.remove('configHeader', '<headerName>')
+  * if ('<action>' == 'null') configHeader['<headerName>'] = null
+  * headers configHeader
+  And request {}
+  When method POST
+  Then status 400
+
+  Examples:
+    | action | condition                       | headerName       |
+    | null   | tiene valor inválido (formato)  | x-transaction-id |
+    | null   | tiene valor inválido (formato)  | x-transaction-id |
+    | null   | tiene valor inválido (formato)  | x-transaction-id |
+    | null   | tiene valor inválido (longitud) | x-transaction-id |
+    | null   | tiene valor inválido (longitud) | x-transaction-id |
+    | remove | no está presente                | x-transaction-id |
+    | remove | no está presente                | x-transaction-id |
+    | null   | tiene valor inválido (tipo)     | x-transaction-id |
+
+@regression @post @negativeTest
+Scenario Outline: Verificar que el servicio responda Bad Request con datos inválidos
+  # Tests con datos inválidos que deben retornar Bad Request
+  * headers configHeader
   And request <requestBody>
   When method POST
   Then status <expectedStatus>
   And match response.error != null
 
   Examples:
-    | testId                                                        | testName                                               | expectedStatus | expectedError | priority | x-correlation-id                           | x-request-id                               | x-transaction-id                           | name                                                                    | description                                                             |
-    | EPPOSTprioritiesinvalid_x-correlation-id_format20251128_122   | POST /priorities - Invalid x-correlation-id (format)   | 400            | N/A           | high     | invalid-uuid                               | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-correlation-id_format20251128_123   | POST /priorities - Invalid x-correlation-id (format)   | 400            | N/A           | high     | 123                                        | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-correlation-id_format20251128_124   | POST /priorities - Invalid x-correlation-id (format)   | 400            | N/A           | high     |                                            | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-correlation-id_length20251128_125   | POST /priorities - Invalid x-correlation-id (length)   | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716                    | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-correlation-id_length20251128_126   | POST /priorities - Invalid x-correlation-id (length)   | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000-extra | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-correlation-id_required20251128_127 | POST /priorities - Invalid x-correlation-id (required) | 400            | N/A           | high     |                                            | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-correlation-id_required20251128_128 | POST /priorities - Invalid x-correlation-id (required) | 400            | N/A           | high     |                                            | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-correlation-id_type20251128_129     | POST /priorities - Invalid x-correlation-id (type)     | 400            | N/A           | low      | 12345                                      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-request-id_format20251128_130       | POST /priorities - Invalid x-request-id (format)       | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | invalid-uuid                               | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-request-id_format20251128_131       | POST /priorities - Invalid x-request-id (format)       | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 123                                        | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-request-id_format20251128_132       | POST /priorities - Invalid x-request-id (format)       | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       |                                            | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-request-id_length20251128_133       | POST /priorities - Invalid x-request-id (length)       | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716                    | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-request-id_length20251128_134       | POST /priorities - Invalid x-request-id (length)       | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000-extra | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-request-id_required20251128_135     | POST /priorities - Invalid x-request-id (required)     | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       |                                            | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-request-id_required20251128_136     | POST /priorities - Invalid x-request-id (required)     | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       |                                            | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-request-id_type20251128_137         | POST /priorities - Invalid x-request-id (type)         | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 12345                                      | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-transaction-id_format20251128_138   | POST /priorities - Invalid x-transaction-id (format)   | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | invalid-uuid                               | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-transaction-id_format20251128_139   | POST /priorities - Invalid x-transaction-id (format)   | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 123                                        | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-transaction-id_format20251128_140   | POST /priorities - Invalid x-transaction-id (format)   | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-transaction-id_length20251128_141   | POST /priorities - Invalid x-transaction-id (length)   | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-transaction-id_length20251128_142   | POST /priorities - Invalid x-transaction-id (length)   | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000-extra | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-transaction-id_required20251128_143 | POST /priorities - Invalid x-transaction-id (required) | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-transaction-id_required20251128_144 | POST /priorities - Invalid x-transaction-id (required) | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_x-transaction-id_type20251128_145     | POST /priorities - Invalid x-transaction-id (type)     | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 12345                                      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_idPriority_type20251128_146           | POST /priorities - Invalid idPriority (type)           | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_name_length20251128_147               | POST /priorities - Invalid name (length)               | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aa                                                                      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_name_length20251128_148               | POST /priorities - Invalid name (length)               | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_name_required20251128_149             | POST /priorities - Invalid name (required)             | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                                                         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_name_required20251128_150             | POST /priorities - Invalid name (required)             | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                                                         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_name_type20251128_151                 | POST /priorities - Invalid name (type)                 | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 12345                                                                   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPOSTprioritiesinvalid_description_length20251128_152        | POST /priorities - Invalid description (length)        | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aa                                                                      |
-    | EPPOSTprioritiesinvalid_description_length20251128_153        | POST /priorities - Invalid description (length)        | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
-    | EPPOSTprioritiesinvalid_description_required20251128_154      | POST /priorities - Invalid description (required)      | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |                                                                         |
-    | EPPOSTprioritiesinvalid_description_required20251128_155      | POST /priorities - Invalid description (required)      | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |                                                                         |
-    | EPPOSTprioritiesinvalid_description_type20251128_156          | POST /priorities - Invalid description (type)          | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | 12345                                                                   |
-    | BVAPOSTprioritiesnamebelowMin20251128_170226_2                | POST /priorities - name = belowMin                     | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aa                                                                      | aaaaaaaa                                                                |
-    | BVAPOSTprioritiesnameaboveMax20251128_170226_4                | POST /priorities - name = aboveMax                     | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaa                                                                |
-    | BVAPOSTprioritiesdescriptionbelowMin20251128_170226_6         | POST /priorities - description = belowMin              | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaa                                                                | aa                                                                      |
-    | BVAPOSTprioritiesdescriptionaboveMax20251128_170226_8         | POST /priorities - description = aboveMax              | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaa                                                                | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
-    | BVAPOSTprioritiesnamebelowMin20251128_170226_1                | POST /priorities - name = belowMin                     | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aa                                                                      | aaaaaaaa                                                                |
-    | BVAPOSTprioritiesnameaboveMax20251128_170226_6                | POST /priorities - name = aboveMax                     | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaa                                                                |
-    | BVAPOSTprioritiesdescriptionbelowMin20251128_170226_7         | POST /priorities - description = belowMin              | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaa                                                                | aa                                                                      |
-    | BVAPOSTprioritiesdescriptionaboveMax20251128_170226_12        | POST /priorities - description = aboveMax              | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaa                                                                | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | testName                                          | expectedStatus | priority | description                                                             | idPriority | name                                                                    |
+    | POST /priorities - Invalid idPriority (type)      | 400            | low      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | 12345      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    | POST /priorities - Invalid name (length)          | 400            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | aa                                                                      |
+    | POST /priorities - Invalid name (length)          | 400            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | POST /priorities - Invalid name (required)        | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            |                                                                         |
+    | POST /priorities - Invalid name (required)        | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            |                                                                         |
+    | POST /priorities - Invalid name (type)            | 400            | low      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | 12345                                                                   |
+    | POST /priorities - Invalid description (length)   | 400            | medium   | aa                                                                      |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    | POST /priorities - Invalid description (length)   | 400            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    | POST /priorities - Invalid description (required) | 400            | high     |                                                                         |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    | POST /priorities - Invalid description (required) | 400            | high     |                                                                         |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    | POST /priorities - Invalid description (type)     | 400            | low      | 12345                                                                   |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    | POST /priorities - name = belowMin                | 400            | high     | aaaaaaaa                                                                | 50         | aa                                                                      |
+    | POST /priorities - name = aboveMax                | 400            | high     | aaaaaaaa                                                                | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | POST /priorities - description = belowMin         | 400            | high     | aa                                                                      | 50         | aaaaaaaa                                                                |
+    | POST /priorities - description = aboveMax         | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | 50         | aaaaaaaa                                                                |
+    | POST /priorities - name = belowMin                | 400            | high     | aaaaaaaa                                                                | 50         | aa                                                                      |
+    | POST /priorities - name = aboveMax                | 400            | high     | aaaaaaaa                                                                | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | POST /priorities - description = belowMin         | 400            | high     | aa                                                                      | 50         | aaaaaaaa                                                                |
+    | POST /priorities - description = aboveMax         | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | 50         | aaaaaaaa                                                                |

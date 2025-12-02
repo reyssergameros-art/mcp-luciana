@@ -12,17 +12,21 @@ function fn() {
     retry: 0
   };
   
-  // Common headers
-  config.headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  };
-  
-  // Helper functions
+  // Helper function to generate UUIDs
   config.generateUUID = function() {
     return java.util.UUID.randomUUID() + '';
   };
   
+  // Default headers configuration for all endpoints
+  config.headersDefaultEndpoint = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'x-correlation-id': '',
+    'x-request-id': '',
+    'x-transaction-id': ''
+  };
+  
+  // Legacy common headers function (for backward compatibility)
   config.getCommonHeaders = function() {
     return {
       'x-correlation-id': config.generateUUID(),

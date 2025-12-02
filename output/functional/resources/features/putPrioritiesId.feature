@@ -3,19 +3,22 @@
 Feature: Actualizar prioridad
 
 Background:
-  * url baseUrl
-  * def commonHeaders = getCommonHeaders()
-  * configure headers = commonHeaders
-  # Path parameters will be set in scenarios
+  * def randomXCorrelationId = java.util.UUID.randomUUID().toString()
+  * def randomXRequestId = java.util.UUID.randomUUID().toString()
+  * def randomXTransactionId = java.util.UUID.randomUUID().toString()
+  * def id = karate.get('id', '1')
+  Given url baseUrl
+  And path '/priorities/{id}'
+  * def configHeader = headersDefaultEndpoint
+  * configHeader['x-transaction-id'] = randomXTransactionId
+  * configHeader['x-correlation-id'] = randomXCorrelationId
+  * configHeader['x-request-id'] = randomXRequestId
 
-@positive @put @smoke
-Scenario Outline: Successful PUT requests
-  # Tests with valid inputs that should succeed
-  Given path '/priorities/{id}'
-  And param id = <id>
-  And header x-correlation-id = <xCorrelationId>
-  And header x-request-id = <xRequestId>
-  And header x-transaction-id = <xTransactionId>
+@happyPath @smoke @put
+Scenario Outline: Verificar éxito en PUT con datos válidos
+  # Tests con datos válidos que deben ser exitosos
+  * def id = '<id>'
+  * headers configHeader
   And request <requestBody>
   When method PUT
   Then status <expectedStatus>
@@ -23,79 +26,118 @@ Scenario Outline: Successful PUT requests
   And match responseType == 'json'
 
   Examples:
-    | testId                                                         | testName                                             | expectedStatus | expectedError | priority | x-correlation-id                     | x-request-id                         | x-transaction-id                     | name                                                                   | description                                                            |
-    | EPPUTprioritiesidvalid_all20251128_29                          | PUT /priorities/{id} - All Valid Inputs              | 200            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | 550e8400-e29b-41d4-a716-446655440000 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                   |
-    | BVAPUTprioritiesidnameboundaryMinimum20251128_170226_1         | PUT /priorities/{id} - name = boundaryMinimum        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaa                                                                    | aaaaaaaa                                                               |
-    | BVAPUTprioritiesidnameboundaryMaximum20251128_170226_3         | PUT /priorities/{id} - name = boundaryMaximum        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaa                                                               |
-    | BVAPUTprioritiesiddescriptionboundaryMinimum20251128_170226_5  | PUT /priorities/{id} - description = boundaryMinimum | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaa                                                                    |
-    | BVAPUTprioritiesiddescriptionboundaryMaximum20251128_170226_7  | PUT /priorities/{id} - description = boundaryMaximum | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
-    | BVAPUTprioritiesidnameboundaryMinimum20251128_170226_2         | PUT /priorities/{id} - name = boundaryMinimum        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaa                                                                    | aaaaaaaa                                                               |
-    | BVAPUTprioritiesidnameaboveMin20251128_170226_3                | PUT /priorities/{id} - name = aboveMin               | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaa                                                                   | aaaaaaaa                                                               |
-    | BVAPUTprioritiesidnamebelowMax20251128_170226_4                | PUT /priorities/{id} - name = belowMax               | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  | aaaaaaaa                                                               |
-    | BVAPUTprioritiesidnameboundaryMaximum20251128_170226_5         | PUT /priorities/{id} - name = boundaryMaximum        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaa                                                               |
-    | BVAPUTprioritiesiddescriptionboundaryMinimum20251128_170226_8  | PUT /priorities/{id} - description = boundaryMinimum | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaa                                                                    |
-    | BVAPUTprioritiesiddescriptionaboveMin20251128_170226_9         | PUT /priorities/{id} - description = aboveMin        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaaa                                                                   |
-    | BVAPUTprioritiesiddescriptionbelowMax20251128_170226_10        | PUT /priorities/{id} - description = belowMax        | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  |
-    | BVAPUTprioritiesiddescriptionboundaryMaximum20251128_170226_11 | PUT /priorities/{id} - description = boundaryMaximum | 201            | N/A           | medium   | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaaaa                           | aaaaaaaa                                                               | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | id | testName                                             | expectedStatus | priority | description                                                            | idPriority | name                                                                   |
+    |    | PUT /priorities/{id} - All Valid Inputs              | 200            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                   |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                   |
+    | 50 | PUT /priorities/{id} - name = boundaryMinimum        | 201            | medium   | aaaaaaaa                                                               | 50         | aaa                                                                    |
+    | 50 | PUT /priorities/{id} - name = boundaryMaximum        | 201            | medium   | aaaaaaaa                                                               | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | 50 | PUT /priorities/{id} - description = boundaryMinimum | 201            | medium   | aaa                                                                    | 50         | aaaaaaaa                                                               |
+    | 50 | PUT /priorities/{id} - description = boundaryMaximum | 201            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | 50         | aaaaaaaa                                                               |
+    | 50 | PUT /priorities/{id} - name = boundaryMinimum        | 201            | medium   | aaaaaaaa                                                               | 50         | aaa                                                                    |
+    | 50 | PUT /priorities/{id} - name = aboveMin               | 201            | medium   | aaaaaaaa                                                               | 50         | aaaa                                                                   |
+    | 50 | PUT /priorities/{id} - name = belowMax               | 201            | medium   | aaaaaaaa                                                               | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  |
+    | 50 | PUT /priorities/{id} - name = boundaryMaximum        | 201            | medium   | aaaaaaaa                                                               | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | 50 | PUT /priorities/{id} - description = boundaryMinimum | 201            | medium   | aaa                                                                    | 50         | aaaaaaaa                                                               |
+    | 50 | PUT /priorities/{id} - description = aboveMin        | 201            | medium   | aaaa                                                                   | 50         | aaaaaaaa                                                               |
+    | 50 | PUT /priorities/{id} - description = belowMax        | 201            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  | 50         | aaaaaaaa                                                               |
+    | 50 | PUT /priorities/{id} - description = boundaryMaximum | 201            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | 50         | aaaaaaaa                                                               |
 
-@negative @status400 @put @regression
-Scenario Outline: PUT requests returning 400
-  # Tests that should fail with HTTP 400
-  Given path '/priorities/{id}'
-  And param id = <id>
-  And header x-correlation-id = <xCorrelationId>
-  And header x-request-id = <xRequestId>
-  And header x-transaction-id = <xTransactionId>
+@regression @put @negativeTest
+Scenario Outline: Verificar que el servicio responda Bad Request cuando <headerName> <condition>
+  # Tests para validar x-correlation-id
+  * def id = '<id>'
+  * if ('<action>' == 'remove') karate.remove('configHeader', '<headerName>')
+  * if ('<action>' == 'null') configHeader['<headerName>'] = null
+  * headers configHeader
+  And request {}
+  When method PUT
+  Then status 400
+
+  Examples:
+    | action | condition                       | headerName       |
+    | null   | tiene valor inválido (formato)  | x-correlation-id |
+    | null   | tiene valor inválido (formato)  | x-correlation-id |
+    | null   | tiene valor inválido (formato)  | x-correlation-id |
+    | null   | tiene valor inválido (longitud) | x-correlation-id |
+    | null   | tiene valor inválido (longitud) | x-correlation-id |
+    | remove | no está presente                | x-correlation-id |
+    | remove | no está presente                | x-correlation-id |
+    | null   | tiene valor inválido (tipo)     | x-correlation-id |
+
+@regression @put @negativeTest
+Scenario Outline: Verificar que el servicio responda Bad Request cuando <headerName> <condition>
+  # Tests para validar x-request-id
+  * def id = '<id>'
+  * if ('<action>' == 'remove') karate.remove('configHeader', '<headerName>')
+  * if ('<action>' == 'null') configHeader['<headerName>'] = null
+  * headers configHeader
+  And request {}
+  When method PUT
+  Then status 400
+
+  Examples:
+    | action | condition                       | headerName   |
+    | null   | tiene valor inválido (formato)  | x-request-id |
+    | null   | tiene valor inválido (formato)  | x-request-id |
+    | null   | tiene valor inválido (formato)  | x-request-id |
+    | null   | tiene valor inválido (longitud) | x-request-id |
+    | null   | tiene valor inválido (longitud) | x-request-id |
+    | remove | no está presente                | x-request-id |
+    | remove | no está presente                | x-request-id |
+    | null   | tiene valor inválido (tipo)     | x-request-id |
+
+@regression @put @negativeTest
+Scenario Outline: Verificar que el servicio responda Bad Request cuando <headerName> <condition>
+  # Tests para validar x-transaction-id
+  * def id = '<id>'
+  * if ('<action>' == 'remove') karate.remove('configHeader', '<headerName>')
+  * if ('<action>' == 'null') configHeader['<headerName>'] = null
+  * headers configHeader
+  And request {}
+  When method PUT
+  Then status 400
+
+  Examples:
+    | action | condition                       | headerName       |
+    | null   | tiene valor inválido (formato)  | x-transaction-id |
+    | null   | tiene valor inválido (formato)  | x-transaction-id |
+    | null   | tiene valor inválido (formato)  | x-transaction-id |
+    | null   | tiene valor inválido (longitud) | x-transaction-id |
+    | null   | tiene valor inválido (longitud) | x-transaction-id |
+    | remove | no está presente                | x-transaction-id |
+    | remove | no está presente                | x-transaction-id |
+    | null   | tiene valor inválido (tipo)     | x-transaction-id |
+
+@regression @put @negativeTest
+Scenario Outline: Verificar que el servicio responda Bad Request con datos inválidos
+  # Tests con datos inválidos que deben retornar Bad Request
+  * def id = '<id>'
+  * headers configHeader
   And request <requestBody>
   When method PUT
   Then status <expectedStatus>
   And match response.error != null
 
   Examples:
-    | testId                                                        | testName                                                   | expectedStatus | expectedError | priority | x-correlation-id                           | x-request-id                               | x-transaction-id                           | name                                                                    | description                                                             |
-    | EPPUTprioritiesidinvalid_x-correlation-id_format20251128_30   | PUT /priorities/{id} - Invalid x-correlation-id (format)   | 400            | N/A           | high     | invalid-uuid                               | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-correlation-id_format20251128_31   | PUT /priorities/{id} - Invalid x-correlation-id (format)   | 400            | N/A           | high     | 123                                        | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-correlation-id_format20251128_32   | PUT /priorities/{id} - Invalid x-correlation-id (format)   | 400            | N/A           | high     |                                            | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-correlation-id_length20251128_33   | PUT /priorities/{id} - Invalid x-correlation-id (length)   | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716                    | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-correlation-id_length20251128_34   | PUT /priorities/{id} - Invalid x-correlation-id (length)   | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000-extra | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-correlation-id_required20251128_35 | PUT /priorities/{id} - Invalid x-correlation-id (required) | 400            | N/A           | high     |                                            | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-correlation-id_required20251128_36 | PUT /priorities/{id} - Invalid x-correlation-id (required) | 400            | N/A           | high     |                                            | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-correlation-id_type20251128_37     | PUT /priorities/{id} - Invalid x-correlation-id (type)     | 400            | N/A           | low      | 12345                                      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-request-id_format20251128_38       | PUT /priorities/{id} - Invalid x-request-id (format)       | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | invalid-uuid                               | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-request-id_format20251128_39       | PUT /priorities/{id} - Invalid x-request-id (format)       | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 123                                        | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-request-id_format20251128_40       | PUT /priorities/{id} - Invalid x-request-id (format)       | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       |                                            | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-request-id_length20251128_41       | PUT /priorities/{id} - Invalid x-request-id (length)       | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716                    | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-request-id_length20251128_42       | PUT /priorities/{id} - Invalid x-request-id (length)       | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000-extra | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-request-id_required20251128_43     | PUT /priorities/{id} - Invalid x-request-id (required)     | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       |                                            | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-request-id_required20251128_44     | PUT /priorities/{id} - Invalid x-request-id (required)     | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       |                                            | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-request-id_type20251128_45         | PUT /priorities/{id} - Invalid x-request-id (type)         | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 12345                                      | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-transaction-id_format20251128_46   | PUT /priorities/{id} - Invalid x-transaction-id (format)   | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | invalid-uuid                               | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-transaction-id_format20251128_47   | PUT /priorities/{id} - Invalid x-transaction-id (format)   | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 123                                        | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-transaction-id_format20251128_48   | PUT /priorities/{id} - Invalid x-transaction-id (format)   | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-transaction-id_length20251128_49   | PUT /priorities/{id} - Invalid x-transaction-id (length)   | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-transaction-id_length20251128_50   | PUT /priorities/{id} - Invalid x-transaction-id (length)   | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000-extra | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-transaction-id_required20251128_51 | PUT /priorities/{id} - Invalid x-transaction-id (required) | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-transaction-id_required20251128_52 | PUT /priorities/{id} - Invalid x-transaction-id (required) | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_x-transaction-id_type20251128_53     | PUT /priorities/{id} - Invalid x-transaction-id (type)     | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 12345                                      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_id_required20251128_54               | PUT /priorities/{id} - Invalid id (required)               | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_id_required20251128_55               | PUT /priorities/{id} - Invalid id (required)               | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_id_type20251128_56                   | PUT /priorities/{id} - Invalid id (type)                   | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_idPriority_type20251128_57           | PUT /priorities/{id} - Invalid idPriority (type)           | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_name_length20251128_58               | PUT /priorities/{id} - Invalid name (length)               | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aa                                                                      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_name_length20251128_59               | PUT /priorities/{id} - Invalid name (length)               | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_name_required20251128_60             | PUT /priorities/{id} - Invalid name (required)             | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                                                         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_name_required20251128_61             | PUT /priorities/{id} - Invalid name (required)             | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       |                                                                         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_name_type20251128_62                 | PUT /priorities/{id} - Invalid name (type)                 | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 12345                                                                   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
-    | EPPUTprioritiesidinvalid_description_length20251128_63        | PUT /priorities/{id} - Invalid description (length)        | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aa                                                                      |
-    | EPPUTprioritiesidinvalid_description_length20251128_64        | PUT /priorities/{id} - Invalid description (length)        | 400            | N/A           | medium   | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
-    | EPPUTprioritiesidinvalid_description_required20251128_65      | PUT /priorities/{id} - Invalid description (required)      | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |                                                                         |
-    | EPPUTprioritiesidinvalid_description_required20251128_66      | PUT /priorities/{id} - Invalid description (required)      | 400            | N/A           | high     | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |                                                                         |
-    | EPPUTprioritiesidinvalid_description_type20251128_67          | PUT /priorities/{id} - Invalid description (type)          | 400            | N/A           | low      | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | 550e8400-e29b-41d4-a716-446655440000       | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | 12345                                                                   |
-    | BVAPUTprioritiesidnamebelowMin20251128_170226_2               | PUT /priorities/{id} - name = belowMin                     | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aa                                                                      | aaaaaaaa                                                                |
-    | BVAPUTprioritiesidnameaboveMax20251128_170226_4               | PUT /priorities/{id} - name = aboveMax                     | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaa                                                                |
-    | BVAPUTprioritiesiddescriptionbelowMin20251128_170226_6        | PUT /priorities/{id} - description = belowMin              | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaa                                                                | aa                                                                      |
-    | BVAPUTprioritiesiddescriptionaboveMax20251128_170226_8        | PUT /priorities/{id} - description = aboveMax              | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaa                                                                | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
-    | BVAPUTprioritiesidnamebelowMin20251128_170226_1               | PUT /priorities/{id} - name = belowMin                     | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aa                                                                      | aaaaaaaa                                                                |
-    | BVAPUTprioritiesidnameaboveMax20251128_170226_6               | PUT /priorities/{id} - name = aboveMax                     | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | aaaaaaaa                                                                |
-    | BVAPUTprioritiesiddescriptionbelowMin20251128_170226_7        | PUT /priorities/{id} - description = belowMin              | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaa                                                                | aa                                                                      |
-    | BVAPUTprioritiesiddescriptionaboveMax20251128_170226_12       | PUT /priorities/{id} - description = aboveMax              | 400            | N/A           | high     | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaaaa                                 | aaaaaaaa                                                                | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | id    | testName                                              | expectedStatus | priority | description                                                             | idPriority | name                                                                    |
+    |       | PUT /priorities/{id} - Invalid id (required)          | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    |       | PUT /priorities/{id} - Invalid id (required)          | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    | 12345 | PUT /priorities/{id} - Invalid id (type)              | 400            | low      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    |       | PUT /priorities/{id} - Invalid idPriority (type)      | 400            | low      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    | 12345      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    |       | PUT /priorities/{id} - Invalid name (length)          | 400            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | aa                                                                      |
+    |       | PUT /priorities/{id} - Invalid name (length)          | 400            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    |       | PUT /priorities/{id} - Invalid name (required)        | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            |                                                                         |
+    |       | PUT /priorities/{id} - Invalid name (required)        | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            |                                                                         |
+    |       | PUT /priorities/{id} - Invalid name (type)            | 400            | low      | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |            | 12345                                                                   |
+    |       | PUT /priorities/{id} - Invalid description (length)   | 400            | medium   | aa                                                                      |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    |       | PUT /priorities/{id} - Invalid description (length)   | 400            | medium   | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    |       | PUT /priorities/{id} - Invalid description (required) | 400            | high     |                                                                         |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    |       | PUT /priorities/{id} - Invalid description (required) | 400            | high     |                                                                         |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    |       | PUT /priorities/{id} - Invalid description (type)     | 400            | low      | 12345                                                                   |            | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                                    |
+    | 50    | PUT /priorities/{id} - name = belowMin                | 400            | high     | aaaaaaaa                                                                | 50         | aa                                                                      |
+    | 50    | PUT /priorities/{id} - name = aboveMax                | 400            | high     | aaaaaaaa                                                                | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | 50    | PUT /priorities/{id} - description = belowMin         | 400            | high     | aa                                                                      | 50         | aaaaaaaa                                                                |
+    | 50    | PUT /priorities/{id} - description = aboveMax         | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | 50         | aaaaaaaa                                                                |
+    | 50    | PUT /priorities/{id} - name = belowMin                | 400            | high     | aaaaaaaa                                                                | 50         | aa                                                                      |
+    | 50    | PUT /priorities/{id} - name = aboveMax                | 400            | high     | aaaaaaaa                                                                | 50         | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa |
+    | 50    | PUT /priorities/{id} - description = belowMin         | 400            | high     | aa                                                                      | 50         | aaaaaaaa                                                                |
+    | 50    | PUT /priorities/{id} - description = aboveMax         | 400            | high     | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | 50         | aaaaaaaa                                                                |
