@@ -14,6 +14,10 @@ from ...infrastructure.boundary_value_analysis.test_case_builder import BVATestC
 class BVAService:
     """Service for BVA test case generation."""
     
+    def __init__(self):
+        """Initialize BVA service."""
+        pass
+    
     async def generate_bva_tests(
         self,
         swagger_analysis_file: str,
@@ -145,7 +149,7 @@ class BVAService:
                     )
                     boundaries_list.extend(field_boundaries)
         
-        # Generate test cases
+        # Generate BVA test cases
         test_cases = BVATestCaseBuilder.build_test_cases(
             endpoint=endpoint,
             http_method=http_method,
@@ -153,6 +157,9 @@ class BVAService:
             all_fields=all_fields,
             bva_version=bva_version
         )
+        
+        # Note: Status code tests are generated separately by EP service
+        # to avoid mixing TestCase and BVATestCase types
         
         # Calculate coverage
         # For 2-value: 2 coverage items per boundary (boundary + 1 neighbor)

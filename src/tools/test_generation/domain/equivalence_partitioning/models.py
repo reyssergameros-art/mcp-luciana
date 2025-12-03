@@ -74,6 +74,7 @@ class TestCase:
     test_data: Dict[str, Any]  # Actual test data to use
     expected_result: str  # Expected outcome
     expected_status_code: int  # Expected HTTP status code
+    expected_error: Optional[str] = None  # Expected error code for negative tests
     preconditions: List[str] = field(default_factory=list)  # Conditions before test
     steps: List[str] = field(default_factory=list)  # Test execution steps
     tags: List[str] = field(default_factory=list)  # Tags for categorization
@@ -86,8 +87,8 @@ class TestCase:
             raise ValueError("test_name cannot be empty")
         if not self.endpoint:
             raise ValueError("endpoint cannot be empty")
-        if not self.partitions_covered:
-            raise ValueError("partitions_covered cannot be empty")
+        # partitions_covered can be empty for status code coverage tests
+        # which don't test specific partitions but HTTP response codes
 
 
 @dataclass

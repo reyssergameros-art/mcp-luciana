@@ -83,6 +83,7 @@ class TestingTechniques:
     """Nombres de técnicas de testing ISTQB v4."""
     EQUIVALENCE_PARTITIONING = "Equivalence Partitioning"
     BOUNDARY_VALUE_ANALYSIS = "Boundary Value Analysis"
+    STATUS_CODE_COVERAGE = "Status Code Coverage"
     DECISION_TABLE = "Decision Table"
     STATE_TRANSITION = "State Transition"
     

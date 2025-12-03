@@ -1,0 +1,1058 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-02T19:01:36.631789",
+    "endpoint": "/polizas/{numeroPoliza}/descargar",
+    "http_method": "GET",
+    "techniques": [
+      "Equivalence Partitioning"
+    ],
+    "tool_version": "1.0.0",
+    "source_file": "c:\\Users\\reyss\\OneDrive\\Desktop\\mcp\\mcp-luciana\\output\\swagger\\apiSpDocumentospolizasalud.json"
+  },
+  "metrics": {
+    "total_test_cases": 25,
+    "techniques_applied": [
+      "Equivalence Partitioning"
+    ],
+    "ep_metrics": {
+      "total_partitions": 21,
+      "valid_partitions": 0,
+      "invalid_partitions": 21,
+      "coverage_percentage": 100.0
+    },
+    "success_test_cases": 1,
+    "failure_test_cases": 24
+  },
+  "success_test_cases": [
+    {
+      "test_case_id": "SC_GET_polizas_numeroPoliza_descargar_success_200_20251202_16",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - OK - Request succeeded",
+      "technique": "Status Code Coverage",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint returns 200 when: Datos obtenidos con éxito.",
+      "test_data": {},
+      "expected_result": "Request processed with status 200",
+      "expected_status_code": 200,
+      "tags": [
+        "positive",
+        "status_code_coverage",
+        "status_200",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible"
+      ],
+      "steps": [
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response status is 200",
+        "Verify response body structure matches specification"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    }
+  ],
+  "failure_test_cases": [
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Transaccion-Id_required20251202_157",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Transaccion-Id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Transaccion-Id: Invalid: required field is missing",
+      "test_data": {},
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: ",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarTransaccion-Idmissing_required",
+            "field_name": "Transaccion-Id",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Transaccion-Id_required20251202_158",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Transaccion-Id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Transaccion-Id: Invalid: required field is empty",
+      "test_data": {
+        "Transaccion-Id": ""
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Transaccion-Id=",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarTransaccion-Idempty_required",
+            "field_name": "Transaccion-Id",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Transaccion-Id_type20251202_159",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Transaccion-Id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid Transaccion-Id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "Transaccion-Id": 12345
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Transaccion-Id=12345",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarTransaccion-Idinvalid_type",
+            "field_name": "Transaccion-Id",
+            "partition_type": "invalid",
+            "category": "type"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Aplicacion-Id_required20251202_160",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Aplicacion-Id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Aplicacion-Id: Invalid: required field is missing",
+      "test_data": {},
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: ",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarAplicacion-Idmissing_required",
+            "field_name": "Aplicacion-Id",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Aplicacion-Id_required20251202_161",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Aplicacion-Id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Aplicacion-Id: Invalid: required field is empty",
+      "test_data": {
+        "Aplicacion-Id": ""
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Aplicacion-Id=",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarAplicacion-Idempty_required",
+            "field_name": "Aplicacion-Id",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Aplicacion-Id_type20251202_162",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Aplicacion-Id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid Aplicacion-Id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "Aplicacion-Id": 12345
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Aplicacion-Id=12345",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarAplicacion-Idinvalid_type",
+            "field_name": "Aplicacion-Id",
+            "partition_type": "invalid",
+            "category": "type"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Nombre-Aplicacion_required20251202_163",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Aplicacion (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Nombre-Aplicacion: Invalid: required field is missing",
+      "test_data": {},
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: ",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarNombre-Aplicacionmissing_required",
+            "field_name": "Nombre-Aplicacion",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Nombre-Aplicacion_required20251202_164",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Aplicacion (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Nombre-Aplicacion: Invalid: required field is empty",
+      "test_data": {
+        "Nombre-Aplicacion": ""
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Nombre-Aplicacion=",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarNombre-Aplicacionempty_required",
+            "field_name": "Nombre-Aplicacion",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Nombre-Aplicacion_type20251202_165",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Aplicacion (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid Nombre-Aplicacion: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "Nombre-Aplicacion": 12345
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Nombre-Aplicacion=12345",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarNombre-Aplicacioninvalid_type",
+            "field_name": "Nombre-Aplicacion",
+            "partition_type": "invalid",
+            "category": "type"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Usuario-Consumidor-Id_required20251202_166",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Usuario-Consumidor-Id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Usuario-Consumidor-Id: Invalid: required field is missing",
+      "test_data": {},
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: ",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarUsuario-Consumidor-Idmissing_required",
+            "field_name": "Usuario-Consumidor-Id",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Usuario-Consumidor-Id_required20251202_167",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Usuario-Consumidor-Id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Usuario-Consumidor-Id: Invalid: required field is empty",
+      "test_data": {
+        "Usuario-Consumidor-Id": ""
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Usuario-Consumidor-Id=",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarUsuario-Consumidor-Idempty_required",
+            "field_name": "Usuario-Consumidor-Id",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Usuario-Consumidor-Id_type20251202_168",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Usuario-Consumidor-Id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid Usuario-Consumidor-Id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "Usuario-Consumidor-Id": 12345
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Usuario-Consumidor-Id=12345",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarUsuario-Consumidor-Idinvalid_type",
+            "field_name": "Usuario-Consumidor-Id",
+            "partition_type": "invalid",
+            "category": "type"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Nombre-Servicio-Consumidor_required20251202_169",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Servicio-Consumidor (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Nombre-Servicio-Consumidor: Invalid: required field is missing",
+      "test_data": {},
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: ",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarNombre-Servicio-Consumidormissing_required",
+            "field_name": "Nombre-Servicio-Consumidor",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Nombre-Servicio-Consumidor_required20251202_170",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Servicio-Consumidor (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Nombre-Servicio-Consumidor: Invalid: required field is empty",
+      "test_data": {
+        "Nombre-Servicio-Consumidor": ""
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Nombre-Servicio-Consumidor=",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarNombre-Servicio-Consumidorempty_required",
+            "field_name": "Nombre-Servicio-Consumidor",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Nombre-Servicio-Consumidor_type20251202_171",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Servicio-Consumidor (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid Nombre-Servicio-Consumidor: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "Nombre-Servicio-Consumidor": 12345
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Nombre-Servicio-Consumidor=12345",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarNombre-Servicio-Consumidorinvalid_type",
+            "field_name": "Nombre-Servicio-Consumidor",
+            "partition_type": "invalid",
+            "category": "type"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Ocp-Apim-Subscription-Key_required20251202_172",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Ocp-Apim-Subscription-Key (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Ocp-Apim-Subscription-Key: Invalid: required field is missing",
+      "test_data": {},
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: ",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarOcp-Apim-Subscription-Keymissing_required",
+            "field_name": "Ocp-Apim-Subscription-Key",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Ocp-Apim-Subscription-Key_required20251202_173",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Ocp-Apim-Subscription-Key (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid Ocp-Apim-Subscription-Key: Invalid: required field is empty",
+      "test_data": {
+        "Ocp-Apim-Subscription-Key": ""
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Ocp-Apim-Subscription-Key=",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarOcp-Apim-Subscription-Keyempty_required",
+            "field_name": "Ocp-Apim-Subscription-Key",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_Ocp-Apim-Subscription-Key_type20251202_174",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid Ocp-Apim-Subscription-Key (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid Ocp-Apim-Subscription-Key: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "Ocp-Apim-Subscription-Key": 12345
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: Ocp-Apim-Subscription-Key=12345",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarOcp-Apim-Subscription-Keyinvalid_type",
+            "field_name": "Ocp-Apim-Subscription-Key",
+            "partition_type": "invalid",
+            "category": "type"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_numeroPoliza_required20251202_175",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid numeroPoliza (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid numeroPoliza: Invalid: required field is missing",
+      "test_data": {},
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: ",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarnumeroPolizamissing_required",
+            "field_name": "numeroPoliza",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_numeroPoliza_required20251202_176",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid numeroPoliza (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid numeroPoliza: Invalid: required field is empty",
+      "test_data": {
+        "numeroPoliza": ""
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: numeroPoliza=",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarnumeroPolizaempty_required",
+            "field_name": "numeroPoliza",
+            "partition_type": "invalid",
+            "category": "required"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETpolizasnumeroPolizadescargarinvalid_numeroPoliza_type20251202_177",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Invalid numeroPoliza (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid numeroPoliza: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "numeroPoliza": 12345
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) are available"
+      ],
+      "steps": [
+        "Prepare test data: numeroPoliza=12345",
+        "Set required headers (Transaccion-Id, Aplicacion-Id, Nombre-Aplicacion, Usuario-Consumidor-Id, Nombre-Servicio-Consumidor, Ocp-Apim-Subscription-Key) with valid UUIDs",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPpolizasnumeroPolizadescargarnumeroPolizainvalid_type",
+            "field_name": "numeroPoliza",
+            "partition_type": "invalid",
+            "category": "type"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "SC_GET_polizas_numeroPoliza_descargar_error_400_20251202_17",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Bad Request - Invalid request data",
+      "technique": "Status Code Coverage",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint returns 400 when: Solicitud incorrecta.",
+      "test_data": {},
+      "expected_result": "Request rejected with status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "status_code_coverage",
+        "status_400",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible"
+      ],
+      "steps": [
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response status is 400",
+        "Verify error response structure and error codes"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    },
+    {
+      "test_case_id": "SC_GET_polizas_numeroPoliza_descargar_error_401_20251202_18",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Unauthorized - Authentication required",
+      "technique": "Status Code Coverage",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint returns 401 when: Solicitud No Autorizada.",
+      "test_data": {},
+      "expected_result": "Request rejected with status 401",
+      "expected_status_code": 401,
+      "tags": [
+        "negative",
+        "status_code_coverage",
+        "status_401",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible"
+      ],
+      "steps": [
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response status is 401",
+        "Verify error response structure and error codes"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    },
+    {
+      "test_case_id": "SC_GET_polizas_numeroPoliza_descargar_server_error_500_20251202_19",
+      "test_name": "GET /polizas/{numeroPoliza}/descargar - Internal Server Error",
+      "technique": "Status Code Coverage",
+      "endpoint": "/polizas/{numeroPoliza}/descargar",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify endpoint handles server error 500: Error Interno del Servidor",
+      "test_data": {},
+      "expected_result": "Server error response with status 500",
+      "expected_status_code": 500,
+      "tags": [
+        "negative",
+        "status_code_coverage",
+        "status_500",
+        "server_error",
+        "get"
+      ],
+      "preconditions": [
+        "Server is in error state or specific conditions trigger this error"
+      ],
+      "steps": [
+        "Trigger conditions that cause 500 error",
+        "Send GET request to /polizas/{numeroPoliza}/descargar",
+        "Verify response status is 500",
+        "Verify error response structure"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    }
+  ]
+}

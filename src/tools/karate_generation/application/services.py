@@ -236,7 +236,7 @@ class KarateGenerationService:
         http_method: HttpMethod,
         endpoint: str
     ) -> List[KarateScenario]:
-        """Create negative test scenarios grouped by HTTP status and header validation type."""
+        """Create negative test scenarios grouped by HTTP status code with specific descriptions."""
         # Group by status code first
         by_status: Dict[int, List[Dict[str, Any]]] = {}
         
@@ -259,7 +259,7 @@ class KarateGenerationService:
                 )
                 scenarios.extend(header_scenarios)
             
-            # Create scenario for other tests
+            # Create scenario for other tests with specific status code descriptions
             if other_tests:
                 examples = []
                 
@@ -278,21 +278,57 @@ class KarateGenerationService:
                     )
                     examples.append(example)
                 
-                # Convert status code to description
+                # Get specific status code description
                 status_desc = _get_http_status_description(status)
                 
+                # Create more descriptive scenario names based on status code
+                scenario_name = self._generate_scenario_name_for_status(
+                    status, status_desc, http_method, endpoint
+                )
+                
                 scenario = KarateScenario(
-                    name=f"Verificar que el servicio responda {status_desc} con datos inválidos",
-                    tags=["@negativeTest", f"@{http_method.value.lower()}"],
+                    name=scenario_name,
+                    tags=["@negativeTest", f"@{http_method.value.lower()}", f"@status{status}"],
                     scenario_type=ScenarioType.NEGATIVE,
                     http_method=http_method,
                     endpoint=endpoint,
                     examples=examples,
-                    description=f"Tests con datos inválidos que deben retornar {status_desc}"
+                    description=f"Tests que deben retornar {status_desc} ({status})"
                 )
                 scenarios.append(scenario)
         
         return scenarios
+    
+    def _generate_scenario_name_for_status(
+        self, 
+        status: int, 
+        status_desc: str, 
+        http_method: HttpMethod, 
+        endpoint: str
+    ) -> str:
+        """Generate descriptive scenario name based on status code."""
+        
+        # Specific descriptions for common status codes
+        status_scenarios = {
+            400: f"Verificar que el servicio responda {status_desc} con datos inválidos",
+            401: f"Verificar que el servicio responda {status_desc} sin autenticación",
+            403: f"Verificar que el servicio responda {status_desc} sin permisos",
+            404: f"Verificar que el servicio responda {status_desc} para recurso inexistente",
+            405: f"Verificar que el servicio responda {status_desc} para método no permitido",
+            409: f"Verificar que el servicio responda {status_desc} por conflicto de recursos",
+            422: f"Verificar que el servicio responda {status_desc} con datos no procesables",
+            429: f"Verificar que el servicio responda {status_desc} por exceso de solicitudes",
+            500: f"Verificar que el servicio responda {status_desc} en error interno",
+            502: f"Verificar que el servicio responda {status_desc} por gateway inválido",
+            503: f"Verificar que el servicio responda {status_desc} cuando no está disponible",
+            504: f"Verificar que el servicio responda {status_desc} por timeout"
+        }
+        
+        # Return specific scenario name or generic one
+        return status_scenarios.get(
+            status,
+            f"Verificar que el servicio responda {status_desc} ({status})"
+        )
     
     def _separate_header_tests(self, test_cases: List[Dict[str, Any]]) -> tuple:
         """Separate header validation tests from other tests."""

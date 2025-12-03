@@ -7,7 +7,7 @@ function fn() {
   }
   
   var config = {
-    baseUrl: 'http://localhost:8080',
+    baseUrl: 'https://virtserver.swaggerhub.com/PacificoSegurosPeru/API-SP-DocumentosPolizaSalud/1.0.0',
     timeout: 30000,
     retry: 0
   };
@@ -20,18 +20,12 @@ function fn() {
   // Default headers configuration for all endpoints
   config.headersDefaultEndpoint = {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'x-correlation-id': '',
-    'x-request-id': '',
-    'x-transaction-id': ''
+    'Accept': 'application/json'
   };
   
   // Legacy common headers function (for backward compatibility)
   config.getCommonHeaders = function() {
     return {
-      'x-correlation-id': config.generateUUID(),
-      'x-request-id': config.generateUUID(),
-      'x-transaction-id': config.generateUUID(),
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     };
@@ -39,13 +33,13 @@ function fn() {
   
   // Environment specific configuration
   if (env === 'dev') {
-    config.baseUrl = 'http://localhost:8080';
+    config.baseUrl = 'https://dev-virtserver.swaggerhub.com';
   }
   else if (env === 'qa') {
-    config.baseUrl = 'http://qa-api.example.com:8080';
+    config.baseUrl = 'https://qa-virtserver.swaggerhub.com';
   }
   else if (env === 'prod') {
-    config.baseUrl = 'http://api.example.com:8080';
+    config.baseUrl = 'https://virtserver.swaggerhub.com';
   }
   
   karate.configure('connectTimeout', config.timeout);

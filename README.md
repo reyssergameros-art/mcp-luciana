@@ -170,9 +170,17 @@ El servidor se iniciará y escuchará solicitudes de herramientas MCP.
 ### Herramientas MCP Disponibles
 
 #### 1. **swagger_analysis**
-Analiza especificaciones Swagger/OpenAPI.
+Analiza especificaciones Swagger/OpenAPI desde URL o archivos locales.
 
-**Ejemplo de uso:**
+**Tipos de entrada soportados:**
+- ✅ **URL HTTP/HTTPS**: `http://localhost:8080/v3/api-docs`
+- ✅ **Archivo JSON local**: `C:\Users\user\mi-swagger.json` o `mi-swagger.json` (relativo)
+- ✅ **Archivo YAML local**: `C:\Users\user\mi-swagger.yaml` o `mi-swagger.yaml` (relativo)
+- ✅ **URI con prefijo**: `file://C:/Users/user/mi-swagger.json`
+
+**Ejemplos de uso:**
+
+**Desde URL:**
 ```json
 {
   "swagger_url": "http://localhost:8080/v3/api-docs",
@@ -180,12 +188,43 @@ Analiza especificaciones Swagger/OpenAPI.
 }
 ```
 
+**Desde archivo JSON local (ruta absoluta):**
+```json
+{
+  "swagger_url": "C:\\Users\\reyss\\Desktop\\mi-contrato.json",
+  "save_output": true
+}
+```
+
+**Desde archivo YAML local (ruta relativa):**
+```json
+{
+  "swagger_url": "contratos/api-specification.yaml",
+  "save_output": true
+}
+```
+
+**Con prefijo file://:**
+```json
+{
+  "swagger_url": "file://C:/Users/reyss/Desktop/swagger.json",
+  "save_output": true
+}
+```
+
 **Salida:** Análisis guardado en `output/swagger/<nombre-api>.json`
+
+**Nota:** Los archivos locales deben tener extensión `.json`, `.yaml`, o `.yml`
 
 ---
 
 #### 2. **generate_test_cases**
-Genera casos de prueba usando técnicas ISTQB v4 (EP + BVA).
+Genera casos de prueba usando técnicas ISTQB v4 (EP + BVA + Status Code Coverage).
+
+**Técnicas aplicadas automáticamente:**
+- ✅ **Equivalence Partitioning (EP)**: Particiones válidas e inválidas
+- ✅ **Boundary Value Analysis (BVA)**: Valores límite (2-value y 3-value)
+- ✅ **Status Code Coverage**: Al menos 1 test case por cada código HTTP (200, 201, 204, 400, 404, 409, etc.)
 
 **Ejemplo de uso:**
 ```json
@@ -201,12 +240,28 @@ Genera casos de prueba usando técnicas ISTQB v4 (EP + BVA).
 - `endpoint_filter`: Filtrar por endpoint específico (opcional)
 - `method_filter`: Filtrar por método HTTP (opcional)
 
-**Salida:** Casos de prueba guardados en `output/test_cases/<recurso>/<metodo>_<endpoint>.json`
+**Salida:** Casos de prueba guardados en `output/test_cases/<metodo>_<endpoint>.json`
+
+**Novedad:** Ahora incluye casos de prueba específicos para:
+- ✅ 200 OK - Solicitud exitosa
+- ✅ 201 Created - Recurso creado
+- ✅ 204 No Content - Sin contenido
+- ✅ 400 Bad Request - Datos inválidos
+- ✅ 404 Not Found - Recurso inexistente
+- ✅ 409 Conflict - Conflicto de recursos
+- ✅ Y cualquier otro código definido en el Swagger
 
 ---
 
 #### 3. **generate_karate_features**
 Genera archivos feature de Karate BDD desde casos de prueba.
+
+**Mejora:** Ahora genera scenarios separados por código de estado HTTP con nombres descriptivos:
+- ✅ Scenario para 200 OK (happy path)
+- ✅ Scenario para 400 Bad Request con datos inválidos
+- ✅ Scenario para 404 Not Found para recurso inexistente
+- ✅ Scenario para 409 Conflict por duplicados
+- ✅ Y más...
 
 **Ejemplo de uso:**
 ```json

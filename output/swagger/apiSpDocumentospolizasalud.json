@@ -1,0 +1,216 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-02T19:00:41.199887",
+    "source": "C:\\Users\\reyss\\Downloads\\PacificoSegurosPeru-API-SP-DocumentosPolizaSalud-1.0.0-resolved.yaml",
+    "tool_version": "1.0.0",
+    "technique": "Swagger Analysis"
+  },
+  "analysis": {
+    "title": "API-SP-DocumentosPolizaSalud",
+    "version": "1.0.0",
+    "description": "Api que se comunica con base de datos de salud para obtener información de los documentos",
+    "contact_info": {},
+    "license_info": {},
+    "base_urls": [
+      "https://virtserver.swaggerhub.com/PacificoSegurosPeru/API-SP-DocumentosPolizaSalud/1.0.0",
+      "https://apimgmt-pacificodesa.azure-api.net/sp-documentos-poliza-salud/v1",
+      "https://apimgmt-pacificocert.azure-api.net/sp-documentos-poliza-salud/v1",
+      "https://apimgmt-pacificoprod.azure-api.net/sp-documentos-poliza-salud/v1"
+    ],
+    "total_endpoints": 1,
+    "endpoints": [
+      {
+        "method": "GET",
+        "path": "/polizas/{numeroPoliza}/descargar",
+        "summary": "Obtiene los datos del documento de la poliza por su número de póliza.",
+        "description": "Obtiene los datos del documento de la poliza por su número de póliza.",
+        "operation_id": "obtenerDatosDocPoliza",
+        "tags": [
+          "Poliza"
+        ],
+        "headers": [
+          {
+            "name": "Transaccion-Id",
+            "data_type": "string",
+            "required": true,
+            "format": "none",
+            "description": "Permite rastrear la petición en caso de ser necesario, es el ID de correlación de la petición. Para generarlo usar :UUID.randomUUID()",
+            "example": null,
+            "enum_values": null,
+            "pattern": null,
+            "minimum": null,
+            "maximum": null,
+            "min_length": null,
+            "max_length": null,
+            "constraints": []
+          },
+          {
+            "name": "Aplicacion-Id",
+            "data_type": "string",
+            "required": true,
+            "format": "none",
+            "description": "Se refiere al identificador único de la aplicación que está consumiento la API. La aplicación debe estar registrada en el  <a href=\"https://pacificocia.sharepoint.com/:x:/r/sites/CoE_Arquitectura_CSC/_layouts/15/doc2.aspx?sourcedoc=%7BAE85AD75-EDBB-4275-98D1-B62D682EC82F%7D&file=Inventario%20de%20Aplicaciones%20PAC%C3%8DFICO%20-%20PRIMAAFP.xlsx&action=default&mobileredirect=true&cid=d4922cf3-ef8b-4d7f-9020-cb9330e5b622\">Inventario de Aplicaciones</a>. En caso de no estarlo, se debe coordinar con el Arquitecto.",
+            "example": null,
+            "enum_values": null,
+            "pattern": null,
+            "minimum": null,
+            "maximum": null,
+            "min_length": null,
+            "max_length": null,
+            "constraints": []
+          },
+          {
+            "name": "Nombre-Aplicacion",
+            "data_type": "string",
+            "required": true,
+            "format": "none",
+            "description": "Se refiere al nombre de la aplicación que está consumiento la API. La aplicación debe estar registrada en el  <a href=\"https://pacificocia.sharepoint.com/:x:/r/sites/CoE_Arquitectura_CSC/_layouts/15/doc2.aspx?sourcedoc=%7BAE85AD75-EDBB-4275-98D1-B62D682EC82F%7D&file=Inventario%20de%20Aplicaciones%20PAC%C3%8DFICO%20-%20PRIMAAFP.xlsx&action=default&mobileredirect=true&cid=d4922cf3-ef8b-4d7f-9020-cb9330e5b622\">Inventario de Aplicaciones</a>. En caso de no estarlo, se debe coordinar con el Arquitecto.",
+            "example": null,
+            "enum_values": null,
+            "pattern": null,
+            "minimum": null,
+            "maximum": null,
+            "min_length": null,
+            "max_length": null,
+            "constraints": []
+          },
+          {
+            "name": "Usuario-Consumidor-Id",
+            "data_type": "string",
+            "required": true,
+            "format": "none",
+            "description": "Se refiere al usuario que realiza la acción. Si no se tiene el usuario debe tener el valor de ANONIMO.",
+            "example": null,
+            "enum_values": null,
+            "pattern": null,
+            "minimum": null,
+            "maximum": null,
+            "min_length": null,
+            "max_length": null,
+            "constraints": []
+          },
+          {
+            "name": "Nombre-Servicio-Consumidor",
+            "data_type": "string",
+            "required": true,
+            "format": "none",
+            "description": "Se refiere al nombre único de microservicio del consumidor.",
+            "example": null,
+            "enum_values": null,
+            "pattern": null,
+            "minimum": null,
+            "maximum": null,
+            "min_length": null,
+            "max_length": null,
+            "constraints": []
+          },
+          {
+            "name": "Ocp-Apim-Subscription-Key",
+            "data_type": "string",
+            "required": true,
+            "format": "none",
+            "description": "Clave de suscripción de APIM Azure.",
+            "example": null,
+            "enum_values": null,
+            "pattern": null,
+            "minimum": null,
+            "maximum": null,
+            "min_length": null,
+            "max_length": null,
+            "constraints": []
+          }
+        ],
+        "path_parameters": [
+          {
+            "name": "numeroPoliza",
+            "data_type": "string",
+            "required": true,
+            "format": "none",
+            "description": "Identificador de póliza\n<br>- Donde: \n<br>- numeroPoliza debe ser una cadena ejemplo: 10218647",
+            "example": null,
+            "enum_values": null,
+            "pattern": null,
+            "minimum": null,
+            "maximum": null,
+            "min_length": null,
+            "max_length": null,
+            "constraints": []
+          }
+        ],
+        "query_parameters": [],
+        "request_body": null,
+        "request_content_type": null,
+        "responses": [
+          {
+            "status_code": "200",
+            "description": "Datos obtenidos con éxito.",
+            "content_type": "application/json",
+            "schema": {
+              "$ref": "#/components/schemas/DescargarDocumentoPoliza"
+            },
+            "example": null,
+            "error_codes": [],
+            "validation_errors": []
+          },
+          {
+            "status_code": "400",
+            "description": "Solicitud incorrecta.",
+            "content_type": "application/json",
+            "schema": {
+              "$ref": "#/components/schemas/ErrorRespuesta"
+            },
+            "example": null,
+            "error_codes": [],
+            "validation_errors": []
+          },
+          {
+            "status_code": "401",
+            "description": "Solicitud No Autorizada.",
+            "content_type": "application/json",
+            "schema": {
+              "$ref": "#/components/schemas/ErrorNoAutorizadoRespuesta"
+            },
+            "example": null,
+            "error_codes": [],
+            "validation_errors": []
+          },
+          {
+            "status_code": "500",
+            "description": "Error Interno del Servidor",
+            "content_type": "application/json",
+            "schema": {
+              "$ref": "#/components/schemas/ServidorRespuesta"
+            },
+            "example": null,
+            "error_codes": [],
+            "validation_errors": []
+          }
+        ],
+        "validation_rules": {},
+        "error_scenarios": []
+      }
+    ],
+    "summary": {
+      "title": "API-SP-DocumentosPolizaSalud",
+      "version": "1.0.0",
+      "description": "Api que se comunica con base de datos de salud para obtener información de los documentos",
+      "base_urls": [
+        "https://virtserver.swaggerhub.com/PacificoSegurosPeru/API-SP-DocumentosPolizaSalud/1.0.0",
+        "https://apimgmt-pacificodesa.azure-api.net/sp-documentos-poliza-salud/v1",
+        "https://apimgmt-pacificocert.azure-api.net/sp-documentos-poliza-salud/v1",
+        "https://apimgmt-pacificoprod.azure-api.net/sp-documentos-poliza-salud/v1"
+      ],
+      "total_endpoints": 1,
+      "endpoints_by_method": {
+        "GET": 1
+      },
+      "endpoints_with_request_body": 0,
+      "response_codes": [
+        "200",
+        "400",
+        "401",
+        "500"
+      ]
+    }
+  }
+}

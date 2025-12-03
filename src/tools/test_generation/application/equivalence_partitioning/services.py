@@ -1,4 +1,5 @@
 """Application service for Equivalence Partitioning technique (ISTQB v4)."""
+import json
 import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional
@@ -7,11 +8,12 @@ logger = logging.getLogger(__name__)
 
 from ...domain.models import TestGenerationResult, PartitionSet, TestCase
 from ...domain.exceptions import InvalidSwaggerAnalysisError, TestGenerationError
-from src.shared.utils.file_operations import FileOperations
 from ...infrastructure.equivalence_partitioning.partition_identifier import PartitionIdentifierRefactored
 from ...infrastructure.equivalence_partitioning.test_case_builder import TestCaseBuilderRefactored
 from ...infrastructure.equivalence_partitioning.status_code_resolver import StatusCodeResolver
 from ...infrastructure.equivalence_partitioning.error_code_resolver import ErrorCodeResolver
+from ...infrastructure.equivalence_partitioning.status_code_test_generator import StatusCodeTestGenerator
+from src.shared.utils.file_operations import FileOperations
 from src.shared.config import SwaggerConstants
 
 
@@ -45,6 +47,9 @@ class EquivalencePartitionService:
             status_resolver=self.status_resolver,
             error_resolver=self.error_resolver
         )
+        
+        # Create status code test generator
+        self.status_code_generator = StatusCodeTestGenerator()
     
     async def generate_test_cases_from_json(
         self,
@@ -138,7 +143,7 @@ class EquivalencePartitionService:
         # Step 1: Identify partitions for all fields
         partition_sets = self._identify_all_partitions(endpoint_data)
         
-        # Step 2: Build test cases
+        # Step 2: Build test cases from equivalence partitions
         test_cases = self.test_case_builder.build_test_cases_for_endpoint(
             endpoint=endpoint,
             http_method=http_method,
@@ -146,7 +151,17 @@ class EquivalencePartitionService:
             endpoint_data=endpoint_data
         )
         
-        # Step 3: Calculate metrics
+        # Step 3: Generate additional test cases for all status codes
+        status_code_tests = self.status_code_generator.generate_status_code_tests(
+            endpoint=endpoint,
+            http_method=http_method,
+            endpoint_data=endpoint_data
+        )
+        
+        # Merge status code tests with equivalence partition tests
+        test_cases.extend(status_code_tests)
+        
+        # Step 4: Calculate metrics
         total_partitions = sum(len(ps.partitions) for ps in partition_sets)
         valid_partitions = sum(len(ps.get_valid_partitions()) for ps in partition_sets)
         invalid_partitions = sum(len(ps.get_invalid_partitions()) for ps in partition_sets)

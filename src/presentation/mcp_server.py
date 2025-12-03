@@ -11,7 +11,14 @@ from src.tools.mcp_tools import MCPToolsOrchestrator
 
 
 class SwaggerAnalysisRequest(BaseModel):
-    """Request model for Swagger analysis"""
+    """Request model for Swagger analysis
+    
+    Accepts:
+    - HTTP/HTTPS URLs: http://localhost:8080/v3/api-docs
+    - Local JSON files: C:\\Users\\user\\swagger.json or swagger.json (relative)
+    - Local YAML files: C:\\Users\\user\\swagger.yaml or swagger.yaml (relative)
+    - File URIs: file://C:/Users/user/swagger.json
+    """
     swagger_url: str
     format: Optional[str] = None  # "detailed" or "summary" - defaults from config
     save_output: Optional[bool] = True  # Save to JSON file
@@ -28,22 +35,38 @@ class SwaggerAnalysisRequest(BaseModel):
     @field_validator('swagger_url')
     @classmethod
     def validate_url(cls, v: str) -> str:
-        """Validate that URL is either a valid HTTP(S) URL or an existing file path."""
+        """Validate that URL is either a valid HTTP(S) URL or an existing JSON/YAML file path."""
+        # Accept HTTP(S) URLs
         if v.startswith('http://') or v.startswith('https://'):
             return v
         
-        # Check if it's a file path (with or without file:// prefix)
+        # Handle file paths (with or without file:// prefix)
         file_path = v.replace('file://', '') if v.startswith('file://') else v
         path = Path(file_path)
         
+        # Convert to absolute path if relative
         if not path.is_absolute():
             path = Path.cwd() / file_path
         
+        # Validate file existence
         if not path.exists():
-            raise ValueError(f"File path does not exist: {file_path}")
+            raise ValueError(
+                f"File path does not exist: {file_path}\n"
+                f"Resolved absolute path: {path}\n"
+                f"Supported formats: .json, .yaml, .yml"
+            )
         
         if not path.is_file():
             raise ValueError(f"Path is not a file: {file_path}")
+        
+        # Validate file extension for local files
+        valid_extensions = ['.json', '.yaml', '.yml']
+        if path.suffix.lower() not in valid_extensions:
+            raise ValueError(
+                f"Invalid file extension '{path.suffix}'. "
+                f"Supported formats: {', '.join(valid_extensions)}\n"
+                f"File: {path}"
+            )
         
         return v
     

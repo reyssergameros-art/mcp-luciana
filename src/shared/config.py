@@ -93,12 +93,14 @@ class SwaggerConstants:
     # Test Generation Constants (ISTQB v4 Equivalence Partitioning)
     TEST_TECHNIQUE_EP = "Equivalence Partitioning"
     TEST_TECHNIQUE_BVA = "Boundary Value Analysis"
+    TEST_TECHNIQUE_STATUS_CODE = "Status Code Coverage"
     TEST_TECHNIQUE_DT = "Decision Table"
     TEST_TECHNIQUE_ST = "State Transition"
     
     # Test case ID prefixes
     TEST_ID_PREFIX_EP = "EP"
     TEST_ID_PREFIX_BVA = "BVA"
+    TEST_ID_PREFIX_SC = "SC"
     TEST_ID_PREFIX_DT = "DT"
     TEST_ID_PREFIX_ST = "ST"
     
