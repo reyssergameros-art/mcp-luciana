@@ -1,83 +1,257 @@
-@regression @get
+@regression @api
 
 Feature: Obtiene los datos del documento de la poliza por su número de póliza.
 
 Background:
-  * def numeroPoliza = karate.get('numeroPoliza', '1')
   Given url baseUrl
-  And path '/polizas/{numeroPoliza}/descargar'
-  * def configHeader = headersDefaultEndpoint
+  * def configHeader = karate.call('classpath:karate-config.js').buildHeaders({})
 
-@get @smoke @happyPath
-Scenario Outline: Verificar éxito en GET con datos válidos
-  # Tests con datos válidos que deben ser exitosos
+@smoke @happy-path @regression
+Scenario Outline: Obtener descarga de polizas exitosamente
+  # Caso exitoso: obtener con parámetros válidos
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
-  * headers configHeader
+  And headers configHeader
   When method GET
   Then status <expectedStatus>
   And match response != null
-  And match responseType == 'json'
+  And match response == '#object'
 
   Examples:
-    | testName                                                       | expectedStatus | priority |
-    | GET /polizas/{numeroPoliza}/descargar - OK - Request succeeded | 200            | high     |
+    | expectedStatus |
+    | 200            |
 
-@status400 @get @negativeTest @regression
-Scenario Outline: Verificar que el servicio responda Bad Request con datos inválidos
+@error @validation @get @regression
+Scenario Outline: Rechazar solicitud cuando falta header requerido
+  # Tests para validar Transaccion-Id requerido
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * remove headers.<headerName>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName     |
+    | Transaccion-Id |
+    | Transaccion-Id |
+
+@error @validation @invalid-type @get @regression
+Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
+  # Tests para validar tipo de Transaccion-Id
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * headers['<headerName>'] = <invalidValue>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName     | invalidValue |
+    | Transaccion-Id | 12345        |
+
+@error @validation @get @regression
+Scenario Outline: Rechazar solicitud cuando falta header requerido
+  # Tests para validar Aplicacion-Id requerido
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * remove headers.<headerName>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName    |
+    | Aplicacion-Id |
+    | Aplicacion-Id |
+
+@error @validation @invalid-type @get @regression
+Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
+  # Tests para validar tipo de Aplicacion-Id
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * headers['<headerName>'] = <invalidValue>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName    | invalidValue |
+    | Aplicacion-Id | 12345        |
+
+@error @validation @get @regression
+Scenario Outline: Rechazar solicitud cuando falta header requerido
+  # Tests para validar Nombre-Aplicacion requerido
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * remove headers.<headerName>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName        |
+    | Nombre-Aplicacion |
+    | Nombre-Aplicacion |
+
+@error @validation @invalid-type @get @regression
+Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
+  # Tests para validar tipo de Nombre-Aplicacion
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * headers['<headerName>'] = <invalidValue>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName        | invalidValue |
+    | Nombre-Aplicacion | 12345        |
+
+@error @validation @get @regression
+Scenario Outline: Rechazar solicitud cuando falta header requerido
+  # Tests para validar Usuario-Consumidor-Id requerido
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * remove headers.<headerName>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName            |
+    | Usuario-Consumidor-Id |
+    | Usuario-Consumidor-Id |
+
+@error @validation @invalid-type @get @regression
+Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
+  # Tests para validar tipo de Usuario-Consumidor-Id
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * headers['<headerName>'] = <invalidValue>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName            | invalidValue |
+    | Usuario-Consumidor-Id | 12345        |
+
+@error @validation @get @regression
+Scenario Outline: Rechazar solicitud cuando falta header requerido
+  # Tests para validar Nombre-Servicio-Consumidor requerido
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * remove headers.<headerName>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName                 |
+    | Nombre-Servicio-Consumidor |
+    | Nombre-Servicio-Consumidor |
+
+@error @validation @invalid-type @get @regression
+Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
+  # Tests para validar tipo de Nombre-Servicio-Consumidor
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * headers['<headerName>'] = <invalidValue>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName                 | invalidValue |
+    | Nombre-Servicio-Consumidor | 12345        |
+
+@error @validation @get @regression
+Scenario Outline: Rechazar solicitud cuando falta header requerido
+  # Tests para validar Ocp-Apim-Subscription-Key requerido
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * remove headers.<headerName>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName                |
+    | Ocp-Apim-Subscription-Key |
+    | Ocp-Apim-Subscription-Key |
+
+@error @validation @invalid-type @get @regression
+Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
+  # Tests para validar tipo de Ocp-Apim-Subscription-Key
+  Given path '/polizas/', numeroPoliza, '/descargar'
+  * def numeroPoliza = '<numeroPoliza>'
+  * def headers = configHeader
+  * headers['<headerName>'] = <invalidValue>
+  And headers headers
+  When method GET
+  Then status 400
+
+  Examples:
+    | headerName                | invalidValue |
+    | Ocp-Apim-Subscription-Key | 12345        |
+
+@error @validation @get @regression
+Scenario Outline: Rechazar solicitud con datos inválidos
   # Tests que deben retornar Bad Request (400)
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
-  * headers configHeader
+  And headers configHeader
   When method GET
   Then status <expectedStatus>
-  And match response.error != null
+  And match response != null
+  And match response == '#object'
+  And match response contains any { error: '#present', message: '#present', code: '#present' }
 
   Examples:
-    | testName                                                                              | expectedStatus | priority | Aplicacion-Id | Nombre-Aplicacion | Nombre-Servicio-Consumidor | Ocp-Apim-Subscription-Key | Transaccion-Id | Usuario-Consumidor-Id | numeroPoliza |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Transaccion-Id (required)             | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Transaccion-Id (required)             | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Transaccion-Id (type)                 | 400            | low      |               |                   |                            |                           | 12345          |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Aplicacion-Id (required)              | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Aplicacion-Id (required)              | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Aplicacion-Id (type)                  | 400            | low      | 12345         |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Aplicacion (required)          | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Aplicacion (required)          | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Aplicacion (type)              | 400            | low      |               | 12345             |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Usuario-Consumidor-Id (required)      | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Usuario-Consumidor-Id (required)      | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Usuario-Consumidor-Id (type)          | 400            | low      |               |                   |                            |                           |                | 12345                 |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Servicio-Consumidor (required) | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Servicio-Consumidor (required) | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Nombre-Servicio-Consumidor (type)     | 400            | low      |               |                   | 12345                      |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Ocp-Apim-Subscription-Key (required)  | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Ocp-Apim-Subscription-Key (required)  | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid Ocp-Apim-Subscription-Key (type)      | 400            | low      |               |                   |                            | 12345                     |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid numeroPoliza (required)               | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid numeroPoliza (required)               | 400            | high     |               |                   |                            |                           |                |                       |              |
-    | GET /polizas/{numeroPoliza}/descargar - Invalid numeroPoliza (type)                   | 400            | low      |               |                   |                            |                           |                |                       | 12345        |
-    | GET /polizas/{numeroPoliza}/descargar - Bad Request - Invalid request data            | 400            | high     |               |                   |                            |                           |                |                       |              |
+    | expectedStatus | numeroPoliza |
+    | 400            |              |
+    | 400            |              |
+    | 400            | 12345        |
+    | 400            |              |
 
-@get @status401 @negativeTest @regression
-Scenario Outline: Verificar que el servicio responda Access Denied sin autenticación
+@error @authentication @get @regression
+Scenario Outline: Rechazar solicitud sin autenticación
   # Tests que deben retornar Access Denied (401)
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
-  * headers configHeader
+  And headers configHeader
   When method GET
   Then status <expectedStatus>
-  And match response.error != null
+  And match response != null
+  And match response == '#object'
+  And match response contains any { error: '#present', message: '#present', code: '#present' }
 
   Examples:
-    | testName                                                                       | expectedStatus | priority |
-    | GET /polizas/{numeroPoliza}/descargar - Unauthorized - Authentication required | 401            | high     |
+    | expectedStatus |
+    | 401            |
 
-@status500 @get @negativeTest @regression
-Scenario Outline: Verificar que el servicio responda Internal Server Error en error interno
+@error @server-error @get @regression
+Scenario Outline: Manejar error interno del servidor
   # Tests que deben retornar Internal Server Error (500)
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
-  * headers configHeader
+  And headers configHeader
   When method GET
   Then status <expectedStatus>
-  And match response.error != null
+  And match response != null
 
   Examples:
-    | testName                                                      | expectedStatus | priority |
-    | GET /polizas/{numeroPoliza}/descargar - Internal Server Error | 500            | medium   |
+    | expectedStatus |
+    | 500            |

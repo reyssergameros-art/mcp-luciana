@@ -220,14 +220,18 @@ class KarateGenerationService:
             )
             examples.append(example)
         
+        # Generate descriptive scenario name
+        action_verb = self._get_action_verb_for_method(http_method)
+        resource_name = self._extract_resource_name(endpoint)
+        
         return KarateScenario(
-            name=f"Verificar éxito en {http_method.value} con datos válidos",
-            tags=["@happyPath", f"@{http_method.value.lower()}"],
+            name=f"{action_verb} {resource_name} exitosamente",
+            tags=[],  # Tags generated dynamically by get_all_tags()
             scenario_type=ScenarioType.POSITIVE,
             http_method=http_method,
             endpoint=endpoint,
             examples=examples,
-            description="Tests con datos válidos que deben ser exitosos"
+            description=f"Caso exitoso: {action_verb.lower()} con parámetros válidos"
         )
     
     def _create_negative_scenarios(
@@ -308,26 +312,26 @@ class KarateGenerationService:
     ) -> str:
         """Generate descriptive scenario name based on status code."""
         
-        # Specific descriptions for common status codes
+        # Specific descriptions for common status codes (more concise and action-oriented)
         status_scenarios = {
-            400: f"Verificar que el servicio responda {status_desc} con datos inválidos",
-            401: f"Verificar que el servicio responda {status_desc} sin autenticación",
-            403: f"Verificar que el servicio responda {status_desc} sin permisos",
-            404: f"Verificar que el servicio responda {status_desc} para recurso inexistente",
-            405: f"Verificar que el servicio responda {status_desc} para método no permitido",
-            409: f"Verificar que el servicio responda {status_desc} por conflicto de recursos",
-            422: f"Verificar que el servicio responda {status_desc} con datos no procesables",
-            429: f"Verificar que el servicio responda {status_desc} por exceso de solicitudes",
-            500: f"Verificar que el servicio responda {status_desc} en error interno",
-            502: f"Verificar que el servicio responda {status_desc} por gateway inválido",
-            503: f"Verificar que el servicio responda {status_desc} cuando no está disponible",
-            504: f"Verificar que el servicio responda {status_desc} por timeout"
+            400: "Rechazar solicitud con datos inválidos",
+            401: "Rechazar solicitud sin autenticación",
+            403: "Rechazar solicitud sin permisos suficientes",
+            404: "Rechazar solicitud de recurso inexistente",
+            405: "Rechazar solicitud con método HTTP no permitido",
+            409: "Rechazar solicitud por conflicto de recursos",
+            422: "Rechazar solicitud con datos no procesables",
+            429: "Rechazar solicitud por exceso de llamadas",
+            500: "Manejar error interno del servidor",
+            502: "Manejar error de gateway inválido",
+            503: "Manejar servicio no disponible",
+            504: "Manejar timeout del gateway"
         }
         
         # Return specific scenario name or generic one
         return status_scenarios.get(
             status,
-            f"Verificar que el servicio responda {status_desc} ({status})"
+            f"Verificar respuesta {status_desc} ({status})"
         )
     
     def _separate_header_tests(self, test_cases: List[Dict[str, Any]]) -> tuple:
@@ -359,8 +363,8 @@ class KarateGenerationService:
         endpoint: str,
         status: int
     ) -> List[KarateScenario]:
-        """Create scenarios for header validation tests, grouped by header name."""
-        # Group by header name
+        """Create scenarios for header validation tests, grouped by header name and validation type."""
+        # Group by header name first
         by_header: Dict[str, List[Dict[str, Any]]] = {}
         
         for tc in test_cases:
@@ -372,39 +376,80 @@ class KarateGenerationService:
         scenarios = []
         
         for header_name, tests in by_header.items():
-            examples = []
+            # Further separate by validation type: required (missing/empty) vs type (invalid value)
+            required_tests = []
+            type_tests = []
             
             for tc in tests:
-                # Detect validation type and create metadata
-                header_validation = self._create_header_validation_metadata(tc, header_name)
-                expected_error = self._extract_expected_error(tc)
+                test_data = tc.get("test_data", {})
+                # If header has a non-empty value, it's type validation
+                header_value = test_data.get(header_name)
+                if header_value not in [None, "", [], {}]:
+                    type_tests.append(tc)
+                else:
+                    required_tests.append(tc)
+            
+            # Create scenario for required validation (missing/empty header)
+            if required_tests:
+                examples = []
+                for tc in required_tests:
+                    header_validation = self._create_header_validation_metadata(tc, header_name)
+                    expected_error = self._extract_expected_error(tc)
+                    
+                    example = KarateExample(
+                        test_case_id=tc.get("test_case_id", ""),
+                        test_name=tc.get("test_name", ""),
+                        test_data=tc.get("test_data", {}),
+                        expected_status=status,
+                        expected_error=expected_error,
+                        priority=tc.get("priority", "medium"),
+                        tags=tc.get("tags", []),
+                        partition_category=self._extract_category(tc),
+                        header_validation=header_validation
+                    )
+                    examples.append(example)
                 
-                example = KarateExample(
-                    test_case_id=tc.get("test_case_id", ""),
-                    test_name=tc.get("test_name", ""),
-                    test_data=tc.get("test_data", {}),
-                    expected_status=status,
-                    expected_error=expected_error,
-                    priority=tc.get("priority", "medium"),
-                    tags=tc.get("tags", []),
-                    partition_category=self._extract_category(tc),
-                    header_validation=header_validation
+                scenario = KarateScenario(
+                    name=f"Rechazar solicitud cuando falta header requerido",
+                    tags=["@error", "@validation", f"@{http_method.value.lower()}"],
+                    scenario_type=ScenarioType.NEGATIVE,
+                    http_method=http_method,
+                    endpoint=endpoint,
+                    examples=examples,
+                    description=f"Tests para validar {header_name} requerido"
                 )
-                examples.append(example)
+                scenarios.append(scenario)
             
-            # Convert status code to description
-            status_desc = _get_http_status_description(status)
-            
-            scenario = KarateScenario(
-                name=f"Verificar que el servicio responda {status_desc} cuando <headerName> <condition>",
-                tags=["@negativeTest", f"@{http_method.value.lower()}"],
-                scenario_type=ScenarioType.NEGATIVE,
-                http_method=http_method,
-                endpoint=endpoint,
-                examples=examples,
-                description=f"Tests para validar {header_name}"
-            )
-            scenarios.append(scenario)
+            # Create scenario for type validation (invalid value)
+            if type_tests:
+                examples = []
+                for tc in type_tests:
+                    header_validation = self._create_header_validation_metadata(tc, header_name)
+                    expected_error = self._extract_expected_error(tc)
+                    
+                    example = KarateExample(
+                        test_case_id=tc.get("test_case_id", ""),
+                        test_name=tc.get("test_name", ""),
+                        test_data=tc.get("test_data", {}),
+                        expected_status=status,
+                        expected_error=expected_error,
+                        priority=tc.get("priority", "medium"),
+                        tags=tc.get("tags", []),
+                        partition_category=self._extract_category(tc),
+                        header_validation=header_validation
+                    )
+                    examples.append(example)
+                
+                scenario = KarateScenario(
+                    name=f"Rechazar solicitud cuando header tiene tipo incorrecto",
+                    tags=["@error", "@validation", "@invalid-type", f"@{http_method.value.lower()}"],
+                    scenario_type=ScenarioType.NEGATIVE,
+                    http_method=http_method,
+                    endpoint=endpoint,
+                    examples=examples,
+                    description=f"Tests para validar tipo de {header_name}"
+                )
+                scenarios.append(scenario)
         
         return scenarios
     
@@ -512,7 +557,43 @@ class KarateGenerationService:
         resource_name = " ".join(parts)
         return f"{http_method.value} {resource_name}"
     
-    def _create_karate_config(self, base_url: str, dynamic_headers: Set[str]) -> KarateConfig:
+    def _get_action_verb_for_method(self, http_method: HttpMethod) -> str:
+        """Get Spanish action verb for HTTP method."""
+        verb_map = {
+            HttpMethod.GET: "Obtener",
+            HttpMethod.POST: "Crear",
+            HttpMethod.PUT: "Actualizar",
+            HttpMethod.PATCH: "Modificar",
+            HttpMethod.DELETE: "Eliminar"
+        }
+        return verb_map.get(http_method, http_method.value)
+    
+    def _extract_resource_name(self, endpoint: str) -> str:
+        """Extract resource name from endpoint path."""
+        # /polizas/{numeroPoliza}/descargar -> "documento de póliza"
+        # /priorities -> "prioridad"
+        # /users/{id} -> "usuario"
+        parts = [p for p in endpoint.split("/") if p and not p.startswith("{")]
+        
+        if not parts:
+            return "recurso"
+        
+        # Use the first meaningful part
+        resource = parts[0].replace("-", " ").replace("_", " ")
+        
+        # If there's an action at the end (descargar, download, etc.)
+        if len(parts) > 1 and parts[-1] in ["descargar", "download", "upload", "search"]:
+            action_map = {
+                "descargar": "descarga",
+                "download": "download",
+                "upload": "carga",
+                "search": "búsqueda"
+            }
+            return f"{action_map.get(parts[-1], parts[-1])} de {resource}"
+        
+        return resource
+    
+    def _create_karate_config(self, base_url: str, dynamic_headers: Dict[str, Dict[str, Any]]) -> KarateConfig:
         """Create Karate configuration using defaults and dynamic environment generation."""
         # Generate environments dynamically based on base_url
         environments = EnvironmentGenerator.generate_environments(base_url)
@@ -525,28 +606,89 @@ class KarateGenerationService:
             environments=environments
         )
         
-        # Set dynamic headers for config generation
+        # Set dynamic headers with metadata for config generation
         config.dynamic_headers = dynamic_headers
         
         return config
     
-    def _extract_headers_from_test_files(self, test_files: List) -> Set[str]:
-        """Extract all unique header names from test case files."""
-        all_headers = set()
+    def _extract_headers_from_test_files(self, test_files: List) -> Dict[str, Dict[str, Any]]:
+        """Extract all unique headers with metadata from swagger analysis.
+        
+        Returns:
+            Dict with header_name as key and dict with 'description', 'required', 'type' as value
+        """
+        all_headers = {}
+        content_types = set()
+        accept_types = set()
         
         for test_file in test_files:
             try:
                 test_data = self.repository.load_test_cases(test_file)
                 
-                # Extract headers from test cases
-                if "test_cases" in test_data:
+                # Extract headers from swagger analysis source
+                if "metadata" in test_data and "source_file" in test_data["metadata"]:
+                    swagger_file = Path(test_data["metadata"]["source_file"])
+                    
+                    if swagger_file.exists():
+                        with open(swagger_file, 'r', encoding='utf-8') as f:
+                            swagger_data = json.load(f)
+                        
+                        # Extract headers and content-types from endpoints
+                        if "analysis" in swagger_data and "endpoints" in swagger_data["analysis"]:
+                            for endpoint in swagger_data["analysis"]["endpoints"]:
+                                # Extract custom headers
+                                if "headers" in endpoint:
+                                    for header in endpoint["headers"]:
+                                        header_name = header.get("name")
+                                        if header_name:
+                                            all_headers[header_name] = {
+                                                "description": header.get("description", ""),
+                                                "required": header.get("required", False),
+                                                "type": header.get("data_type", "string")
+                                            }
+                                
+                                # Extract Content-Type from request_content_type
+                                if endpoint.get("request_content_type"):
+                                    content_types.add(endpoint["request_content_type"])
+                                
+                                # Extract Accept from response content_types
+                                if "responses" in endpoint:
+                                    for response in endpoint["responses"]:
+                                        if response.get("content_type"):
+                                            accept_types.add(response["content_type"])
+                
+                # Fallback: extract from test_data if swagger not available
+                if not all_headers and "test_cases" in test_data:
                     for test_case in test_data["test_cases"]:
                         if "test_data" in test_case:
                             headers = HeaderExtractor.extract_headers_from_test_data(test_case["test_data"])
-                            all_headers.update(headers)
+                            for header in headers:
+                                all_headers[header] = {
+                                    "description": "",
+                                    "required": False,
+                                    "type": "string"
+                                }
             except Exception:
                 # Skip files with errors, will be handled later
                 continue
+        
+        # Add Content-Type header if found in swagger
+        if content_types:
+            all_headers["Content-Type"] = {
+                "description": "Media type of the request body",
+                "required": True,
+                "type": "string",
+                "value": list(content_types)[0]  # Use first found content type
+            }
+        
+        # Add Accept header if found in swagger
+        if accept_types:
+            all_headers["Accept"] = {
+                "description": "Media type(s) that the client can understand",
+                "required": True,
+                "type": "string",
+                "value": list(accept_types)[0]  # Use first found accept type
+            }
         
         return all_headers
     

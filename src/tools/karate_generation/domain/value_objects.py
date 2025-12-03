@@ -78,7 +78,8 @@ class HeaderExtractor:
     
     # Common header patterns to identify
     COMMON_HEADER_PREFIXES = ["x-", "authorization", "content-", "accept"]
-    UUID_HEADER_PATTERNS = ["correlation-id", "request-id", "transaction-id", "trace-id"]
+    UUID_HEADER_PATTERNS = ["correlation-id", "request-id", "transaction-id", "trace-id", "transaccion-id"]
+    UUID_DESCRIPTION_KEYWORDS = ["uuid", "guid", "randomuuid", "unique identifier"]
     
     @staticmethod
     def extract_headers_from_test_data(test_data: Dict) -> Set[str]:
@@ -115,17 +116,27 @@ class HeaderExtractor:
         return any(field_lower.startswith(prefix) for prefix in HeaderExtractor.COMMON_HEADER_PREFIXES)
     
     @staticmethod
-    def is_uuid_header(header_name: str) -> bool:
+    def is_uuid_header(header_name: str, description: str = "") -> bool:
         """
         Check if header typically contains UUID values.
         
         Args:
             header_name: Name of the header
+            description: Optional description from swagger to detect UUID hints
             
         Returns:
             True if header typically contains UUIDs
         """
-        return any(pattern in header_name.lower() for pattern in HeaderExtractor.UUID_HEADER_PATTERNS)
+        # Check by header name pattern
+        if any(pattern in header_name.lower() for pattern in HeaderExtractor.UUID_HEADER_PATTERNS):
+            return True
+        
+        # Check by description keywords
+        if description:
+            desc_lower = description.lower()
+            return any(keyword in desc_lower for keyword in HeaderExtractor.UUID_DESCRIPTION_KEYWORDS)
+        
+        return False
     
     @staticmethod
     def extract_header_name_from_field(field_name: str) -> str:
@@ -152,19 +163,36 @@ class HeaderExtractor:
             Set of detected header names
         """
         import re
-        text_lower = text.lower()
         detected = set()
         
-        # Pattern for headers with dashes (x-correlation-id, x-request-id, etc.)
-        dash_headers = re.findall(r'\b(x-[a-z]+-[a-z]+(?:-[a-z]+)*)\b', text_lower)
-        detected.update(dash_headers)
+        # Pattern 1: Headers with dashes (x-correlation-id, Transaccion-Id, Aplicacion-Id, etc.)
+        # Match word boundaries with Title-Case or lowercase patterns
+        dash_pattern = r'\b([A-Za-z]+-[A-Za-z]+(?:-[A-Za-z]+)*)\b'
+        dash_headers = re.findall(dash_pattern, text)
         
-        # Check for authorization
-        if 'authorization' in text_lower:
-            detected.add('authorization')
+        # Filter to only keep likely headers (contain common suffixes or are known patterns)
+        header_suffixes = ['-id', '-key', '-token', '-type', '-name', '-consumidor', '-aplicacion', 
+                          '-servicio', '-subscription', '-apim', '-api']
+        header_prefixes = ['x-', 'ocp-']
         
-        # Check for content-type
-        if 'content-type' in text_lower or 'content type' in text_lower:
-            detected.add('content-type')
+        for header in dash_headers:
+            header_lower = header.lower()
+            # Check if it matches header patterns
+            is_header = (
+                any(header_lower.startswith(prefix) for prefix in header_prefixes) or
+                any(header_lower.endswith(suffix) for suffix in header_suffixes) or
+                header_lower in ['transaccion-id', 'aplicacion-id', 'nombre-aplicacion',
+                                'usuario-consumidor-id', 'nombre-servicio-consumidor',
+                                'ocp-apim-subscription-key']
+            )
+            if is_header:
+                detected.add(header)
+        
+        # Pattern 2: Check for common header keywords
+        text_lower = text.lower()
+        common_headers = ['authorization', 'content-type', 'accept']
+        for header in common_headers:
+            if header in text_lower:
+                detected.add(header)
         
         return detected

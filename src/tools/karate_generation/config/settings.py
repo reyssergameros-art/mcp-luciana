@@ -39,11 +39,8 @@ class KarateConfigDefaults:
     RETRY_COUNT: int = 0
     
     def __post_init__(self):
-        # Initialize DEFAULT_HEADERS - dynamic headers
-        object.__setattr__(self, 'DEFAULT_HEADERS', {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        })
+        # Initialize DEFAULT_HEADERS - will be populated from swagger content-type/accept
+        object.__setattr__(self, 'DEFAULT_HEADERS', {})
         
         # Initialize ENVIRONMENTS - will be populated dynamically from base_url
         object.__setattr__(self, 'ENVIRONMENTS', {})

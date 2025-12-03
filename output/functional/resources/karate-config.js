@@ -7,39 +7,50 @@ function fn() {
   }
   
   var config = {
-    baseUrl: 'https://virtserver.swaggerhub.com/PacificoSegurosPeru/API-SP-DocumentosPolizaSalud/1.0.0',
+    baseUrl: 'http://localhost:8080',
     timeout: 30000,
     retry: 0
   };
   
-  // Helper function to generate UUIDs
+  // Helper function to generate UUIDs using Karate native
   config.generateUUID = function() {
-    return java.util.UUID.randomUUID() + '';
+    return karate.uuid();
   };
   
-  // Default headers configuration for all endpoints
-  config.headersDefaultEndpoint = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  };
-  
-  // Legacy common headers function (for backward compatibility)
-  config.getCommonHeaders = function() {
-    return {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
+  // Function to build request headers with automatic UUID generation
+  config.buildHeaders = function(overrides) {
+    overrides = overrides || {};
+    var headers = {
+      'Accept': 'application/json',
+      'Aplicacion-Id': '',
+      'Nombre-Aplicacion': '',
+      'Nombre-Servicio-Consumidor': '',
+      'Ocp-Apim-Subscription-Key': '',
+      'Transaccion-Id': config.generateUUID(),
+      'Usuario-Consumidor-Id': ''
     };
+    
+    // Apply overrides
+    for (var key in overrides) {
+      if (overrides[key] === null) {
+        delete headers[key];
+      } else {
+        headers[key] = overrides[key];
+      }
+    }
+    
+    return headers;
   };
   
   // Environment specific configuration
   if (env === 'dev') {
-    config.baseUrl = 'https://dev-virtserver.swaggerhub.com';
+    config.baseUrl = 'http://localhost:8080';
   }
   else if (env === 'qa') {
-    config.baseUrl = 'https://qa-virtserver.swaggerhub.com';
+    config.baseUrl = 'http://qa-api.example.com:8080';
   }
   else if (env === 'prod') {
-    config.baseUrl = 'https://virtserver.swaggerhub.com';
+    config.baseUrl = 'http://api.example.com:8080';
   }
   
   karate.configure('connectTimeout', config.timeout);

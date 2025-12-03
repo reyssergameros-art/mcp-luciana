@@ -65,28 +65,52 @@ class KarateExample:
         return self.test_case_id[:20]  # Fallback: first 20 chars
     
     def to_table_row(self) -> Dict[str, Any]:
-        """Convert to table row format."""
-        # If this is a header validation test, only include minimal metadata
+        """Convert to table row format with only necessary columns."""
+        # If this is a header validation test, only include the specific header info
         if self.header_validation:
-            # Order matters: condition, action, headerName (alphabetically in table)
-            return {
-                "condition": self.header_validation.get("condition", ""),
-                "action": self.header_validation.get("action", ""),
-                "headerName": self.header_validation.get("headerName", "")
-            }
+            header_name = self.header_validation.get("headerName", "")
+            row = {"headerName": header_name}
+            
+            # ONLY include the specific header being tested if it has a value
+            if header_name and header_name in self.test_data:
+                value = self.test_data[header_name]
+                if value not in [None, "", [], {}]:
+                    row["invalidValue"] = value
+            
+            return row
         
-        # For non-header tests, include test data (excluding headers)
-        # Use shorter test ID
-        row = {
-            "testName": self.test_name,
-            "expectedStatus": self.expected_status,
-            "priority": self.priority
+        # For non-header tests, start with minimal metadata
+        row = {}
+        
+        # Always include expectedStatus (critical for validations)
+        row["expectedStatus"] = self.expected_status
+        
+        # Add non-header fields from test_data that have actual values
+        # Exclude ALL headers - they are managed separately in configHeader/Background
+        common_headers = {
+            # Standard HTTP headers
+            'authorization', 'content-type', 'accept', 'user-agent', 'cache-control',
+            # Custom API headers (common patterns)
+            'transaccion-id', 'aplicacion-id', 'nombre-aplicacion',
+            'usuario-consumidor-id', 'nombre-servicio-consumidor',
+            'ocp-apim-subscription-key', 'api-key', 'x-api-key',
+            # Any header with 'id' or 'key' in the name
         }
         
-        # Add only non-header fields from test_data
         for key, value in self.test_data.items():
-            # Exclude headers (they start with 'x-' or are common header names)
-            if not (key.startswith('x-') or key.lower() in ['authorization', 'content-type', 'accept']):
+            # Exclude headers by pattern matching
+            key_lower = key.lower()
+            is_header = (
+                key.startswith('x-') or 
+                key.startswith('X-') or
+                key_lower in common_headers or
+                '-id' in key_lower or
+                'subscription' in key_lower or
+                'ocp-' in key_lower
+            )
+            
+            # Only include non-header fields with actual values
+            if not is_header and value not in [None, "", [], {}]:
                 row[key] = value
         
         return row
@@ -110,10 +134,39 @@ class KarateScenario:
         return "@regression"
     
     def get_all_tags(self) -> List[str]:
-        """Get all tags including generated ones."""
-        base_tags = [self.get_primary_tag()]
-        base_tags.extend(self.tags)
-        return list(set(base_tags))  # Remove duplicates
+        """Get all tags following Cucumber best practices."""
+        tags = []
+        
+        # Add semantic tags based on scenario type
+        if self.scenario_type == ScenarioType.POSITIVE:
+            tags.extend(["@smoke", "@happy-path"])
+        else:
+            tags.append("@error")
+            
+            # Detect specific error type
+            if self.examples:
+                status = self.examples[0].expected_status
+                if status == 400:
+                    tags.append("@validation")
+                elif status == 401:
+                    tags.append("@authentication")
+                elif status == 403:
+                    tags.append("@authorization")
+                elif status == 404:
+                    tags.append("@not-found")
+                elif status >= 500:
+                    tags.append("@server-error")
+        
+        # Add custom tags (filter out generic ones)
+        for tag in self.tags:
+            if tag not in ["@negativeTest", "@status400", "@status401", "@status500"]:
+                if tag not in tags:
+                    tags.append(tag)
+        
+        # Add regression tag
+        tags.append("@regression")
+        
+        return tags
 
 
 @dataclass
@@ -150,7 +203,7 @@ class KarateConfig:
     timeout: int
     retry: int
     environments: Dict[str, str] = field(default_factory=dict)
-    dynamic_headers: set = field(default_factory=set)
+    dynamic_headers: Dict[str, Dict[str, Any]] = field(default_factory=dict)
     
     def generate_config_content(self) -> str:
         """Generate the karate-config.js content."""
@@ -170,21 +223,28 @@ class KarateConfig:
     retry: {self.retry}
   }};
   
-  // Helper function to generate UUIDs
+  // Helper function to generate UUIDs using Karate native
   config.generateUUID = function() {{
-    return java.util.UUID.randomUUID() + '';
+    return karate.uuid();
   }};
   
-  // Default headers configuration for all endpoints
-  config.headersDefaultEndpoint = {{
-{self._format_default_endpoint_headers()}
-  }};
-  
-  // Legacy common headers function (for backward compatibility)
-  config.getCommonHeaders = function() {{
-    return {{
-{self._format_dynamic_headers()}
+  // Function to build request headers with automatic UUID generation
+  config.buildHeaders = function(overrides) {{
+    overrides = overrides || {{}};
+    var headers = {{
+{self._format_all_headers_for_build()}
     }};
+    
+    // Apply overrides
+    for (var key in overrides) {{
+      if (overrides[key] === null) {{
+        delete headers[key];
+      }} else {{
+        headers[key] = overrides[key];
+      }}
+    }}
+    
+    return headers;
   }};
   
   // Environment specific configuration
@@ -204,42 +264,25 @@ class KarateConfig:
             lines.append(f"    '{key}': '{value}'")
         return ",\n".join(lines)
     
-    def _format_default_endpoint_headers(self) -> str:
-        """Format default endpoint headers with dynamic UUID generation."""
+    def _format_all_headers_for_build(self) -> str:
+        """Format all headers for buildHeaders() function with automatic UUID generation."""
         from .value_objects import HeaderExtractor
         
         lines = []
         
-        # Add standard headers from config first
-        for key, value in self.headers.items():
-            lines.append(f"    '{key}': '{value}'")
-        
-        # Add UUID-based headers (correlation-id, request-id, transaction-id, etc.)
-        uuid_headers = sorted([h for h in self.dynamic_headers if HeaderExtractor.is_uuid_header(h)])
-        for header in uuid_headers:
-            lines.append(f"    '{header}': ''")
-        
-        # Add Authorization placeholder
-        if 'authorization' in [h.lower() for h in self.dynamic_headers] or 'Authorization' in self.dynamic_headers:
-            lines.append(f"    'Authorization': ''")
-        
-        # Join with commas between all items
-        return ",\n".join(lines)
-    
-    def _format_dynamic_headers(self) -> str:
-        """Format dynamic headers for getCommonHeaders function."""
-        from .value_objects import HeaderExtractor
-        
-        lines = []
-        
-        # Add UUID-based headers (correlation-id, request-id, etc.)
-        for header in sorted(self.dynamic_headers):
-            if HeaderExtractor.is_uuid_header(header):
-                lines.append(f"      '{header}': config.generateUUID()")
-        
-        # Add standard headers from config
-        for key, value in self.headers.items():
-            lines.append(f"      '{key}': '{value}'")
+        # Add all headers from swagger dynamically
+        for header_name, metadata in sorted(self.dynamic_headers.items()):
+            description = metadata.get("description", "")
+            
+            # Check if header requires UUID generation
+            if HeaderExtractor.is_uuid_header(header_name, description):
+                lines.append(f"      '{header_name}': config.generateUUID()")
+            elif "value" in metadata:
+                # Header has a default value from swagger (Content-Type, Accept)
+                lines.append(f"      '{header_name}': '{metadata['value']}'")
+            else:
+                # Non-UUID headers get empty string placeholder
+                lines.append(f"      '{header_name}': ''")
         
         return ",\n".join(lines)
     
