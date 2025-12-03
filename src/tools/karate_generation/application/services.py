@@ -56,68 +56,36 @@ class KarateGenerationService:
         errors = []
         
         try:
-            # List all test case files
-            test_case_files = self.repository.list_test_case_files(test_cases_dir)
+            # Validate and prepare test case files
+            validation_result = self._validate_test_case_files(test_cases_dir)
+            if not validation_result['valid']:
+                return self._create_error_result(validation_result['error'])
             
-            if not test_case_files:
-                return KarateGenerationResult(
-                    success=False,
-                    features_generated=[],
-                    config_file="",
-                    total_scenarios=0,
-                    total_examples=0,
-                    errors=["No test case files found"]
+            test_case_files = validation_result['files']
+            
+            # Resolve base URL
+            base_url = self._resolve_base_url(base_url, test_case_files)
+            if base_url is None:
+                return self._create_error_result(
+                    "base_url not provided and could not be extracted from test case metadata"
                 )
             
-            # Extract base_url from swagger analysis if not provided
-            if base_url is None:
-                base_url = self._extract_base_url_from_test_files(test_case_files)
-                if base_url is None:
-                    return KarateGenerationResult(
-                        success=False,
-                        features_generated=[],
-                        config_file="",
-                        total_scenarios=0,
-                        total_examples=0,
-                        errors=["base_url not provided and could not be extracted from test case metadata"]
-                    )
+            # Setup configuration and environment
+            setup_result = self._setup_karate_environment(
+                output_dir, base_url, test_case_files
+            )
+            functional_dir = setup_result['functional_dir']
+            config_path = setup_result['config_path']
+            endpoint_summaries = setup_result['endpoint_summaries']
             
-            # Create output directory structure
-            functional_dir = self._create_output_structure(output_dir)
-            
-            # Collect all headers from test cases for dynamic config generation
-            all_headers = self._extract_headers_from_test_files(test_case_files)
-            
-            # Generate karate-config.js with dynamic headers
-            config = self._create_karate_config(base_url, all_headers)
-            config_path = self.repository.save_config(config, functional_dir)
-            
-            # Extract endpoint summaries from swagger analysis
-            endpoint_summaries = self._extract_endpoint_summaries(test_case_files)
-            
-            # Generate feature for each test case file
-            for test_file in test_case_files:
-                try:
-                    # Load test cases
-                    test_data = self.repository.load_test_cases(test_file)
-                    
-                    # Get endpoint summary
-                    endpoint_key = f"{test_data['http_method']}:{test_data['endpoint']}"
-                    endpoint_summary = endpoint_summaries.get(endpoint_key)
-                    
-                    # Convert to KarateFeature with source filename and summary
-                    feature = self._convert_to_karate_feature(test_data, test_file.name, endpoint_summary)
-                    
-                    # Save feature file
-                    feature_path = self.repository.save_feature(feature, functional_dir)
-                    features_generated.append(str(feature_path))
-                    
-                    total_scenarios += len(feature.scenarios)
-                    total_examples += feature.total_test_cases
-                    
-                except Exception as e:
-                    error_msg = f"Error processing {test_file.name}: {str(e)}"
-                    errors.append(error_msg)
+            # Process all test case files
+            processing_result = self._process_test_case_files(
+                test_case_files, functional_dir, endpoint_summaries
+            )
+            features_generated = processing_result['features_generated']
+            total_scenarios = processing_result['total_scenarios']
+            total_examples = processing_result['total_examples']
+            errors = processing_result['errors']
             
             success = len(features_generated) > 0
             
@@ -130,15 +98,215 @@ class KarateGenerationService:
                 errors=errors
             )
         
-        except Exception as e:
+        except KarateGenerationError as e:
+            error_msg = f"Karate generation failed: {str(e)}"
+            logger.error(error_msg, exc_info=True)
             return KarateGenerationResult(
                 success=False,
                 features_generated=features_generated,
                 config_file="",
                 total_scenarios=total_scenarios,
                 total_examples=total_examples,
-                errors=[str(e)]
+                errors=[error_msg]
             )
+        except Exception as e:
+            error_msg = f"Unexpected error during Karate generation: {type(e).__name__}: {str(e)}"
+            logger.exception(error_msg)
+            return KarateGenerationResult(
+                success=False,
+                features_generated=features_generated,
+                config_file="",
+                total_scenarios=total_scenarios,
+                total_examples=total_examples,
+                errors=[error_msg]
+            )
+    
+    def _validate_test_case_files(self, test_cases_dir: Path) -> Dict[str, Any]:
+        """
+        Validate test case directory and list files.
+        
+        Args:
+            test_cases_dir: Directory containing test case files
+            
+        Returns:
+            Dictionary with validation result
+        """
+        test_case_files = self.repository.list_test_case_files(test_cases_dir)
+        
+        if not test_case_files:
+            return {
+                'valid': False,
+                'error': 'No test case files found',
+                'files': []
+            }
+        
+        return {
+            'valid': True,
+            'error': None,
+            'files': test_case_files
+        }
+    
+    def _resolve_base_url(self, base_url: Optional[str], test_case_files: List[Path]) -> Optional[str]:
+        """
+        Resolve base URL from parameter or extract from test files.
+        
+        Args:
+            base_url: Provided base URL (may be None)
+            test_case_files: List of test case files
+            
+        Returns:
+            Resolved base URL or None
+        """
+        if base_url is not None:
+            return base_url
+        
+        return self._extract_base_url_from_test_files(test_case_files)
+    
+    def _setup_karate_environment(
+        self, 
+        output_dir: Path, 
+        base_url: str, 
+        test_case_files: List[Path]
+    ) -> Dict[str, Any]:
+        """
+        Setup Karate environment: directories, config, and metadata.
+        
+        Args:
+            output_dir: Base output directory
+            base_url: API base URL
+            test_case_files: List of test case files
+            
+        Returns:
+            Dictionary with setup results
+        """
+        # Create output directory structure
+        functional_dir = self._create_output_structure(output_dir)
+        
+        # Collect all headers from test cases for dynamic config generation
+        all_headers = self._extract_headers_from_test_files(test_case_files)
+        
+        # Configure TestDataFilter with dynamic headers from Swagger
+        from ..domain.test_data_filter import TestDataFilter
+        TestDataFilter.configure(set(all_headers.keys()))
+        logger.info(f"Configured TestDataFilter with {len(all_headers)} headers from Swagger analysis")
+        
+        # Generate karate-config.js with dynamic headers
+        config = self._create_karate_config(base_url, all_headers)
+        config_path = self.repository.save_config(config, functional_dir)
+        
+        # Extract endpoint summaries from swagger analysis
+        endpoint_summaries = self._extract_endpoint_summaries(test_case_files)
+        
+        return {
+            'functional_dir': functional_dir,
+            'config_path': config_path,
+            'endpoint_summaries': endpoint_summaries
+        }
+    
+    def _process_test_case_files(
+        self,
+        test_case_files: List[Path],
+        functional_dir: Path,
+        endpoint_summaries: Dict[str, str]
+    ) -> Dict[str, Any]:
+        """
+        Process all test case files and generate feature files.
+        
+        Args:
+            test_case_files: List of test case files to process
+            functional_dir: Output directory for features
+            endpoint_summaries: Mapping of endpoint to summary
+            
+        Returns:
+            Dictionary with processing results
+        """
+        features_generated = []
+        total_scenarios = 0
+        total_examples = 0
+        errors = []
+        
+        for test_file in test_case_files:
+            try:
+                result = self._process_single_test_file(
+                    test_file, functional_dir, endpoint_summaries
+                )
+                
+                features_generated.append(result['feature_path'])
+                total_scenarios += result['scenarios']
+                total_examples += result['examples']
+                
+                logger.info(f"Successfully generated feature for {test_file.name}: {result['feature_path']}")
+                
+            except (InvalidTestCaseFileError, FeatureGenerationError) as e:
+                error_msg = f"Failed to process {test_file.name}: {type(e).__name__}: {str(e)}"
+                logger.error(error_msg, exc_info=True)
+                errors.append(error_msg)
+            except Exception as e:
+                error_msg = f"Unexpected error processing {test_file.name}: {type(e).__name__}: {str(e)}"
+                logger.exception(error_msg)
+                errors.append(error_msg)
+        
+        return {
+            'features_generated': features_generated,
+            'total_scenarios': total_scenarios,
+            'total_examples': total_examples,
+            'errors': errors
+        }
+    
+    def _process_single_test_file(
+        self,
+        test_file: Path,
+        functional_dir: Path,
+        endpoint_summaries: Dict[str, str]
+    ) -> Dict[str, Any]:
+        """
+        Process a single test case file.
+        
+        Args:
+            test_file: Path to test case file
+            functional_dir: Output directory
+            endpoint_summaries: Endpoint summaries
+            
+        Returns:
+            Dictionary with file processing results
+        """
+        # Load test cases
+        test_data = self.repository.load_test_cases(test_file)
+        
+        # Get endpoint summary
+        endpoint_key = f"{test_data['http_method']}:{test_data['endpoint']}"
+        endpoint_summary = endpoint_summaries.get(endpoint_key)
+        
+        # Convert to KarateFeature with source filename and summary
+        feature = self._convert_to_karate_feature(test_data, test_file.name, endpoint_summary)
+        
+        # Save feature file
+        feature_path = self.repository.save_feature(feature, functional_dir)
+        
+        return {
+            'feature_path': str(feature_path),
+            'scenarios': len(feature.scenarios),
+            'examples': feature.total_test_cases
+        }
+    
+    def _create_error_result(self, error_message: str) -> KarateGenerationResult:
+        """
+        Create a failed KarateGenerationResult with error message.
+        
+        Args:
+            error_message: Error description
+            
+        Returns:
+            KarateGenerationResult indicating failure
+        """
+        return KarateGenerationResult(
+            success=False,
+            features_generated=[],
+            config_file="",
+            total_scenarios=0,
+            total_examples=0,
+            errors=[error_message]
+        )
     
     def _create_output_structure(self, output_dir: Path) -> Path:
         """
@@ -391,23 +559,26 @@ class KarateGenerationService:
             
             # Create scenario for required validation (missing/empty header)
             if required_tests:
-                examples = []
-                for tc in required_tests:
-                    header_validation = self._create_header_validation_metadata(tc, header_name)
-                    expected_error = self._extract_expected_error(tc)
-                    
-                    example = KarateExample(
-                        test_case_id=tc.get("test_case_id", ""),
-                        test_name=tc.get("test_name", ""),
-                        test_data=tc.get("test_data", {}),
-                        expected_status=status,
-                        expected_error=expected_error,
-                        priority=tc.get("priority", "medium"),
-                        tags=tc.get("tags", []),
-                        partition_category=self._extract_category(tc),
-                        header_validation=header_validation
-                    )
-                    examples.append(example)
+                # For header validation, we only need ONE example per header
+                # Multiple test cases for the same validation type are redundant in Karate
+                # Select the first test case as representative
+                tc = required_tests[0]
+                
+                header_validation = self._create_header_validation_metadata(tc, header_name)
+                expected_error = self._extract_expected_error(tc)
+                
+                example = KarateExample(
+                    test_case_id=tc.get("test_case_id", ""),
+                    test_name=tc.get("test_name", ""),
+                    test_data=tc.get("test_data", {}),
+                    expected_status=status,
+                    expected_error=expected_error,
+                    priority=tc.get("priority", "medium"),
+                    tags=tc.get("tags", []),
+                    partition_category=self._extract_category(tc),
+                    header_validation=header_validation
+                )
+                examples = [example]
                 
                 scenario = KarateScenario(
                     name=f"Rechazar solicitud cuando falta header requerido",
@@ -422,23 +593,26 @@ class KarateGenerationService:
             
             # Create scenario for type validation (invalid value)
             if type_tests:
-                examples = []
-                for tc in type_tests:
-                    header_validation = self._create_header_validation_metadata(tc, header_name)
-                    expected_error = self._extract_expected_error(tc)
-                    
-                    example = KarateExample(
-                        test_case_id=tc.get("test_case_id", ""),
-                        test_name=tc.get("test_name", ""),
-                        test_data=tc.get("test_data", {}),
-                        expected_status=status,
-                        expected_error=expected_error,
-                        priority=tc.get("priority", "medium"),
-                        tags=tc.get("tags", []),
-                        partition_category=self._extract_category(tc),
-                        header_validation=header_validation
-                    )
-                    examples.append(example)
+                # For header validation, we only need ONE example per header
+                # Multiple test cases for the same validation type are redundant in Karate
+                # Select the first test case as representative
+                tc = type_tests[0]
+                
+                header_validation = self._create_header_validation_metadata(tc, header_name)
+                expected_error = self._extract_expected_error(tc)
+                
+                example = KarateExample(
+                    test_case_id=tc.get("test_case_id", ""),
+                    test_name=tc.get("test_name", ""),
+                    test_data=tc.get("test_data", {}),
+                    expected_status=status,
+                    expected_error=expected_error,
+                    priority=tc.get("priority", "medium"),
+                    tags=tc.get("tags", []),
+                    partition_category=self._extract_category(tc),
+                    header_validation=header_validation
+                )
+                examples = [example]
                 
                 scenario = KarateScenario(
                     name=f"Rechazar solicitud cuando header tiene tipo incorrecto",

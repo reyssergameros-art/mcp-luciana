@@ -66,16 +66,18 @@ class KarateExample:
     
     def to_table_row(self) -> Dict[str, Any]:
         """Convert to table row format with only necessary columns."""
+        from .test_data_filter import TestDataFilter
+        
         # If this is a header validation test, only include the specific header info
         if self.header_validation:
             header_name = self.header_validation.get("headerName", "")
             row = {"headerName": header_name}
             
-            # ONLY include the specific header being tested if it has a value
-            if header_name and header_name in self.test_data:
-                value = self.test_data[header_name]
-                if value not in [None, "", [], {}]:
-                    row["invalidValue"] = value
+            # Extract header validation fields using TestDataFilter
+            validation_fields = TestDataFilter.extract_header_validation_fields(
+                self.test_data, header_name
+            )
+            row.update(validation_fields)
             
             return row
         
@@ -85,33 +87,9 @@ class KarateExample:
         # Always include expectedStatus (critical for validations)
         row["expectedStatus"] = self.expected_status
         
-        # Add non-header fields from test_data that have actual values
-        # Exclude ALL headers - they are managed separately in configHeader/Background
-        common_headers = {
-            # Standard HTTP headers
-            'authorization', 'content-type', 'accept', 'user-agent', 'cache-control',
-            # Custom API headers (common patterns)
-            'transaccion-id', 'aplicacion-id', 'nombre-aplicacion',
-            'usuario-consumidor-id', 'nombre-servicio-consumidor',
-            'ocp-apim-subscription-key', 'api-key', 'x-api-key',
-            # Any header with 'id' or 'key' in the name
-        }
-        
-        for key, value in self.test_data.items():
-            # Exclude headers by pattern matching
-            key_lower = key.lower()
-            is_header = (
-                key.startswith('x-') or 
-                key.startswith('X-') or
-                key_lower in common_headers or
-                '-id' in key_lower or
-                'subscription' in key_lower or
-                'ocp-' in key_lower
-            )
-            
-            # Only include non-header fields with actual values
-            if not is_header and value not in [None, "", [], {}]:
-                row[key] = value
+        # Add non-header fields from test_data using TestDataFilter
+        filtered_data = TestDataFilter.exclude_headers(self.test_data)
+        row.update(filtered_data)
         
         return row
 
@@ -273,6 +251,7 @@ class KarateConfig:
         # Add all headers from swagger dynamically
         for header_name, metadata in sorted(self.dynamic_headers.items()):
             description = metadata.get("description", "")
+            is_required = metadata.get("required", False)
             
             # Check if header requires UUID generation
             if HeaderExtractor.is_uuid_header(header_name, description):
@@ -281,10 +260,49 @@ class KarateConfig:
                 # Header has a default value from swagger (Content-Type, Accept)
                 lines.append(f"      '{header_name}': '{metadata['value']}'")
             else:
-                # Non-UUID headers get empty string placeholder
-                lines.append(f"      '{header_name}': ''")
+                # Non-UUID headers: use environment variable or default value
+                # Format: karate.properties['header.name'] || 'DEFAULT_VALUE'
+                default_value = self._generate_default_header_value(header_name, is_required)
+                env_var = self._header_to_env_var(header_name)
+                lines.append(f"      '{header_name}': karate.properties['{env_var}'] || '{default_value}'")
         
         return ",\n".join(lines)
+    
+    def _header_to_env_var(self, header_name: str) -> str:
+        """Convert header name to environment variable format."""
+        # Transaccion-Id -> header.transaccion.id
+        # Aplicacion-Id -> header.aplicacion.id
+        return f"header.{header_name.lower().replace('-', '.')}"
+    
+    def _generate_default_header_value(self, header_name: str, is_required: bool) -> str:
+        """Generate appropriate default value based on header name and requirement."""
+        header_lower = header_name.lower()
+        
+        # Specific defaults based on header semantics
+        if 'aplicacion' in header_lower or 'application' in header_lower:
+            if 'id' in header_lower:
+                return 'APP-DEFAULT-001'
+            elif 'nombre' in header_lower or 'name' in header_lower:
+                return 'Aplicacion-Prueba'
+        
+        if 'usuario' in header_lower or 'user' in header_lower:
+            if 'id' in header_lower:
+                return 'USR-DEFAULT-001'
+        
+        if 'servicio' in header_lower or 'service' in header_lower:
+            if 'nombre' in header_lower or 'name' in header_lower:
+                return 'Servicio-Prueba'
+            elif 'consumidor' in header_lower:
+                return 'Consumidor-Prueba'
+        
+        if 'subscription' in header_lower or 'key' in header_lower:
+            return 'default-subscription-key-12345'
+        
+        # Generic defaults
+        if is_required:
+            return f"DEFAULT-{header_name.upper().replace('-', '_')}"
+        
+        return ''
     
     def _format_environment_conditions(self) -> str:
         """Format environment-specific URL conditions."""

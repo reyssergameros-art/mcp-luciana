@@ -152,13 +152,14 @@ class KarateFeatureBuilder:
         
         # Build dynamic path using Karate path() method
         if "{" in feature.endpoint:
-            path_parts = self._build_dynamic_path(feature.endpoint)
-            steps.append(f"{indent}Given path {path_parts}")
-            
-            # Extract path params for Examples table usage
+            # FIXED: Extract and define path params BEFORE using them in path
             path_params = self._extract_path_params(feature.endpoint)
             for param in path_params:
                 steps.append(f"{indent}* def {param} = '<{param}>'")
+            
+            # Now build the path using already defined variables
+            path_parts = self._build_dynamic_path(feature.endpoint)
+            steps.append(f"{indent}Given path {path_parts}")
         else:
             # Static path
             steps.append(f"{indent}Given path '{feature.endpoint}'")
@@ -206,21 +207,11 @@ class KarateFeatureBuilder:
         # Response validation based on scenario type and status
         if scenario.scenario_type == ScenarioType.POSITIVE:
             # Positive scenarios: validate successful response structure
-            steps.append(f"{indent}And match response != null")
-            steps.append(f"{indent}And match response == '#object'")
+            steps.extend(self._build_success_validation_steps(indent))
         elif not is_header_validation:
             # Negative scenarios: validate error response structure
             expected_status = scenario.examples[0].expected_status if scenario.examples else 400
-            
-            if expected_status >= 400 and expected_status < 500:
-                # Client errors: expect error structure
-                steps.append(f"{indent}And match response != null")
-                steps.append(f"{indent}And match response == '#object'")
-                # Common error fields validation
-                steps.append(f"{indent}And match response contains any {{ error: '#present', message: '#present', code: '#present' }}")
-            elif expected_status >= 500:
-                # Server errors: may have different structure
-                steps.append(f"{indent}And match response != null")
+            steps.extend(self._build_error_validation_steps(expected_status, indent))
         
         return steps
     
@@ -362,6 +353,35 @@ class KarateFeatureBuilder:
         # x-request-id -> xRequestId
         parts = header_name.split('-')
         return parts[0] + ''.join(word.capitalize() for word in parts[1:])
+    
+    def _build_success_validation_steps(self, indent: str) -> List[str]:
+        """Build validation steps for successful responses."""
+        return [
+            f"{indent}And match response != null",
+            f"{indent}And match response == '#object'"
+        ]
+    
+    def _build_error_validation_steps(self, status_code: int, indent: str) -> List[str]:
+        """Build validation steps for error responses based on status code."""
+        steps = [
+            f"{indent}And match response != null",
+            f"{indent}And match response == '#object'"
+        ]
+        
+        # Add specific validations based on status code category
+        if 400 <= status_code < 500:
+            # Client errors: expect error structure with specific fields
+            steps.append(f"{indent}And match response contains any {{ error: '#present', message: '#present', code: '#present' }}")
+            
+            # Add status-specific validations
+            if status_code == 400:
+                steps.append(f"{indent}And match response.error == '#string'")
+            elif status_code == 401:
+                steps.append(f"{indent}And match response.code == '#string'")
+            elif status_code == 404:
+                steps.append(f"{indent}And match response.message == '#string'")
+        
+        return steps
     
     def _group_scenarios_by_status(self, scenarios: List[KarateScenario]) -> Dict[int, List[KarateScenario]]:
         """Group negative scenarios by HTTP status code."""

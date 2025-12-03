@@ -9,8 +9,8 @@ Background:
 @smoke @happy-path @regression
 Scenario Outline: Obtener descarga de polizas exitosamente
   # Caso exitoso: obtener con parámetros válidos
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   And headers configHeader
   When method GET
   Then status <expectedStatus>
@@ -24,8 +24,8 @@ Scenario Outline: Obtener descarga de polizas exitosamente
 @error @validation @get @regression
 Scenario Outline: Rechazar solicitud cuando falta header requerido
   # Tests para validar Transaccion-Id requerido
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * remove headers.<headerName>
   And headers headers
@@ -35,13 +35,12 @@ Scenario Outline: Rechazar solicitud cuando falta header requerido
   Examples:
     | headerName     |
     | Transaccion-Id |
-    | Transaccion-Id |
 
 @error @validation @invalid-type @get @regression
 Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
   # Tests para validar tipo de Transaccion-Id
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * headers['<headerName>'] = <invalidValue>
   And headers headers
@@ -55,8 +54,8 @@ Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
 @error @validation @get @regression
 Scenario Outline: Rechazar solicitud cuando falta header requerido
   # Tests para validar Aplicacion-Id requerido
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * remove headers.<headerName>
   And headers headers
@@ -66,13 +65,12 @@ Scenario Outline: Rechazar solicitud cuando falta header requerido
   Examples:
     | headerName    |
     | Aplicacion-Id |
-    | Aplicacion-Id |
 
 @error @validation @invalid-type @get @regression
 Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
   # Tests para validar tipo de Aplicacion-Id
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * headers['<headerName>'] = <invalidValue>
   And headers headers
@@ -86,8 +84,8 @@ Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
 @error @validation @get @regression
 Scenario Outline: Rechazar solicitud cuando falta header requerido
   # Tests para validar Nombre-Aplicacion requerido
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * remove headers.<headerName>
   And headers headers
@@ -97,13 +95,12 @@ Scenario Outline: Rechazar solicitud cuando falta header requerido
   Examples:
     | headerName        |
     | Nombre-Aplicacion |
-    | Nombre-Aplicacion |
 
 @error @validation @invalid-type @get @regression
 Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
   # Tests para validar tipo de Nombre-Aplicacion
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * headers['<headerName>'] = <invalidValue>
   And headers headers
@@ -117,8 +114,8 @@ Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
 @error @validation @get @regression
 Scenario Outline: Rechazar solicitud cuando falta header requerido
   # Tests para validar Usuario-Consumidor-Id requerido
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * remove headers.<headerName>
   And headers headers
@@ -128,13 +125,12 @@ Scenario Outline: Rechazar solicitud cuando falta header requerido
   Examples:
     | headerName            |
     | Usuario-Consumidor-Id |
-    | Usuario-Consumidor-Id |
 
 @error @validation @invalid-type @get @regression
 Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
   # Tests para validar tipo de Usuario-Consumidor-Id
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * headers['<headerName>'] = <invalidValue>
   And headers headers
@@ -148,8 +144,8 @@ Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
 @error @validation @get @regression
 Scenario Outline: Rechazar solicitud cuando falta header requerido
   # Tests para validar Nombre-Servicio-Consumidor requerido
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * remove headers.<headerName>
   And headers headers
@@ -159,13 +155,12 @@ Scenario Outline: Rechazar solicitud cuando falta header requerido
   Examples:
     | headerName                 |
     | Nombre-Servicio-Consumidor |
-    | Nombre-Servicio-Consumidor |
 
 @error @validation @invalid-type @get @regression
 Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
   # Tests para validar tipo de Nombre-Servicio-Consumidor
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * headers['<headerName>'] = <invalidValue>
   And headers headers
@@ -179,8 +174,8 @@ Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
 @error @validation @get @regression
 Scenario Outline: Rechazar solicitud cuando falta header requerido
   # Tests para validar Ocp-Apim-Subscription-Key requerido
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * remove headers.<headerName>
   And headers headers
@@ -190,13 +185,12 @@ Scenario Outline: Rechazar solicitud cuando falta header requerido
   Examples:
     | headerName                |
     | Ocp-Apim-Subscription-Key |
-    | Ocp-Apim-Subscription-Key |
 
 @error @validation @invalid-type @get @regression
 Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
   # Tests para validar tipo de Ocp-Apim-Subscription-Key
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   * def headers = configHeader
   * headers['<headerName>'] = <invalidValue>
   And headers headers
@@ -210,14 +204,15 @@ Scenario Outline: Rechazar solicitud cuando header tiene tipo incorrecto
 @error @validation @get @regression
 Scenario Outline: Rechazar solicitud con datos inválidos
   # Tests que deben retornar Bad Request (400)
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   And headers configHeader
   When method GET
   Then status <expectedStatus>
   And match response != null
   And match response == '#object'
   And match response contains any { error: '#present', message: '#present', code: '#present' }
+  And match response.error == '#string'
 
   Examples:
     | expectedStatus | numeroPoliza |
@@ -229,14 +224,15 @@ Scenario Outline: Rechazar solicitud con datos inválidos
 @error @authentication @get @regression
 Scenario Outline: Rechazar solicitud sin autenticación
   # Tests que deben retornar Access Denied (401)
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   And headers configHeader
   When method GET
   Then status <expectedStatus>
   And match response != null
   And match response == '#object'
   And match response contains any { error: '#present', message: '#present', code: '#present' }
+  And match response.code == '#string'
 
   Examples:
     | expectedStatus |
@@ -245,12 +241,13 @@ Scenario Outline: Rechazar solicitud sin autenticación
 @error @server-error @get @regression
 Scenario Outline: Manejar error interno del servidor
   # Tests que deben retornar Internal Server Error (500)
-  Given path '/polizas/', numeroPoliza, '/descargar'
   * def numeroPoliza = '<numeroPoliza>'
+  Given path '/polizas/', numeroPoliza, '/descargar'
   And headers configHeader
   When method GET
   Then status <expectedStatus>
   And match response != null
+  And match response == '#object'
 
   Examples:
     | expectedStatus |
