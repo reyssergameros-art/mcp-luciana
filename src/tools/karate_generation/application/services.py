@@ -20,7 +20,11 @@ from ..domain.models import (
 # Import at module level for status description mapping
 _get_http_status_description = KarateExample.get_http_status_description
 from ..domain.repositories import KarateGeneratorRepository
-from ..domain.exceptions import KarateGenerationError
+from ..domain.exceptions import (
+    KarateGenerationError,
+    InvalidTestCaseFileError,
+    FeatureGenerationError
+)
 from ..domain.value_objects import EnvironmentGenerator, HeaderExtractor
 from ..config import PATH_CONFIG, CONFIG_DEFAULTS
 
