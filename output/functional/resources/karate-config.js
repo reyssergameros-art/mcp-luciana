@@ -22,12 +22,10 @@ function fn() {
     overrides = overrides || {};
     var headers = {
       'Accept': 'application/json',
-      'Aplicacion-Id': karate.properties['header.aplicacion.id'] || 'APP-DEFAULT-001',
-      'Nombre-Aplicacion': karate.properties['header.nombre.aplicacion'] || 'Aplicacion-Prueba',
-      'Nombre-Servicio-Consumidor': karate.properties['header.nombre.servicio.consumidor'] || 'Servicio-Prueba',
-      'Ocp-Apim-Subscription-Key': karate.properties['header.ocp.apim.subscription.key'] || 'default-subscription-key-12345',
-      'Transaccion-Id': config.generateUUID(),
-      'Usuario-Consumidor-Id': karate.properties['header.usuario.consumidor.id'] || 'USR-DEFAULT-001'
+      'Content-Type': 'application/json',
+      'x-correlation-id': config.generateUUID(),
+      'x-request-id': config.generateUUID(),
+      'x-transaction-id': config.generateUUID()
     };
     
     // Apply overrides

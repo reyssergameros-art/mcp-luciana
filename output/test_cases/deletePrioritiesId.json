@@ -1,0 +1,2523 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-05T18:24:07.093876",
+    "endpoint": "/priorities/{id}",
+    "http_method": "DELETE",
+    "techniques": [
+      "Equivalence Partitioning",
+      "Decision Table"
+    ],
+    "tool_version": "1.0.0",
+    "source_file": "c:\\Users\\reyss\\OneDrive\\Desktop\\mcp\\mcp-luciana\\output\\swagger\\gestiónDePrioridadesApi.json"
+  },
+  "metrics": {
+    "total_test_cases": 47,
+    "techniques_applied": [
+      "Equivalence Partitioning",
+      "Decision Table"
+    ],
+    "ep_metrics": {
+      "total_partitions": 30,
+      "valid_partitions": 3,
+      "invalid_partitions": 27,
+      "coverage_percentage": 100.0
+    },
+    "decision_table_metrics": {
+      "total_conditions": 12,
+      "total_actions": 3,
+      "total_rules": 16,
+      "feasible_rules": 16,
+      "infeasible_rules": 0,
+      "is_minimized": false,
+      "entry_type": "limited",
+      "test_cases_generated": 16,
+      "coverage_percentage": 100.0
+    },
+    "success_test_cases": 3,
+    "failure_test_cases": 44
+  },
+  "success_test_cases": [
+    {
+      "test_case_id": "EPDELETEprioritiesidvalid_all20251205_68",
+      "test_name": "DELETE /priorities/{id} - All Valid Inputs",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint accepts all valid input values within equivalence partitions",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request processed successfully with status 204",
+      "expected_status_code": 204,
+      "tags": [
+        "positive",
+        "equivalence_partition",
+        "valid",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response status indicates success",
+        "Verify response body structure matches specification",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "SC_DELETE_priorities_id_success_204_20251205_8",
+      "test_name": "DELETE /priorities/{id} - No Content - Request succeeded with no response body",
+      "technique": "Status Code Coverage",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint returns 204 when: Prioridad eliminada exitosamente",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        "x-transaction-id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "id": 1
+      },
+      "expected_result": "Request processed with status 204",
+      "expected_status_code": 204,
+      "tags": [
+        "positive",
+        "status_code_coverage",
+        "status_204",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=6ba7b810-9dad-11d1-80b4-00c04fd430c8, x-transaction-id=7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response status is 204",
+        "Verify response body structure matches specification"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R001_DELETE__priorities_{id}",
+      "test_name": "All conditions valid - Expect 204",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify that Prioridad eliminada exitosamente",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 204,
+      "tags": [
+        "decision_table",
+        "positive"
+      ],
+      "metadata": {
+        "rule_id": "R001_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "204": "Prioridad eliminada exitosamente"
+        }
+      }
+    }
+  ],
+  "failure_test_cases": [
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_format20251205_69",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (invalid-uuid)",
+      "test_data": {
+        "x-correlation-id": "invalid-uuid",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=invalid-uuid, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid0",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_format20251205_70",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (123)",
+      "test_data": {
+        "x-correlation-id": "123",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=123, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid1",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_format20251205_71",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (empty)",
+      "test_data": {
+        "x-correlation-id": "",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-idinvalid_uuid2",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_length20251205_72",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: UUID length below 36 chars",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-iduuid_too_short",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_length20251205_73",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: UUID length exceeds 36 chars",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000-extra",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000-extra, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-iduuid_too_long",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_required20251205_74",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: required field is missing",
+      "test_data": {
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-idmissing_required",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_required20251205_75",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: required field is empty",
+      "test_data": {
+        "x-correlation-id": "",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-idempty_required",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-correlation-id_type20251205_76",
+      "test_name": "DELETE /priorities/{id} - Invalid x-correlation-id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "x-correlation-id": 12345,
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=12345, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-correlation-idinvalid_type",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "type"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_format20251205_77",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (invalid-uuid)",
+      "test_data": {
+        "x-request-id": "invalid-uuid",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=invalid-uuid, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-request-idinvalid_uuid0",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_format20251205_78",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (123)",
+      "test_data": {
+        "x-request-id": "123",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=123, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-request-idinvalid_uuid1",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_format20251205_79",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (empty)",
+      "test_data": {
+        "x-request-id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-request-idinvalid_uuid2",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_length20251205_80",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: UUID length below 36 chars",
+      "test_data": {
+        "x-request-id": "550e8400-e29b-41d4-a716",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=550e8400-e29b-41d4-a716, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-request-iduuid_too_short",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_length20251205_81",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: UUID length exceeds 36 chars",
+      "test_data": {
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000-extra",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=550e8400-e29b-41d4-a716-446655440000-extra, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-request-iduuid_too_long",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_required20251205_82",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: required field is missing",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-request-idmissing_required",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_required20251205_83",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: required field is empty",
+      "test_data": {
+        "x-request-id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-request-idempty_required",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-request-id_type20251205_84",
+      "test_name": "DELETE /priorities/{id} - Invalid x-request-id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "x-request-id": 12345,
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=12345, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-request-idinvalid_type",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "type"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_format20251205_85",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (invalid-uuid)",
+      "test_data": {
+        "x-transaction-id": "invalid-uuid",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=invalid-uuid, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid0",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_format20251205_86",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (123)",
+      "test_data": {
+        "x-transaction-id": "123",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=123, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid1",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_format20251205_87",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (empty)",
+      "test_data": {
+        "x-transaction-id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-transaction-idinvalid_uuid2",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_length20251205_88",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: UUID length below 36 chars",
+      "test_data": {
+        "x-transaction-id": "550e8400-e29b-41d4-a716",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=550e8400-e29b-41d4-a716, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-transaction-iduuid_too_short",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_length20251205_89",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: UUID length exceeds 36 chars",
+      "test_data": {
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000-extra",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=550e8400-e29b-41d4-a716-446655440000-extra, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-transaction-iduuid_too_long",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_required20251205_90",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: required field is missing",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-transaction-idmissing_required",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_required20251205_91",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: required field is empty",
+      "test_data": {
+        "x-transaction-id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-transaction-idempty_required",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_x-transaction-id_type20251205_92",
+      "test_name": "DELETE /priorities/{id} - Invalid x-transaction-id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "x-transaction-id": 12345,
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=12345, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesidx-transaction-idinvalid_type",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "type"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_id_required20251205_93",
+      "test_name": "DELETE /priorities/{id} - Invalid id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid id: Invalid: required field is missing",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesididmissing_required",
+            "field_name": "id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_id_required20251205_94",
+      "test_name": "DELETE /priorities/{id} - Invalid id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid id: Invalid: required field is empty",
+      "test_data": {
+        "id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesididempty_required",
+            "field_name": "id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPDELETEprioritiesidinvalid_id_type20251205_95",
+      "test_name": "DELETE /priorities/{id} - Invalid id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "id": 12345,
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: id=12345, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesididinvalid_type",
+            "field_name": "id",
+            "partition_type": "invalid",
+            "category": "type"
+          },
+          {
+            "partition_id": "EPprioritiesidx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesidx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "SC_DELETE_priorities_id_error_400_20251205_9",
+      "test_name": "DELETE /priorities/{id} - Bad Request - Invalid request data",
+      "technique": "Status Code Coverage",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint returns 400 when: Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        "x-transaction-id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "id": 1
+      },
+      "expected_result": "Request rejected with status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "status_code_coverage",
+        "status_400",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=6ba7b810-9dad-11d1-80b4-00c04fd430c8, x-transaction-id=7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response status is 400",
+        "Verify error response structure and error codes"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    },
+    {
+      "test_case_id": "SC_DELETE_priorities_id_error_404_20251205_10",
+      "test_name": "DELETE /priorities/{id} - Not Found - Resource does not exist",
+      "technique": "Status Code Coverage",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "high",
+      "objective": "Verify endpoint returns 404 when: Prioridad no encontrada - El ID especificado no existe en la base de datos\n**Códigos de Error Posibles:**\n\n**TYP-002** - resource_not_found (HTTP 404)\n  - `RNF-001`: Recurso no encontrado por ID especificado\n  - `RNF-002`: Recurso no encontrado después de una operación\n  - `RNF-003`: Endpoint o ruta no existe en la API\n",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        "x-transaction-id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "id": 999999
+      },
+      "expected_result": "Request rejected with status 404",
+      "expected_status_code": 404,
+      "tags": [
+        "negative",
+        "status_code_coverage",
+        "status_404",
+        "delete"
+      ],
+      "preconditions": [
+        "API server is running and accessible"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=6ba7b810-9dad-11d1-80b4-00c04fd430c8, x-transaction-id=7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "Send DELETE request to /priorities/{id}",
+        "Verify response status is 404",
+        "Verify error response structure and error codes"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R003_DELETE__priorities_{id}",
+      "test_name": "1 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R003_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R017_DELETE__priorities_{id}",
+      "test_name": "1 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R017_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R019_DELETE__priorities_{id}",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R019_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R129_DELETE__priorities_{id}",
+      "test_name": "1 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R129_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R131_DELETE__priorities_{id}",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R131_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R145_DELETE__priorities_{id}",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R145_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R147_DELETE__priorities_{id}",
+      "test_name": "3 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R147_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R1025_DELETE__priorities_{id}",
+      "test_name": "1 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R1025_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R1027_DELETE__priorities_{id}",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R1027_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R1041_DELETE__priorities_{id}",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R1041_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R1043_DELETE__priorities_{id}",
+      "test_name": "3 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R1043_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R1153_DELETE__priorities_{id}",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R1153_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R1155_DELETE__priorities_{id}",
+      "test_name": "3 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R1155_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R1169_DELETE__priorities_{id}",
+      "test_name": "3 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R1169_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_DELETE__priorities_{id}_R1171_DELETE__priorities_{id}",
+      "test_name": "4 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities/{id}",
+      "http_method": "DELETE",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value",
+        "id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R1171_DELETE__priorities_{id}",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    }
+  ]
+}

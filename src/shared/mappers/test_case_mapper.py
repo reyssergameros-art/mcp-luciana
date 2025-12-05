@@ -11,6 +11,11 @@ from src.tools.test_generation.domain.models import (
     BVAResult, BVATestCase, BoundaryValue,
     UnifiedTestCase, UnifiedTestResult
 )
+from src.tools.test_generation.domain.decision_table.models import (
+    DecisionTableResult, DecisionTableTestCase, DecisionTable,
+    DecisionRule, DecisionCondition, DecisionAction,
+    ConditionValue, ActionValue
+)
 from src.tools.test_generation.infrastructure.equivalence_partitioning.filename_generator import FilenameGenerator
 from src.shared.utils.file_operations import FileOperations
 from src.shared.constants import HTTPStatus, TestingTechniques
@@ -316,6 +321,114 @@ class TestCaseMapper:
         return serialized
     
     @staticmethod
+    def to_dt_dict(result: DecisionTableResult) -> Dict[str, Any]:
+        """
+        Convert DecisionTableResult to dictionary with ISTQB notation.
+        
+        Args:
+            result: DecisionTableResult domain model
+            
+        Returns:
+            Dictionary representation for JSON serialization including complete table
+        """
+        return {
+            "endpoint": result.endpoint,
+            "http_method": result.http_method,
+            "technique": result.technique,
+            "metrics": result.metrics,
+            "decision_table": TestCaseMapper._map_decision_table(result.decision_table) if result.decision_table else None,
+            "test_cases": [
+                TestCaseMapper._map_dt_test_case(tc) for tc in result.test_cases
+            ],
+            "generated_at": result.generated_at
+        }
+    
+    @staticmethod
+    def _map_decision_table(table: DecisionTable) -> Dict[str, Any]:
+        """Map DecisionTable to dictionary with ISTQB notation."""
+        return {
+            "endpoint": table.endpoint,
+            "http_method": table.http_method,
+            "entry_type": table.entry_type,
+            "is_minimized": table.is_minimized,
+            "conditions": [
+                TestCaseMapper._map_dt_condition(c) for c in table.conditions
+            ],
+            "actions": [
+                TestCaseMapper._map_dt_action(a) for a in table.actions
+            ],
+            "rules": [
+                TestCaseMapper._map_dt_rule(r) for r in table.rules
+            ],
+            "feasible_rules_count": len(table.get_feasible_rules()),
+            "total_rules_count": len(table.rules)
+        }
+    
+    @staticmethod
+    def _map_dt_condition(condition: DecisionCondition) -> Dict[str, Any]:
+        """Map DecisionCondition to dictionary."""
+        return {
+            "condition_id": condition.condition_id,
+            "field_name": condition.field_name,
+            "condition_type": condition.condition_type.value,
+            "description": condition.description,
+            "is_limited_entry": condition.is_limited_entry,
+            "possible_values": [
+                v.value if isinstance(v, ConditionValue) else v
+                for v in condition.possible_values
+            ],
+            "constraint_details": condition.constraint_details
+        }
+    
+    @staticmethod
+    def _map_dt_action(action: DecisionAction) -> Dict[str, Any]:
+        """Map DecisionAction to dictionary."""
+        return {
+            "action_id": action.action_id,
+            "description": action.description,
+            "expected_status_code": action.expected_status_code,
+            "expected_error": action.expected_error,
+            "metadata": action.metadata
+        }
+    
+    @staticmethod
+    def _map_dt_rule(rule: DecisionRule) -> Dict[str, Any]:
+        """Map DecisionRule to dictionary with ISTQB notation."""
+        return {
+            "rule_id": rule.rule_id,
+            "is_feasible": rule.is_feasible,
+            "condition_values": {
+                cond_id: value.value if isinstance(value, (ConditionValue, ActionValue)) else value
+                for cond_id, value in rule.condition_values.items()
+            },
+            "action_values": {
+                action_id: value.value if isinstance(value, ActionValue) else value
+                for action_id, value in rule.action_values.items()
+            },
+            "priority": rule.priority
+        }
+    
+    @staticmethod
+    def _map_dt_test_case(test_case: DecisionTableTestCase) -> Dict[str, Any]:
+        """Map DecisionTableTestCase to dictionary."""
+        return {
+            "test_case_id": test_case.test_case_id,
+            "test_name": test_case.test_name,
+            "rule_id": test_case.rule_id,
+            "endpoint": test_case.endpoint,
+            "http_method": test_case.http_method,
+            "priority": test_case.priority,
+            "objective": test_case.objective,
+            "test_data": test_case.test_data,
+            "expected_status_code": test_case.expected_status_code,
+            "expected_error": test_case.expected_error,
+            "condition_summary": test_case.condition_summary,
+            "action_summary": test_case.action_summary,
+            "tags": test_case.tags,
+            "metadata": test_case.metadata
+        }
+    
+    @staticmethod
     def save_unified_to_json(
         results: List[UnifiedTestResult], 
         source_file: str
@@ -327,6 +440,7 @@ class TestCaseMapper:
         - Equivalence Partitioning
         - Boundary Value Analysis (2-value)
         - Boundary Value Analysis (3-value)
+        - Decision Table
         
         Args:
             results: List of UnifiedTestResult

@@ -275,6 +275,14 @@ class SwaggerAnalysisMCPServer:
                - Applied to ALL HTTP methods including GET (query params) and DELETE (path params)
                - Coverage: (boundaries tested / total boundaries) * 100%
             
+            3. **Decision Table (ISTQB v4)**:
+               - Tests combinations of conditions and their outcomes
+               - Supports limited entry (boolean T/F) and extended entry (multiple values)
+               - Automatically detects infeasible combinations (N/A)
+               - Generates complete decision table with ISTQB notation
+               - Coverage: (rules exercised / total feasible rules) * 100%
+               - Applied to ALL HTTP methods with multiple constraints
+            
             **Output**: One unified JSON file per endpoint with test cases from ALL techniques.
             Compatible with karate_generation tool for automation.
             
@@ -290,10 +298,10 @@ class SwaggerAnalysisMCPServer:
                 Test generation results with all test cases from all techniques in JSON format
             """
             try:
-                # Always use unified mode with both techniques for comprehensive coverage
+                # Always use unified mode with all techniques for comprehensive coverage
                 result = await self.orchestrator.generate_test_cases_unified(
                     swagger_analysis_file=request.swagger_analysis_file,
-                    techniques=["equivalence_partitioning", "boundary_value_analysis"],
+                    techniques=["equivalence_partitioning", "boundary_value_analysis", "decision_table"],
                     bva_version=request.bva_version,
                     endpoint_filter=request.endpoint_filter,
                     method_filter=request.method_filter,

@@ -87,6 +87,28 @@ class UnifiedTestCase:
             tags=["bva", bva_case.bva_version.replace("-", "_")],
             metadata={"boundary_info": bva_case.boundary_info}
         )
+    
+    @classmethod
+    def from_dt_test_case(cls, dt_case) -> 'UnifiedTestCase':
+        """Convert Decision Table TestCase to UnifiedTestCase."""
+        return cls(
+            test_case_id=dt_case.test_case_id,
+            test_name=dt_case.test_name,
+            technique="Decision Table",
+            endpoint=dt_case.endpoint,
+            http_method=dt_case.http_method,
+            test_data=dt_case.test_data,
+            expected_status_code=dt_case.expected_status_code,
+            expected_error=dt_case.expected_error,
+            priority=dt_case.priority,
+            objective=dt_case.objective,
+            tags=dt_case.tags,
+            metadata={
+                "rule_id": dt_case.rule_id,
+                "condition_summary": dt_case.condition_summary,
+                "action_summary": dt_case.action_summary
+            }
+        )
 
 
 @dataclass
@@ -130,6 +152,15 @@ class UnifiedTestResult:
             "coverage_items_tested": bva_result.coverage_items_tested,
             "coverage_items_total": bva_result.coverage_items_total
         }
+    
+    def add_dt_result(self, dt_result):
+        """Add Decision Table results to unified result."""
+        self.techniques_applied.append("Decision Table")
+        
+        for tc in dt_result.test_cases:
+            self.test_cases.append(UnifiedTestCase.from_dt_test_case(tc))
+        
+        self.metadata["decision_table_metrics"] = dt_result.metrics
     
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get summary of all metrics."""

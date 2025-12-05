@@ -1,0 +1,1884 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-05T18:24:07.094805",
+    "endpoint": "/priorities",
+    "http_method": "GET",
+    "techniques": [
+      "Equivalence Partitioning",
+      "Decision Table"
+    ],
+    "tool_version": "1.0.0",
+    "source_file": "c:\\Users\\reyss\\OneDrive\\Desktop\\mcp\\mcp-luciana\\output\\swagger\\gestiónDePrioridadesApi.json"
+  },
+  "metrics": {
+    "total_test_cases": 35,
+    "techniques_applied": [
+      "Equivalence Partitioning",
+      "Decision Table"
+    ],
+    "ep_metrics": {
+      "total_partitions": 27,
+      "valid_partitions": 3,
+      "invalid_partitions": 24,
+      "coverage_percentage": 100.0
+    },
+    "decision_table_metrics": {
+      "total_conditions": 9,
+      "total_actions": 2,
+      "total_rules": 8,
+      "feasible_rules": 8,
+      "infeasible_rules": 0,
+      "is_minimized": false,
+      "entry_type": "limited",
+      "test_cases_generated": 8,
+      "coverage_percentage": 100.0
+    },
+    "success_test_cases": 3,
+    "failure_test_cases": 32
+  },
+  "success_test_cases": [
+    {
+      "test_case_id": "EPGETprioritiesvalid_all20251205_96",
+      "test_name": "GET /priorities - All Valid Inputs",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint accepts all valid input values within equivalence partitions",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request processed successfully with status 200",
+      "expected_status_code": 200,
+      "tags": [
+        "positive",
+        "equivalence_partition",
+        "valid",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response status indicates success",
+        "Verify response body structure matches specification",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "SC_GET_priorities_success_200_20251205_11",
+      "test_name": "GET /priorities - OK - Request succeeded",
+      "technique": "Status Code Coverage",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint returns 200 when: Lista obtenida exitosamente",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        "x-transaction-id": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      },
+      "expected_result": "Request processed with status 200",
+      "expected_status_code": 200,
+      "tags": [
+        "positive",
+        "status_code_coverage",
+        "status_200",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=6ba7b810-9dad-11d1-80b4-00c04fd430c8, x-transaction-id=7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "Send GET request to /priorities",
+        "Verify response status is 200",
+        "Verify response body structure matches specification"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    },
+    {
+      "test_case_id": "DT_GET__priorities_R001_GET__priorities",
+      "test_name": "All conditions valid - Expect 200",
+      "technique": "Decision Table",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify that Lista obtenida exitosamente",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 200,
+      "tags": [
+        "decision_table",
+        "positive"
+      ],
+      "metadata": {
+        "rule_id": "R001_GET__priorities",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "200": "Lista obtenida exitosamente"
+        }
+      }
+    }
+  ],
+  "failure_test_cases": [
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_format20251205_97",
+      "test_name": "GET /priorities - Invalid x-correlation-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (invalid-uuid)",
+      "test_data": {
+        "x-correlation-id": "invalid-uuid",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=invalid-uuid, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-idinvalid_uuid0",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_format20251205_98",
+      "test_name": "GET /priorities - Invalid x-correlation-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (123)",
+      "test_data": {
+        "x-correlation-id": "123",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=123, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-idinvalid_uuid1",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_format20251205_99",
+      "test_name": "GET /priorities - Invalid x-correlation-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: malformed UUID (empty)",
+      "test_data": {
+        "x-correlation-id": "",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-idinvalid_uuid2",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_length20251205_100",
+      "test_name": "GET /priorities - Invalid x-correlation-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: UUID length below 36 chars",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-iduuid_too_short",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_length20251205_101",
+      "test_name": "GET /priorities - Invalid x-correlation-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: UUID length exceeds 36 chars",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000-extra",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000-extra, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-iduuid_too_long",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_required20251205_102",
+      "test_name": "GET /priorities - Invalid x-correlation-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: required field is missing",
+      "test_data": {
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-idmissing_required",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_required20251205_103",
+      "test_name": "GET /priorities - Invalid x-correlation-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: required field is empty",
+      "test_data": {
+        "x-correlation-id": "",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-idempty_required",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-correlation-id_type20251205_104",
+      "test_name": "GET /priorities - Invalid x-correlation-id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid x-correlation-id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "x-correlation-id": 12345,
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=12345, x-request-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-correlation-idinvalid_type",
+            "field_name": "x-correlation-id",
+            "partition_type": "invalid",
+            "category": "type"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-request-id_format20251205_105",
+      "test_name": "GET /priorities - Invalid x-request-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (invalid-uuid)",
+      "test_data": {
+        "x-request-id": "invalid-uuid",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=invalid-uuid, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-request-idinvalid_uuid0",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-request-id_format20251205_106",
+      "test_name": "GET /priorities - Invalid x-request-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (123)",
+      "test_data": {
+        "x-request-id": "123",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=123, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-request-idinvalid_uuid1",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-request-id_format20251205_107",
+      "test_name": "GET /priorities - Invalid x-request-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: malformed UUID (empty)",
+      "test_data": {
+        "x-request-id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-request-idinvalid_uuid2",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-request-id_length20251205_108",
+      "test_name": "GET /priorities - Invalid x-request-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: UUID length below 36 chars",
+      "test_data": {
+        "x-request-id": "550e8400-e29b-41d4-a716",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=550e8400-e29b-41d4-a716, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-request-iduuid_too_short",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-request-id_length20251205_109",
+      "test_name": "GET /priorities - Invalid x-request-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: UUID length exceeds 36 chars",
+      "test_data": {
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000-extra",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=550e8400-e29b-41d4-a716-446655440000-extra, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-request-iduuid_too_long",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-request-id_required20251205_110",
+      "test_name": "GET /priorities - Invalid x-request-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: required field is missing",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-request-idmissing_required",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-request-id_required20251205_111",
+      "test_name": "GET /priorities - Invalid x-request-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: required field is empty",
+      "test_data": {
+        "x-request-id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-request-idempty_required",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-request-id_type20251205_112",
+      "test_name": "GET /priorities - Invalid x-request-id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid x-request-id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "x-request-id": 12345,
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-request-id=12345, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-transaction-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-request-idinvalid_type",
+            "field_name": "x-request-id",
+            "partition_type": "invalid",
+            "category": "type"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-transaction-idvalid_uuid",
+            "field_name": "x-transaction-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_format20251205_113",
+      "test_name": "GET /priorities - Invalid x-transaction-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (invalid-uuid)",
+      "test_data": {
+        "x-transaction-id": "invalid-uuid",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=invalid-uuid, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-transaction-idinvalid_uuid0",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_format20251205_114",
+      "test_name": "GET /priorities - Invalid x-transaction-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (123)",
+      "test_data": {
+        "x-transaction-id": "123",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=123, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-transaction-idinvalid_uuid1",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_format20251205_115",
+      "test_name": "GET /priorities - Invalid x-transaction-id (format)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: malformed UUID (empty)",
+      "test_data": {
+        "x-transaction-id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "format",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-transaction-idinvalid_uuid2",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_length20251205_116",
+      "test_name": "GET /priorities - Invalid x-transaction-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: UUID length below 36 chars",
+      "test_data": {
+        "x-transaction-id": "550e8400-e29b-41d4-a716",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=550e8400-e29b-41d4-a716, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-transaction-iduuid_too_short",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_length20251205_117",
+      "test_name": "GET /priorities - Invalid x-transaction-id (length)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: UUID length exceeds 36 chars",
+      "test_data": {
+        "x-transaction-id": "550e8400-e29b-41d4-a716-446655440000-extra",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "length",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=550e8400-e29b-41d4-a716-446655440000-extra, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-transaction-iduuid_too_long",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "length"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_required20251205_118",
+      "test_name": "GET /priorities - Invalid x-transaction-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: required field is missing",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-transaction-idmissing_required",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_required20251205_119",
+      "test_name": "GET /priorities - Invalid x-transaction-id (required)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: required field is empty",
+      "test_data": {
+        "x-transaction-id": "",
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "required",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-transaction-idempty_required",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "required"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "EPGETprioritiesinvalid_x-transaction-id_type20251205_120",
+      "test_name": "GET /priorities - Invalid x-transaction-id (type)",
+      "technique": "Equivalence Partitioning",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "low",
+      "objective": "Verify endpoint rejects invalid x-transaction-id: Invalid: wrong data type (expected string)",
+      "test_data": {
+        "x-transaction-id": 12345,
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "expected_result": "Request rejected with validation error and status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "equivalence_partition",
+        "invalid",
+        "type",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible",
+        "Test environment is properly configured",
+        "Required headers (x-correlation-id, x-request-id, x-transaction-id) are available"
+      ],
+      "steps": [
+        "Prepare test data: x-transaction-id=12345, x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=550e8400-e29b-41d4-a716-446655440000",
+        "Set required headers (x-correlation-id, x-request-id, x-transaction-id) with valid UUIDs",
+        "Send GET request to /priorities",
+        "Verify response contains validation error code",
+        "Verify response status indicates validation failure",
+        "Log test result with timestamp and execution details"
+      ],
+      "metadata": {
+        "partitions_covered": [
+          {
+            "partition_id": "EPprioritiesx-transaction-idinvalid_type",
+            "field_name": "x-transaction-id",
+            "partition_type": "invalid",
+            "category": "type"
+          },
+          {
+            "partition_id": "EPprioritiesx-correlation-idvalid_uuid",
+            "field_name": "x-correlation-id",
+            "partition_type": "valid",
+            "category": "format"
+          },
+          {
+            "partition_id": "EPprioritiesx-request-idvalid_uuid",
+            "field_name": "x-request-id",
+            "partition_type": "valid",
+            "category": "format"
+          }
+        ]
+      }
+    },
+    {
+      "test_case_id": "SC_GET_priorities_error_400_20251205_12",
+      "test_name": "GET /priorities - Bad Request - Invalid request data",
+      "technique": "Status Code Coverage",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "high",
+      "objective": "Verify endpoint returns 400 when: Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "550e8400-e29b-41d4-a716-446655440000",
+        "x-request-id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        "x-transaction-id": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      },
+      "expected_result": "Request rejected with status 400",
+      "expected_status_code": 400,
+      "tags": [
+        "negative",
+        "status_code_coverage",
+        "status_400",
+        "get"
+      ],
+      "preconditions": [
+        "API server is running and accessible"
+      ],
+      "steps": [
+        "Prepare test data: x-correlation-id=550e8400-e29b-41d4-a716-446655440000, x-request-id=6ba7b810-9dad-11d1-80b4-00c04fd430c8, x-transaction-id=7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "Send GET request to /priorities",
+        "Verify response status is 400",
+        "Verify error response structure and error codes"
+      ],
+      "metadata": {
+        "partitions_covered": []
+      }
+    },
+    {
+      "test_case_id": "DT_GET__priorities_R003_GET__priorities",
+      "test_name": "1 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R003_GET__priorities",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_GET__priorities_R017_GET__priorities",
+      "test_name": "1 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R017_GET__priorities",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_GET__priorities_R019_GET__priorities",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R019_GET__priorities",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_GET__priorities_R129_GET__priorities",
+      "test_name": "1 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R129_GET__priorities",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_GET__priorities_R131_GET__priorities",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R131_GET__priorities",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_GET__priorities_R145_GET__priorities",
+      "test_name": "2 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R145_GET__priorities",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    },
+    {
+      "test_case_id": "DT_GET__priorities_R147_GET__priorities",
+      "test_name": "3 invalid condition(s) - Expect 400",
+      "technique": "Decision Table",
+      "endpoint": "/priorities",
+      "http_method": "GET",
+      "priority": "medium",
+      "objective": "Verify that Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+      "test_data": {
+        "x-correlation-id": "valid_value",
+        "x-request-id": "valid_value",
+        "x-transaction-id": "valid_value"
+      },
+      "expected_result": "",
+      "expected_status_code": 400,
+      "tags": [
+        "decision_table",
+        "negative"
+      ],
+      "expected_error": "ERR_400",
+      "metadata": {
+        "rule_id": "R147_GET__priorities",
+        "condition_summary": {
+          "x-correlation-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-request-id": {
+            "condition_type": "type",
+            "value": "T"
+          },
+          "x-transaction-id": {
+            "condition_type": "type",
+            "value": "T"
+          }
+        },
+        "action_summary": {
+          "400": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n"
+        }
+      }
+    }
+  ]
+}

@@ -47,9 +47,12 @@ class MCPToolsOrchestrator:
         # Initialize test generation (SOLID: Dependency Injection)
         self.test_generation_service = EquivalencePartitionService()
         self.bva_service = BVAService()
+        from src.tools.test_generation.application.decision_table.services import DecisionTableService
+        self.dt_service = DecisionTableService()
         self.unified_service = UnifiedTestGenerationService(
             ep_service=self.test_generation_service,
-            bva_service=self.bva_service
+            bva_service=self.bva_service,
+            dt_service=self.dt_service
         )
         
         # Initialize karate generation

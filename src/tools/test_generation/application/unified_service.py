@@ -12,6 +12,7 @@ import json
 from ..domain.models import UnifiedTestResult
 from .equivalence_partitioning.services import EquivalencePartitionService
 from .boundary_value_analysis.services import BVAService
+from .decision_table.services import DecisionTableService
 
 
 class UnifiedTestGenerationService:
@@ -31,7 +32,8 @@ class UnifiedTestGenerationService:
     def __init__(
         self,
         ep_service: EquivalencePartitionService,
-        bva_service: BVAService
+        bva_service: BVAService,
+        dt_service: DecisionTableService = None
     ):
         """
         Dependency Injection: Services injected (DIP principle).
@@ -39,9 +41,11 @@ class UnifiedTestGenerationService:
         Args:
             ep_service: Equivalence Partitioning service
             bva_service: Boundary Value Analysis service
+            dt_service: Decision Table service (optional)
         """
         self._ep_service = ep_service
         self._bva_service = bva_service
+        self._dt_service = dt_service or DecisionTableService()
     
     async def generate_all_techniques(
         self,
@@ -69,7 +73,7 @@ class UnifiedTestGenerationService:
             Unified results containing all techniques
         """
         if techniques is None:
-            techniques = ["equivalence_partitioning", "boundary_value_analysis"]
+            techniques = ["equivalence_partitioning", "boundary_value_analysis", "decision_table"]
         
         # Container for unified results
         unified_results: List[UnifiedTestResult] = []
@@ -108,8 +112,22 @@ class UnifiedTestGenerationService:
                         bva_results_dict[key] = []
                     bva_results_dict[key].append(bva_result)
         
+        # Apply Decision Table if requested
+        dt_results_dict = {}
+        if "decision_table" in techniques:
+            dt_results_list = await self._dt_service.generate_decision_table_tests(
+                swagger_analysis_file=swagger_analysis_file,
+                endpoint_filter=endpoint_filter,
+                method_filter=method_filter
+            )
+            
+            # Index by endpoint key
+            for dt_result in dt_results_list:
+                key = f"{dt_result.http_method}_{dt_result.endpoint}"
+                dt_results_dict[key] = dt_result
+        
         # Merge results by endpoint
-        all_keys = set(ep_results_dict.keys()) | set(bva_results_dict.keys())
+        all_keys = set(ep_results_dict.keys()) | set(bva_results_dict.keys()) | set(dt_results_dict.keys())
         
         for key in all_keys:
             # Extract endpoint and method from key
@@ -131,6 +149,10 @@ class UnifiedTestGenerationService:
             if key in bva_results_dict:
                 for bva_result in bva_results_dict[key]:
                     unified.add_bva_result(bva_result)
+            
+            # Add Decision Table results if available
+            if key in dt_results_dict:
+                unified.add_dt_result(dt_results_dict[key])
             
             unified_results.append(unified)
         
